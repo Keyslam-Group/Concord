@@ -34,18 +34,17 @@ function List:remove(obj)
 
       self.numerical[index] = other
       self.named[other]     = index
+
+      self.numerical[size] = nil
    end
+
 
    self.named[obj] = nil
    self.size = size - 1
 end
 
-function List:get(i)
-   return self.numerical[i]
-end
-
-function List:getIndex(obj)
-   return self.named[obj]
+function List:has(obj)
+   return self.named[obj] and true
 end
 
 return setmetatable(List, {

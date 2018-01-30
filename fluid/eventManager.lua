@@ -3,18 +3,10 @@ EventManager.__index = EventManager
 
 function EventManager.new()
    local eventManager = setmetatable({
-      queue     = {count = 0},
       listeners = {},
    }, EventManager)
 
    return eventManager
-end
-
-function EventManager:push(event)
-   queue.count = queue.count + 1
-   queue[queue.count] = event
-
-   return self
 end
 
 function EventManager:emit(name, ...)
@@ -57,19 +49,6 @@ function EventManager:deregister(name, listener)
          end
       end
    end
-
-   return self
-end
-
-function EventManager:process()
-   local queue = self.queue
-
-   for i = 1, queue.count do
-      self:emit(queue[i])
-      queue[i] = nil
-   end
-
-   queue.count = 0
 
    return self
 end

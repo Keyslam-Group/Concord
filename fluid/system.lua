@@ -14,11 +14,11 @@ function System.new(...)
 
    for _, filter in pairs({...}) do
       local pool = system:buildPool(filter)
-      if not system[pool.__name] then
-         system[pool.__name]                 = pool
+      if not system[pool.name] then
+         system[pool.name]                 = pool
          system.__pools[#system.__pools + 1] = pool
       else
-         error("Pool with name '"..pool.__name.."' already exists.")
+         error("Pool with name '"..pool.name.."' already exists.")
       end
    end
 
@@ -40,7 +40,7 @@ function System:buildPool(pool)
    return Pool(name, filter)
 end
 
-function System:entityUpdated(e)
+function System:checkEntity(e)
    local systemHas = self:has(e)
 
    for _, pool in ipairs(self.__pools) do

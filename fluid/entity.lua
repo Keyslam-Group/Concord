@@ -1,21 +1,13 @@
-local Entity = {
-   entities = {},
-}
+local Entity = {}
 Entity.__index = Entity
 
 --- Creates and initializes a new Entity.
 -- @return A new Entity
 function Entity.new()
    local e = setmetatable({
-      id         = #Entity.entities + 1,
       components = {},
-      systems    = {},
-      keys       = {},
-
-      instance = nil,
+      instance   = nil,
    }, Entity)
-
-   Entity.entities[e.id] = e
 
    return e
 end
@@ -25,7 +17,7 @@ end
 -- @param ... The values passed to the Component
 -- @return self
 function Entity:give(component, ...)
-   self.components[component] = component:initialize(...)
+   self.components[component] = component:__initialize(...)
 
    return self
 end
@@ -43,15 +35,6 @@ end
 -- @return self
 function Entity:check()
    self.instance:checkEntity(self)
-
-   return self
-end
-
---- Removed an Entity from the instance.
--- @return self
-function Entity:destroy()
-   Entity.entities[self.id] = nil
-   self.instance:destroyEntity(self)
 
    return self
 end

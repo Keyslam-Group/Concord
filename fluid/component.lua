@@ -21,7 +21,7 @@ end
 -- Creates and initializes a new Bag.
 -- @param ... The values passed to the populate function
 -- @return A new initialized Bag
-function Component:initialize(...)
+function Component:__initialize(...)
    if self.__populate then
       local bag = {}
       self.__populate(bag, ...)
