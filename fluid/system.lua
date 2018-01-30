@@ -13,7 +13,7 @@ function System.new(...)
    }, System)
 
    for _, filter in pairs({...}) do
-      local pool = system:buildPool(filter)
+      local pool = system:__buildPool(filter)
       if not system[pool.name] then
          system[pool.name]                 = pool
          system.__pools[#system.__pools + 1] = pool
@@ -25,7 +25,7 @@ function System.new(...)
    return system
 end
 
-function System:buildPool(pool)
+function System:__buildPool(pool)
    local name   = "pool"
    local filter = {}
 
@@ -40,8 +40,8 @@ function System:buildPool(pool)
    return Pool(name, filter)
 end
 
-function System:checkEntity(e)
-   local systemHas = self:has(e)
+function System:__checkEntity(e)
+   local systemHas = self:__has(e)
 
    for _, pool in ipairs(self.__pools) do
       local poolHas  = pool:has(e)
@@ -50,21 +50,21 @@ function System:checkEntity(e)
       if not poolHas and eligible then
          pool:add(e)
          self:entityAddedTo(e, pool)
-         self:tryAdd(e)
+         self:__tryAdd(e)
 
          return true
       elseif poolHas and not eligible then
          pool:remove(e)
          self:entityRemovedFrom(e, pool)
-         self:tryRemove(e)
+         self:__tryRemove(e)
 
          return false
       end
    end
 end
 
-function System:tryAdd(e)
-   if not self:has(e) then
+function System:__tryAdd(e)
+   if not self:__has(e) then
       self.__all[e] = 0
       self:entityAdded(e)
    end
@@ -72,8 +72,8 @@ function System:tryAdd(e)
    self.__all[e] = self.__all[e] + 1
 end
 
-function System:tryRemove()
-   if self:has(e) then
+function System:__tryRemove()
+   if self:__has(e) then
       self.__all[e] = self.__all[e] - 1
 
       if self.__all[e] == 0 then
@@ -83,8 +83,8 @@ function System:tryRemove()
    end
 end
 
-function System:remove(e)
-   if self:has(e) then
+function System:__remove(e)
+   if self:__has(e) then
       for _, pool in ipairs(self.__pools) do
          if pool:has(e) then
             pool:remove(e)
@@ -97,7 +97,7 @@ function System:remove(e)
    end
 end
 
-function System:has(e)
+function System:__has(e)
    return self.__all[e] and true
 end
 

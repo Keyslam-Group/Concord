@@ -31,7 +31,9 @@ end)
 
 local RectangleRenderer = System({Position, Rectangle})
 function RectangleRenderer:draw()
-   for _, e in ipairs(self.pool.numerical) do
+   for i = 1, self.pool.size do
+      local e = self.pool:get(i)
+
       local position  = e:get(Position)
       local rectangle = e:get(Rectangle)
       local color     = e:get(Color)
@@ -47,7 +49,9 @@ end
 
 local CircleRenderer = System({Position, Circle})
 function CircleRenderer:draw()
-   for _, e in ipairs(self.pool.numerical) do
+   for i = 1, self.pool.size do
+      local e = self.pool:get(i)
+
       local position = e:get(Position)
       local circle   = e:get(Circle)
       local color    = e:get(Color)
@@ -73,7 +77,7 @@ function RandomRemover:update(dt)
       if self.pool.size > 0 then
          local i = love.math.random(1, self.pool.size)
 
-         Game:removeEntity(self.pool.numerical[i])
+         Game:removeEntity(self.pool.objects[i])
       end
    end
 end

@@ -26,7 +26,7 @@ end
 
 function Instance:checkEntity(e)
    for _, system in ipairs(self.systems) do
-      system:checkEntity(e)
+      system:__checkEntity(e)
    end
 end
 
@@ -34,7 +34,7 @@ function Instance:removeEntity(e)
    self.entities:remove(e)
 
    for _, system in ipairs(self.systems) do
-      system:remove(e)
+      system:__remove(e)
    end
 end
 
