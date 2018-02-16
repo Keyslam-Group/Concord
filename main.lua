@@ -31,8 +31,9 @@ end)
 
 local RectangleRenderer = System({Position, Rectangle})
 function RectangleRenderer:draw()
+   local e
    for i = 1, self.pool.size do
-      local e = self.pool:get(i)
+      e = self.pool:get(i)
 
       local position  = e:get(Position)
       local rectangle = e:get(Rectangle)
@@ -49,8 +50,9 @@ end
 
 local CircleRenderer = System({Position, Circle})
 function CircleRenderer:draw()
+   local e
    for i = 1, self.pool.size do
-      local e = self.pool:get(i)
+      e = self.pool:get(i)
 
       local position = e:get(Position)
       local circle   = e:get(Circle)
@@ -66,13 +68,16 @@ function CircleRenderer:draw()
 end
 
 local RandomRemover = System({})
-RandomRemover.time = 0
+
+function RandomRemover:init()
+   self.time = 0
+end
 
 function RandomRemover:update(dt)
-   RandomRemover.time = RandomRemover.time + dt
+   self.time = self.time + dt
 
-   if RandomRemover.time >= 0.125 then
-      RandomRemover.time = 0
+   if self.time >= 0.5 then
+      self.time = 0
 
       if self.pool.size > 0 then
          local i = love.math.random(1, self.pool.size)
@@ -80,13 +85,15 @@ function RandomRemover:update(dt)
          Game:removeEntity(self.pool.objects[i])
       end
    end
+
+   love.window.setTitle(love.timer.getFPS())
 end
 
-Game:addSystem(RandomRemover, "update")
-Game:addSystem(RectangleRenderer, "draw")
-Game:addSystem(CircleRenderer, "draw")
+Game:addSystem(RandomRemover(),     "update")
+Game:addSystem(RectangleRenderer(), "draw")
+Game:addSystem(CircleRenderer(),    "draw")
 
-for i = 1, 50 do
+for i = 1, 100 do
    local e = Entity()
    e:give(Position, love.math.random(0, 700), love.math.random(0, 700))
    e:give(Rectangle, love.math.random(5, 20), love.math.random(5, 20))
@@ -98,7 +105,7 @@ for i = 1, 50 do
    Game:addEntity(e)
 end
 
-for i = 1, 50 do
+for i = 1, 100 do
    local e = Entity()
    e:give(Position, love.math.random(0, 700), love.math.random(0, 700))
    e:give(Circle, love.math.random(5, 20))

@@ -4,25 +4,39 @@ local Component = require(PATH..".component")
 local Pool      = require(PATH..".pool")
 
 local System = {}
-System.__index = System
+System.mt    = {
+   __index = System,
+   __call  = function(systemProto, ...)
+      local system = setmetatable({
+         __all   = {},
+         __pools = {},
+      }, systemProto)
+
+      for _, filter in pairs(systemProto.__filter) do
+         local pool = system:__buildPool(filter)
+         if not system[pool.name] then
+            system[pool.name]                   = pool
+            system.__pools[#system.__pools + 1] = pool
+         else
+            error("Pool with name '"..pool.name.."' already exists.")
+         end
+      end
+
+      system:init(...)
+      return system
+   end,
+}
 
 function System.new(...)
-   local system = setmetatable({
-      __all   = {},
-      __pools = {},
-   }, System)
+   local systemProto = setmetatable({
+      __filter = {...},
+   }, System.mt)
+   systemProto.__index = systemProto
 
-   for _, filter in pairs({...}) do
-      local pool = system:__buildPool(filter)
-      if not system[pool.name] then
-         system[pool.name]                 = pool
-         system.__pools[#system.__pools + 1] = pool
-      else
-         error("Pool with name '"..pool.name.."' already exists.")
-      end
-   end
+   return systemProto
+end
 
-   return system
+function System:init(...)
 end
 
 function System:__buildPool(pool)
