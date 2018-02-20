@@ -39,23 +39,25 @@ function Instance:removeEntity(e)
    end
 end
 
-function Instance:addSystem(system, eventName)
+function Instance:addSystem(system, eventName, callback)
    if not self.namedSystems[system] then
       self.systems[#self.systems + 1] = system
       self.namedSystems[system]       = system
    end
 
-   self.eventManager:register(eventName, system)
+   self.eventManager:register(eventName, system, callback)
 
    return self
 end
 
-function Instance:removeSystem(system)
+function Instance:removeSystem(system, callback)
    for index, other in ipairs(self.systems) do
       if system == other then
          table.remove(self.systems, index)
       end
    end
+
+   self.eventManager:deregister(eventName, system, callback)
 
    self.namedSystems[system] = nil
 
