@@ -76,13 +76,13 @@ end
 function RandomRemover:update(dt)
    self.time = self.time + dt
 
-   if self.time >= 0.5 then
+   if self.time >= 0.25 then
       self.time = 0
 
       if self.pool.size > 0 then
          local i = love.math.random(1, self.pool.size)
 
-         Game:removeEntity(self.pool.objects[i])
+         self.pool:get(i):destroy()
       end
    end
 

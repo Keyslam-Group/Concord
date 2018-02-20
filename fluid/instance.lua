@@ -19,7 +19,7 @@ function Instance.new()
 end
 
 function Instance:addEntity(e)
-   e.instance = self
+   e.instances:add(self)
    self.entities:add(e)
    self:checkEntity(e)
 end
@@ -31,6 +31,7 @@ function Instance:checkEntity(e)
 end
 
 function Instance:removeEntity(e)
+   e.instances:remove(self)
    self.entities:remove(e)
 
    for _, system in ipairs(self.systems) do

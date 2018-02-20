@@ -86,7 +86,7 @@ function System:__tryAdd(e)
    self.__all[e] = self.__all[e] + 1
 end
 
-function System:__tryRemove()
+function System:__tryRemove(e)
    if self:__has(e) then
       self.__all[e] = self.__all[e] - 1
 

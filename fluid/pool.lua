@@ -10,13 +10,13 @@ function Pool.new(name, filter)
 
    pool.name   = name
    pool.filter = filter
-   
+
    return pool
 end
 
 function Pool:eligible(e)
    for _, component in ipairs(self.filter) do
-      if not e.components[component] then
+      if not e.components[component] or e.removed[component] then
          return false
       end
    end
