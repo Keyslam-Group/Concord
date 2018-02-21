@@ -9,10 +9,9 @@ Instance.__index = Instance
 function Instance.new()
    local instance = setmetatable({
       entities     = List(),
+      systems      = List(),
+      systemCount  = {},
       eventManager = EventManager(),
-
-      systems      = {},
-      namedSystems = {},
    }, Instance)
 
    return instance
@@ -25,8 +24,8 @@ function Instance:addEntity(e)
 end
 
 function Instance:checkEntity(e)
-   for _, system in ipairs(self.systems) do
-      system:__checkEntity(e)
+   for i = 1, self.systems.size do
+      self.systems:get(i):__check(e)
    end
 end
 
@@ -34,16 +33,14 @@ function Instance:removeEntity(e)
    e.instances:remove(self)
    self.entities:remove(e)
 
-   for _, system in ipairs(self.systems) do
-      system:__remove(e)
+   for i = 1, self.systems.size do
+      self.systems:get(i):__remove(e)
    end
 end
 
 function Instance:addSystem(system, eventName, callback)
-   if not self.namedSystems[system] then
-      self.systems[#self.systems + 1] = system
-      self.namedSystems[system]       = system
-   end
+   self.systemCount[system] = (self.systemCount[system] or 0) + 1
+   self.systems:add(system)
 
    self.eventManager:register(eventName, system, callback)
 
@@ -51,15 +48,11 @@ function Instance:addSystem(system, eventName, callback)
 end
 
 function Instance:removeSystem(system, callback)
-   for index, other in ipairs(self.systems) do
-      if system == other then
-         table.remove(self.systems, index)
-      end
+   self.systemCount[system] = self.systemCount[system] - 1
+   if self.systemCount[system] == 0 then
+      self.systemCount[system] = nil
+      self.eventManager:deregister(eventName, system, callback)
    end
-
-   self.eventManager:deregister(eventName, system, callback)
-
-   self.namedSystems[system] = nil
 
    return self
 end

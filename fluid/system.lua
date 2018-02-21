@@ -8,8 +8,9 @@ System.mt    = {
    __index = System,
    __call  = function(systemProto, ...)
       local system = setmetatable({
-         __all   = {},
-         __pools = {},
+         __all      = {},
+         __pools    = {},
+         __instance = nil,
       }, systemProto)
 
       for _, filter in pairs(systemProto.__filter) do
@@ -39,6 +40,12 @@ end
 function System:init(...)
 end
 
+function System:destroy()
+   if self.instance then
+      self.instance:removeSystem(self)
+   end
+end
+
 function System:__buildPool(pool)
    local name   = "pool"
    local filter = {}
@@ -54,7 +61,7 @@ function System:__buildPool(pool)
    return Pool(name, filter)
 end
 
-function System:__checkEntity(e)
+function System:__check(e)
    local systemHas = self:__has(e)
 
    for _, pool in ipairs(self.__pools) do

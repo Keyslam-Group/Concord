@@ -45,7 +45,9 @@ function EventManager:deregister(name, listener, callback)
             table.remove(listeners, index)
             listeners.count = listeners.count - 1
 
-            return
+            if callback then
+               break
+            end
          end
       end
    end
