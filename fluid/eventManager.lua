@@ -22,7 +22,9 @@ function EventManager:emit(name, ...)
    return self
 end
 
-function EventManager:register(name, listener, callback)
+function EventManager:register(name, listener, callback, enabled)
+   enabled = enabled == nil and true
+
    local listeners = self.listeners[name]
 
    if not listeners then

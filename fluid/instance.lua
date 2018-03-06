@@ -9,9 +9,7 @@ Instance.__index = Instance
 function Instance.new()
    local instance = setmetatable({
       entities     = List(),
-      systems      = List(),
-      systemCount  = {},
-      eventManager = EventManager(),
+      systems      = {},
    }, Instance)
 
    return instance
@@ -38,23 +36,26 @@ function Instance:removeEntity(e)
    end
 end
 
-function Instance:addSystem(system, eventName, callback)
-   self.systemCount[system] = (self.systemCount[system] or 0) + 1
-   self.systems:add(system)
+function Instance:addSystem(system, eventName, callback, enabled)
+   self.systems[eventName] = self.systems[eventName] or {}
 
-   self.eventManager:register(eventName, system, callback)
+   local i = #self.systems[eventName] + 1
+   self.systems[eventName][i] = {
+      system    = system,
+      eventName = eventName,
+      callback  = callback or eventName,
+      enabled   = enabled == nil or true,
+   }
 
    return self
 end
 
-function Instance:removeSystem(system, callback)
-   self.systemCount[system] = self.systemCount[system] - 1
-   if self.systemCount[system] == 0 then
-      self.systemCount[system] = nil
-      self.eventManager:deregister(eventName, system, callback)
-   end
+function Instance:enableSystem(system, eventName, callback)
 
-   return self
+end
+
+function Instance:disableSystem(system, eventName, callback)
+
 end
 
 function Instance:emit(...)
