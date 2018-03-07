@@ -36,12 +36,6 @@ function Entity:remove(component)
    return self
 end
 
-function Entity:destroy()
-   for i = 1, self.instances.size do
-      self.instances:get(i):removeEntity(self)
-   end
-end
-
 --- Checks the Entity against the pools again.
 -- @return self
 function Entity:apply()
@@ -51,6 +45,16 @@ function Entity:apply()
 
    for _, component in pairs(self.removed) do
       self.components[component] = nil
+   end
+
+   return self
+end
+
+--- Destroys the Entity.
+-- @return self
+function Entity:destroy()
+   for i = 1, self.instances.size do
+      self.instances:get(i):removeEntity(self)
    end
 
    return self
