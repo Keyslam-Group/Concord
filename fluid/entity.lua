@@ -56,14 +56,14 @@ function Entity:apply()
    return self
 end
 
---- Gets a Component from the Entity
+--- Gets a Component from the Entity.
 -- @param component The Component to get
 -- @return The Bag from the Component
 function Entity:get(component)
    return self.components[component]
 end
 
---- Returns true if the Entity has the Component
+--- Returns true if the Entity has the Component.
 -- @params component The Component to check against
 -- @return True if the entity has the Bag. False otherwise
 function Entity:has(component)

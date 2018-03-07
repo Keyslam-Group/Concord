@@ -28,6 +28,9 @@ System.mt    = {
    end,
 }
 
+--- Creates a new System prototype.
+-- @param ... Variable amounts of filters
+-- @return A new System prototype
 function System.new(...)
    local systemProto = setmetatable({
       __filter = {...},
@@ -37,20 +40,19 @@ function System.new(...)
    return systemProto
 end
 
+--- Default initialization function.
+-- @param ... Varags
 function System:init(...)
 end
 
-function System:destroy()
-   if self.instance then
-      self.instance:removeSystem(self)
-   end
-end
-
-function System:__buildPool(pool)
+--- Builds a Pool for the System.
+-- @param baseFilter The 'raw' Filter
+-- @return A new Pool
+function System:__buildPool(baseFilter)
    local name   = "pool"
    local filter = {}
 
-   for i, v in ipairs(pool) do
+   for i, v in ipairs(baseFilter) do
       if type(v) == "table" then
          filter[#filter + 1] = v
       elseif type(v) == "string" then
@@ -61,6 +63,9 @@ function System:__buildPool(pool)
    return Pool(name, filter)
 end
 
+--- Checks and applies an Entity to the System's pools.
+-- @param e The Entity to check
+-- @return True if the Entity was added, false if it was removed. Nil if nothing happend
 function System:__check(e)
    local systemHas = self:__has(e)
 
@@ -84,6 +89,8 @@ function System:__check(e)
    end
 end
 
+--- Tries to add an Entity to the System.
+-- @param e The Entity to add
 function System:__tryAdd(e)
    if not self:__has(e) then
       self.__all[e] = 0
@@ -93,6 +100,8 @@ function System:__tryAdd(e)
    self.__all[e] = self.__all[e] + 1
 end
 
+--- Tries to remove an Entity from the System.
+-- @param e The Entity to remove
 function System:__tryRemove(e)
    if self:__has(e) then
       self.__all[e] = self.__all[e] - 1
@@ -104,33 +113,32 @@ function System:__tryRemove(e)
    end
 end
 
-function System:__remove(e)
-   if self:__has(e) then
-      for _, pool in ipairs(self.__pools) do
-         if pool:has(e) then
-            pool:remove(e)
-            self:entityRemovedFrom(e, pool)
-         end
-      end
-
-      self.__all[e] = nil
-      self:entityRemoved(e)
-   end
-end
-
+--- Returns if the System has the Entity.
+-- @param The Entity to check for
+-- @return True if the System has the Entity. False otherwise
 function System:__has(e)
    return self.__all[e] and true
 end
 
+--- Default callback for adding an Entity.
+-- @param e The Entity that was added
 function System:entityAdded(e)
 end
 
+--- Default callback for adding an Entity to a pool.
+-- @param e The Entity that was added
+-- @param pool The pool the Entity was added to
 function System:entityAddedTo(e, pool)
 end
 
+--- Default callback for removing an Entity.
+-- @param e The Entity that was removed
 function System:entityRemoved(e)
 end
 
+--- Default callback for removing an Entity from a pool.
+-- @param e The Entity that was removed
+-- @param pool The pool the Entity was removed from
 function System:entityRemovedFrom(e, pool)
 end
 

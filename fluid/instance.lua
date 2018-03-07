@@ -1,32 +1,47 @@
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local List         = require(PATH..".list")
-local EventManager = require(PATH..".eventManager")
+local List = require(PATH..".list")
 
 local Instance = {}
 Instance.__index = Instance
 
+--- Creates a new Instance.
+-- @return The new instance
 function Instance.new()
    local instance = setmetatable({
       entities     = List(),
-      systems      = {},
+      systems      = List(),
+      events       = {},
    }, Instance)
 
    return instance
 end
 
+--- Adds an Entity to the Instance.
+-- @param e The Entity to add
+-- @return self
 function Instance:addEntity(e)
    e.instances:add(self)
    self.entities:add(e)
    self:checkEntity(e)
+
+   return self
 end
 
+--- Checks an Entity against all the systems in the Instance.
+-- @param e The Entity to check
+-- @return self
 function Instance:checkEntity(e)
    for i = 1, self.systems.size do
       self.systems:get(i):__check(e)
    end
+
+   return self
 end
 
+--- Removes an Entity from the Instance.
+-- @param e The Entity to remove
+-- @return self
 function Instance:removeEntity(e)
    e.instances:remove(self)
    self.entities:remove(e)
@@ -34,32 +49,94 @@ function Instance:removeEntity(e)
    for i = 1, self.systems.size do
       self.systems:get(i):__remove(e)
    end
-end
-
-function Instance:addSystem(system, eventName, callback, enabled)
-   self.systems[eventName] = self.systems[eventName] or {}
-
-   local i = #self.systems[eventName] + 1
-   self.systems[eventName][i] = {
-      system    = system,
-      eventName = eventName,
-      callback  = callback or eventName,
-      enabled   = enabled == nil or true,
-   }
 
    return self
 end
 
+--- Adds a System to the Instance.
+-- @param system The System to add
+-- @param eventName The Event to register to
+-- @param callback The function name to call. Defaults to eventName
+-- @param enabled If the system is enabled. Defaults to true
+-- @return self
+function Instance:addSystem(system, eventName, callback, enabled)
+   if not self.systems:has(system) then
+      self.systems:add(system)
+   end
+
+   if eventName then
+      self.events[eventName] = self.events[eventName] or {}
+
+      local i = #self.events[eventName] + 1
+      self.events[eventName][i] = {
+         system   = system,
+         callback = callback or eventName,
+         enabled  = enabled == nil and true or enabled,
+      }
+   end
+
+   return self
+end
+
+--- Enables a System in the Instance.
+-- @param system The System to enable
+-- @param eventName The Event it was registered to
+-- @param callback The callback it was registered with. Defaults to eventName
+-- @return self
 function Instance:enableSystem(system, eventName, callback)
-
+   return self:setSystem(system, eventName, callback, true)
 end
 
+--- Disables a System in the Instance.
+-- @param system The System to disable
+-- @param eventName The Event it was registered to
+-- @param callback The callback it was registered with. Defaults to eventName
+-- @return self
 function Instance:disableSystem(system, eventName, callback)
-
+   return self:setSystem(system, eventName, callback, false)
 end
 
-function Instance:emit(...)
-   self.eventManager:emit(...)
+--- Sets a System 'enable' in the Instance.
+-- @param system The System to set
+-- @param eventName The Event it was registered to
+-- @param callback The callback it was registered with. Defaults to eventName
+-- @param enable The state to set it to
+-- @return self
+function Instance:setSystem(system, eventName, callback, enable)
+   callback = callback or eventName
+
+   local listeners = self.events[eventName]
+
+   if listeners then
+      for i = 1, #listeners do
+         local listener = listeners[i]
+
+         if listerner.callback == callback then
+            listerner.enabled = enable
+            break
+         end
+      end
+   end
+
+   return self
+end
+
+--- Emits an Event in the Instance.
+-- @param eventName The Event that should be emitted
+-- @param ... Parameters passed to listeners
+-- @return self
+function Instance:emit(eventName, ...)
+   local listeners = self.events[eventName]
+
+   if listeners then
+      for i = 1, #listeners do
+         local listener = listeners[i]
+
+         if listener.enabled then
+            listener.system[listener.callback](listener.system, ...)
+         end
+      end
+   end
 
    return self
 end

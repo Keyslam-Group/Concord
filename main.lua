@@ -89,9 +89,9 @@ function RandomRemover:update(dt)
    love.window.setTitle(love.timer.getFPS())
 end
 
-Game:addSystem(RandomRemover(),     "update", nil, true)
-Game:addSystem(RectangleRenderer(), "draw", nil, true)
-Game:addSystem(CircleRenderer(),    "draw", nil, true)
+Game:addSystem(RandomRemover(),     "update")
+Game:addSystem(RectangleRenderer(), "draw")
+Game:addSystem(CircleRenderer(),    "draw")
 
 for i = 1, 100 do
    local e = Entity()

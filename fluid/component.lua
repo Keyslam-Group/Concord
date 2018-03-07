@@ -18,7 +18,7 @@ function Component.new(populate, inherit)
    return component
 end
 
--- Creates and initializes a new Bag.
+--- Creates and initializes a new Bag.
 -- @param ... The values passed to the populate function
 -- @return A new initialized Bag
 function Component:__initialize(...)

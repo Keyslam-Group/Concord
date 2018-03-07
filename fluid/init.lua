@@ -7,7 +7,6 @@ function Fluid.init(settings)
    Fluid.component    = require(PATH..".component")
    Fluid.system       = require(PATH..".system")
    Fluid.instance     = require(PATH..".instance")
-   Fluid.eventManager = require(PATH..".eventManager")
 
    if settings and settings.useEvents then
       Fluid.instances = {}
