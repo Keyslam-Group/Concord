@@ -89,6 +89,22 @@ function System:__check(e)
    end
 end
 
+--- Removed an Entity from the System.
+-- @param e The Entity to remove
+function System:__remove(e)
+   if self:__has(e) then
+      for _, pool in ipairs(self.__pools) do
+         if pool:has(e) then
+            pool:remove(e)
+            self:entityRemovedFrom(e, pool)
+         end
+      end
+
+      self.__all[e] = nil
+      self:entityRemoved(e)
+   end
+end
+
 --- Tries to add an Entity to the System.
 -- @param e The Entity to add
 function System:__tryAdd(e)
