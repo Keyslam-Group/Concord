@@ -7,10 +7,7 @@ function List.new()
    return setmetatable({
       objects  = {},
       pointers = {},
-      removed  = {},
-
-      size       = 0,
-      removeSize = 0,
+      size     = 0,
    }, mt)
 end
 
@@ -19,10 +16,7 @@ end
 function List:clear()
    self.objects  = {}
    self.pointers = {}
-   self.removed  = {}
-
-   self.size       = 0
-   self.removeSize = 0
+   self.size     = 0
 
    return self
 end
@@ -40,7 +34,7 @@ function List:add(obj)
    return self
 end
 
---- Removed an object from the List.
+--- Removes an object from the List.
 -- @param obj The object to remove
 -- @return self
 function List:remove(obj)
