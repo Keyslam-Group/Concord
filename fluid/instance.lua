@@ -49,7 +49,7 @@ function Instance:removeEntity(e)
    return self
 end
 
---- completely removes all marked Entities in the Instance.
+--- Completely removes all marked Entities in the Instance.
 -- @return self
 function Instance:flush()
    for i = 1, #self.removed do
