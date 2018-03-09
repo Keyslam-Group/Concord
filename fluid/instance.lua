@@ -12,6 +12,7 @@ function Instance.new()
       entities     = List(),
       systems      = List(),
       events       = {},
+      removed      = {},
    }, Instance)
 
    return instance
@@ -39,16 +40,30 @@ function Instance:checkEntity(e)
    return self
 end
 
---- Removes an Entity from the Instance.
--- @param e The Entity to remove
+--- Marks an Entity as removed from the Instance.
+-- @param e The Entity to mark
 -- @return self
 function Instance:removeEntity(e)
-   e.instances:remove(self)
-   self.entities:remove(e)
+   self.removed[#self.removed + 1] = e
 
-   for i = 1, self.systems.size do
-      self.systems:get(i):__remove(e)
+   return self
+end
+
+--- completely removes all marked Entities in the Instance.
+-- @return self
+function Instance:flush()
+   for i = 1, #self.removed do
+      local e = self.removed[i]
+
+      e.instances:remove(self)
+      self.entities:remove(e)
+
+      for i = 1, self.systems.size do
+         self.systems:get(i):__remove(e)
+      end
    end
+
+   self.removed = {}
 
    return self
 end

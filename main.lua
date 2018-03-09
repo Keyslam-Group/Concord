@@ -89,9 +89,20 @@ function RandomRemover:update(dt)
    love.window.setTitle(love.timer.getFPS())
 end
 
+local RemovalSystem = System({})
+function RemovalSystem:init(instance)
+   self.instance = instance
+end
+
+function RemovalSystem:update()
+   self.instance:flush()
+end
+
 Game:addSystem(RandomRemover(),     "update")
 Game:addSystem(RectangleRenderer(), "draw")
 Game:addSystem(CircleRenderer(),    "draw")
+
+Game:addSystem(RemovalSystem(Game), "update", false)
 
 for i = 1, 100 do
    local e = Entity()
