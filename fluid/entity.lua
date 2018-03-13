@@ -71,7 +71,7 @@ end
 -- @params component The Component to check against
 -- @return True if the entity has the Bag. False otherwise
 function Entity:has(component)
-   return self.components[component] and true
+   return self.components[component] ~= nil
 end
 
 return setmetatable(Entity, {
