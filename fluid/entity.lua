@@ -43,7 +43,7 @@ function Entity:apply()
       self.instances:get(i):checkEntity(self)
    end
 
-   for _, component in pairs(self.removed) do
+   for component, _ in pairs(self.removed) do
       self.components[component] = nil
    end
 
