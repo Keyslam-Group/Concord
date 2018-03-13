@@ -45,6 +45,7 @@ function Entity:apply()
 
    for component, _ in pairs(self.removed) do
       self.components[component] = nil
+      self.removed[component] = nil
    end
 
    return self
