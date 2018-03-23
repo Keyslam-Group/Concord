@@ -77,8 +77,8 @@ end
 -- @param enabled If the system is enabled. Defaults to true
 -- @return self
 function Instance:addSystem(system, eventName, callback, enabled)
-   if system.__instance then
-      error("System already in instance '" ..system.__instance.."'")
+   if system.__instance and system.__instance ~= self then
+      error("System already in instance '" ..tostring(system.__instance).."'")
    end
 
    if not self.systems:has(system) then
@@ -133,8 +133,8 @@ function Instance:setSystem(system, eventName, callback, enable)
       for i = 1, #listeners do
          local listener = listeners[i]
 
-         if listerner.callback == callback then
-            listerner.enabled = enable
+         if listener.callback == callback then
+            listener.enabled = enable
             break
          end
       end
