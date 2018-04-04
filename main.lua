@@ -99,7 +99,7 @@ for i = 1, 100 do
    e:give(Rectangle, love.math.random(5, 20), love.math.random(5, 20))
 
    if love.math.random(0, 1) == 0 then
-      e:give(Color, love.math.random(0, 255), love.math.random(0, 255), love.math.random(0, 255), 255)
+      e:give(Color, love.math.random(), love.math.random(), love.math.random(), 1)
    end
 
    Game:addEntity(e)
@@ -111,7 +111,7 @@ for i = 1, 100 do
    e:give(Circle, love.math.random(5, 20))
 
    if love.math.random(0, 1) == 0 then
-      e:give(Color, love.math.random(0, 255), love.math.random(0, 255), love.math.random(0, 255), 255)
+      e:give(Color, love.math.random(), love.math.random(), love.math.random(), 1)
    end
 
    Game:addEntity(e)
