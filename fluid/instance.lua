@@ -133,7 +133,7 @@ function Instance:setSystem(system, eventName, callback, enable)
       for i = 1, #listeners do
          local listener = listeners[i]
 
-         if listener.callback == callback then
+         if listener.system == system and listener.callback == callback then
             listener.enabled = enable
             break
          end
