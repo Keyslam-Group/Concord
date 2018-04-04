@@ -52,18 +52,20 @@ end
 --- Completely removes all marked Entities in the Instance.
 -- @return self
 function Instance:flush()
-   for i = 1, #self.removed do
-      local e = self.removed[i]
+   if #self.removed > 0 then
+      for i = 1, #self.removed do
+         local e = self.removed[i]
 
-      e.instances:remove(self)
-      self.entities:remove(e)
+         e.instances:remove(self)
+         self.entities:remove(e)
 
-      for i = 1, self.systems.size do
-         self.systems:get(i):__remove(e)
+         for i = 1, self.systems.size do
+            self.systems:get(i):__remove(e)
+         end
       end
-   end
 
-   self.removed = {}
+      self.removed = {}
+   end
 
    return self
 end
@@ -75,8 +77,13 @@ end
 -- @param enabled If the system is enabled. Defaults to true
 -- @return self
 function Instance:addSystem(system, eventName, callback, enabled)
+   if system.__instance and system.__instance ~= self then
+      error("System already in instance '" ..tostring(system.__instance).."'")
+   end
+
    if not self.systems:has(system) then
       self.systems:add(system)
+      system.__instance = self
    end
 
    if eventName then
@@ -126,7 +133,7 @@ function Instance:setSystem(system, eventName, callback, enable)
       for i = 1, #listeners do
          local listener = listeners[i]
 
-         if listener.system == system and listener.callback == callback then
+         if listener.callback == callback then
             listener.enabled = enable
             break
          end
@@ -141,6 +148,8 @@ end
 -- @param ... Parameters passed to listeners
 -- @return self
 function Instance:emit(eventName, ...)
+   self:flush()
+   
    local listeners = self.events[eventName]
 
    if listeners then

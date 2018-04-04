@@ -129,6 +129,12 @@ function System:__tryRemove(e)
    end
 end
 
+--- Returns the Instance the System is in.
+-- @return The Instance
+function System:getInstance()
+   return self.__instance
+end
+
 --- Returns if the System has the Entity.
 -- @param The Entity to check for
 -- @return True if the System has the Entity. False otherwise
