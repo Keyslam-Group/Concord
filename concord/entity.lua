@@ -1,5 +1,6 @@
 local PATH = (...):gsub('%.[^%.]+$', '')
 
+local Type = require(PATH..".type")
 local List = require(PATH..".list")
 
 local Entity = {}
@@ -12,6 +13,8 @@ function Entity.new()
       components = {},
       removed    = {},
       instances  = List(),
+
+      __isEntity = true,
    }, Entity)
 
    return e
@@ -22,6 +25,10 @@ end
 -- @param ... The values passed to the Component
 -- @return self
 function Entity:give(component, ...)
+   if not Type.isComponent(component) then
+      error("bad argument #1 to 'Entity:give' (Component expected, got "..type(component)..")", 2)
+   end
+
    self.components[component] = component:__initialize(...)
 
    return self
@@ -31,6 +38,10 @@ end
 -- @param component The Component to remove
 -- @return self
 function Entity:remove(component)
+   if not Type.isComponent(component) then
+      error("bad argument #1 to 'Entity:remove' (Component expected, got "..type(component)..")")
+   end
+
    self.removed[component] = true
 
    return self
@@ -65,6 +76,10 @@ end
 -- @param component The Component to get
 -- @return The Bag from the Component
 function Entity:get(component)
+   if not Type.isComponent(component) then
+      error("bad argument #1 to 'Entity:get' (Component expected, got "..type(component)..")")
+   end
+
    return self.components[component]
 end
 
@@ -72,6 +87,10 @@ end
 -- @params component The Component to check against
 -- @return True if the entity has the Bag. False otherwise
 function Entity:has(component)
+   if not Type.isComponent(component) then
+      error("bad argument #1 to 'Entity:has' (Component expected, got "..type(component)..")")
+   end
+
    return self.components[component] ~= nil
 end
 

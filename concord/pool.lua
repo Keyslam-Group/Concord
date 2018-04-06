@@ -15,6 +15,8 @@ function Pool.new(name, filter)
    pool.name   = name
    pool.filter = filter
 
+   pool.__isPool = true
+
    return pool
 end
 

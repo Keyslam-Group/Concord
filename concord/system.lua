@@ -11,6 +11,8 @@ System.mt    = {
          __all      = {},
          __pools    = {},
          __instance = nil,
+
+         __isSystem = true,
       }, systemProto)
 
       for _, filter in pairs(systemProto.__filter) do

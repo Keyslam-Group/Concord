@@ -1,5 +1,7 @@
 local PATH = (...):gsub('%.init$', '')
 
+local Type = require(PATH..".type")
+
 local Concord = {}
 
 --- Initializes the library with some optional settings
@@ -17,10 +19,18 @@ function Concord.init(settings)
       Concord.instances = {}
 
       Concord.addInstance = function(instance)
+         if not Type.isInstance(instance) then
+            error("bad argument #1 to 'Concord.addInstance' (Instance expected, got "..type(instance)..")", 2)
+         end
+
          table.insert(Concord.instances, instance)
       end
 
       Concord.removeInstance = function(instance)
+         if not Type.isInstance(instance) then
+            error("bad argument #1 to 'Concord.addInstance' (Instance expected, got "..type(instance)..")", 2)
+         end
+
          for i, instance in ipairs(Concord.instances) do
             table.remove(Concord.instances, i)
             break

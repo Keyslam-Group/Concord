@@ -1,6 +1,9 @@
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local List = require(PATH..".list")
+local Entity = require(PATH..".entity")
+local System = require(PATH..".system")
+local Type   = require(PATH..".type")
+local List   = require(PATH..".list")
 
 local Instance = {}
 Instance.__index = Instance
@@ -13,6 +16,8 @@ function Instance.new()
       systems      = List(),
       events       = {},
       removed      = {},
+
+      __isInstance = true,
    }, Instance)
 
    return instance
@@ -22,6 +27,10 @@ end
 -- @param e The Entity to add
 -- @return self
 function Instance:addEntity(e)
+   if not Type.isEntity(e) then
+      error("bad argument #1 to 'Instance:addEntity' (Entity expected, got "..type(e)..")", 2)
+   end
+
    e.instances:add(self)
    self.entities:add(e)
    self:checkEntity(e)
@@ -33,6 +42,10 @@ end
 -- @param e The Entity to check
 -- @return self
 function Instance:checkEntity(e)
+   if not Type.isEntity(e) then
+      error("bad argument #1 to 'Instance:checkEntity' (Entity expected, got "..type(e)..")", 2)
+   end
+
    for i = 1, self.systems.size do
       self.systems:get(i):__check(e)
    end
@@ -44,6 +57,10 @@ end
 -- @param e The Entity to mark
 -- @return self
 function Instance:removeEntity(e)
+   if not Type.isEntity(e) then
+      error("bad argument #1 to 'Instance:removeEntity' (Entity expected, got "..type(e)..")", 2)
+   end
+
    self.removed[#self.removed + 1] = e
 
    return self
@@ -77,6 +94,10 @@ end
 -- @param enabled If the system is enabled. Defaults to true
 -- @return self
 function Instance:addSystem(system, eventName, callback, enabled)
+   if not Type.isSystem(system) then
+      error("bad argument #1 to 'Instance:addSystem' (System expected, got "..type(system)..")", 2)
+   end
+
    if system.__instance and system.__instance ~= self then
       error("System already in instance '" ..tostring(system.__instance).."'")
    end
@@ -106,6 +127,10 @@ end
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @return self
 function Instance:enableSystem(system, eventName, callback)
+   if not Type.isSystem(system) then
+      error("bad argument #1 to 'Instance:enableSystem' (System expected, got "..type(system)..")", 2)
+   end
+
    return self:setSystem(system, eventName, callback, true)
 end
 
@@ -115,6 +140,10 @@ end
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @return self
 function Instance:disableSystem(system, eventName, callback)
+   if not Type.isSystem(system) then
+      error("bad argument #1 to 'Instance:disableSystem' (System expected, got "..type(system)..")", 2)
+   end
+
    return self:setSystem(system, eventName, callback, false)
 end
 
@@ -125,17 +154,23 @@ end
 -- @param enable The state to set it to
 -- @return self
 function Instance:setSystem(system, eventName, callback, enable)
+   if not Type.isSystem(system) then
+      error("bad argument #1 to 'Instance:setSystem' (System expected, got "..type(system)..")", 2)
+   end
+
    callback = callback or eventName
 
-   local listeners = self.events[eventName]
+   if callback then
+      local listeners = self.events[eventName]
 
-   if listeners then
-      for i = 1, #listeners do
-         local listener = listeners[i]
+      if listeners then
+         for i = 1, #listeners do
+            local listener = listeners[i]
 
-         if listener.system == system and listener.callback == callback then
-            listener.enabled = enable
-            break
+            if listener.system == system and listener.callback == callback then
+               listener.enabled = enable
+               break
+            end
          end
       end
    end
@@ -148,6 +183,10 @@ end
 -- @param ... Parameters passed to listeners
 -- @return self
 function Instance:emit(eventName, ...)
+   if not eventName or type(eventName) ~= "string" then
+      error("bad argument #1 to 'Instance:emit' (String expected, got "..type(eventName)..")")
+   end
+
    self:flush()
    
    local listeners = self.events[eventName]
