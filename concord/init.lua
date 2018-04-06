@@ -1,23 +1,23 @@
 local PATH = (...):gsub('%.init$', '')
 
-local Fluid = {}
+local Concord = {}
 
-function Fluid.init(settings)
-   Fluid.entity       = require(PATH..".entity")
-   Fluid.component    = require(PATH..".component")
-   Fluid.system       = require(PATH..".system")
-   Fluid.instance     = require(PATH..".instance")
+function Concord.init(settings)
+   Concord.entity       = require(PATH..".entity")
+   Concord.component    = require(PATH..".component")
+   Concord.system       = require(PATH..".system")
+   Concord.instance     = require(PATH..".instance")
 
    if settings and settings.useEvents then
-      Fluid.instances = {}
+      Concord.instances = {}
 
-      Fluid.addInstance = function(instance)
-         table.insert(Fluid.instances, instance)
+      Concord.addInstance = function(instance)
+         table.insert(Concord.instances, instance)
       end
 
-      Fluid.removeInstance = function(instance)
-         for i, instance in ipairs(Fluid.instances) do
-            table.remove(Fluid.instances, i)
+      Concord.removeInstance = function(instance)
+         for i, instance in ipairs(Concord.instances) do
+            table.remove(Concord.instances, i)
             break
          end
       end
@@ -28,7 +28,7 @@ function Fluid.init(settings)
          	love.timer.step()
       	end
 
-         for _, instance in ipairs(Fluid.instances) do
+         for _, instance in ipairs(Concord.instances) do
             instance:emit("load", arg)
          end
 
@@ -40,7 +40,7 @@ function Fluid.init(settings)
       		if love.event then
       			love.event.pump()
       			for name, a, b, c, d, e, f in love.event.poll() do
-                  for _, instance in ipairs(Fluid.instances) do
+                  for _, instance in ipairs(Concord.instances) do
                      instance:emit(name, a, b, c, d, e, f)
                   end
 
@@ -55,7 +55,7 @@ function Fluid.init(settings)
       			dt = love.timer.getDelta()
       		end
 
-            for _, instance in ipairs(Fluid.instances) do
+            for _, instance in ipairs(Concord.instances) do
                instance:emit("update", dt)
             end
 
@@ -63,7 +63,7 @@ function Fluid.init(settings)
       			love.graphics.clear(love.graphics.getBackgroundColor())
       			love.graphics.origin()
 
-               for _, instance in ipairs(Fluid.instances) do
+               for _, instance in ipairs(Concord.instances) do
                   instance:emit("draw")
                end
 
@@ -75,7 +75,7 @@ function Fluid.init(settings)
       end
    end
 
-   return Fluid
+   return Concord
 end
 
-return Fluid
+return Concord
