@@ -36,7 +36,7 @@ function Concord.init(settings)
 
       	local dt = 0
 
-      	while true do
+      	return function()
       		if love.event then
       			love.event.pump()
       			for name, a, b, c, d, e, f in love.event.poll() do
