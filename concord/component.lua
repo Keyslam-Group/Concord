@@ -3,17 +3,14 @@ Component.__index = Component
 
 --- Creates a new Component.
 -- @param populate A function that populates the Bag with values
--- @param inherit States if the Bag should inherit the Component's functions
 -- @return A Component object
-function Component.new(populate, inherit)
+function Component.new(populate)
    local component = setmetatable({
       __populate = populate,
       __inherit  = inherit,
    }, Component)
 
-   if inherit then
-      component.__mt = {__index = component}
-   end
+   component.__mt = {__index = component}
 
    return component
 end
@@ -23,12 +20,8 @@ end
 -- @return A new initialized Bag
 function Component:__initialize(...)
    if self.__populate then
-      local bag = {}
+      local bag = setmetatable({}, self.__mt)
       self.__populate(bag, ...)
-
-      if self.__inherit then
-         setmetatable(bag, self.__mt)
-      end
 
       return bag
    end
