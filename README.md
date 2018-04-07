@@ -26,7 +26,7 @@ You will only need to call .init once.
 Below is a list of modules.
 More information about what each done can be found in the Wiki
 
-```
+```lua
 local Concord = require("concord")
 local Entity = require("concord.entity")
 local Component = require("concord.component")
