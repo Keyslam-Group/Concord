@@ -8,19 +8,10 @@ Documentation for Concord can be found in the [Wiki tab](https://github.com/Tjak
 ## Installation
 Download the repository and drop it in your project, then simply require it as:
 ```lua
-local Concord = require(PathToConcord).init({
+local Concord = require(PathToConcord).init()
 
-})
+You will only need to call .init once when you first require it.
 ```
-
-## Configuration
-Concord has a initialization function which takes a table of boolean parameters:
-
-| Name | Default | Meaning |
-| --- | --- | --- |
-| useEvents | false | Lets Concord overwrite love.run and automatically propagate events. |
-
-You will only need to call .init once. 
 
 ## Modules
 Below is a list of modules.
