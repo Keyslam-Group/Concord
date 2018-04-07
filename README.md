@@ -15,9 +15,10 @@ local Concord = require(PathToConcord).init({
 
 ## Configuration
 Concord has a initialization function which takes a table of boolean parameters:
+
 | Name | Default | Meaning |
 | --- | --- | --- |
-| useEvents | false | Lets Concord overwrite love.run and automatically propagate events |
+| useEvents | false | Lets Concord overwrite love.run and automatically propagate events. |
 
 You will only need to call .init once. 
 
