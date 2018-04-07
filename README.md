@@ -35,10 +35,12 @@ local Instance = require("concord.instance")
 ```
 
 ## Contributors
+```
 Positive07: Constant support and a good rubberduck
 Brbl: Early testing and issue reporting
 Josh: Squashed a few bugs
 Erasio: Took inspiration from HooECS. Also introduced me to ECS.
+```
 
 ## Licence
 MIT Licensed - Copyright Justin van der Leij (Tjakka5)
