@@ -5,7 +5,7 @@ It's main focus is on speed and usage. You should be able to quickly write code 
 
 Documentation for Concord can be found in the Wiki tab
 
-# Installation
+## Installation
 Download the repository and drop it in your project, then simply require it as:
 ```lua
 local Concord = require(PathToConcord).init({
@@ -13,15 +13,15 @@ local Concord = require(PathToConcord).init({
 })
 ```
 
-# Configuration
+## Configuration
 Concord has a initialization function which takes a table of boolean parameters:
 | Name | Default | Meaning |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | useEvents | false | Lets Concord overwrite love.run and automatically propagate events |
 
 You will only need to call .init once. 
 
-# Modules
+## Modules
 Below is a list of modules.
 More information about what each done can be found in the Wiki
 
