@@ -79,14 +79,10 @@ function System:__check(e)
          pool:add(e)
          self:entityAddedTo(e, pool)
          self:__tryAdd(e)
-
-         return true
       elseif poolHas and not eligible then
          pool:remove(e)
          self:entityRemovedFrom(e, pool)
          self:__tryRemove(e)
-
-         return false
       end
    end
 end

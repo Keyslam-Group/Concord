@@ -118,6 +118,13 @@ function Instance:addSystem(system, eventName, callback, enabled)
       }
    end
 
+   local e
+   for i = 1, self.entities.size do
+      e = self.entities:get(i)
+
+      self:checkEntity(e)
+   end
+
    return self
 end
 
