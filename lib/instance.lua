@@ -211,6 +211,12 @@ function Instance:emit(eventName, ...)
    return self
 end
 
+--- Removes all entities from the Instance
+-- @return self
+function Instance:clear()
+   self.entities:clear()
+end
+
 return setmetatable(Instance, {
    __call = function(_, ...) return Instance.new(...) end,
 })
