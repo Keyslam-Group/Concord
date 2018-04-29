@@ -1,6 +1,6 @@
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Concord = require("concord").init({
+local Concord = require("lib").init({
    useEvents = true
 })
 

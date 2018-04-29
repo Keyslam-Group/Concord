@@ -1,4 +1,4 @@
-local Concord = require("init").init({
+local Concord = require("lib").init({
    useEvents = true
 })
 local Entity    = Concord.entity
