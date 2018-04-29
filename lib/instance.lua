@@ -214,7 +214,11 @@ end
 --- Removes all entities from the Instance
 -- @return self
 function Instance:clear()
-   self.entities:clear()
+   for i = 1, self.entities.size do
+      self.entities:get(i):destroy()
+   end
+   
+   return self
 end
 
 return setmetatable(Instance, {
