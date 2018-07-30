@@ -12,10 +12,11 @@ Instance.__index = Instance
 -- @return The new instance
 function Instance.new()
    local instance = setmetatable({
-      entities     = List(),
-      systems      = List(),
-      events       = {},
-      removed      = {},
+      entities = List(),
+      systems  = List(),
+      events   = {},
+      removed  = {},
+      toRemove = nil,
 
       __isInstance = true,
    }, Instance)
@@ -69,9 +70,12 @@ end
 --- Completely removes all marked Entities in the Instance.
 -- @return self
 function Instance:flush()
-   if #self.removed > 0 then
-      for i = 1, #self.removed do
-         local e = self.removed[i]
+   self.toRemove = self.removed
+   self.removed  = {}
+
+   if #self.toRemove > 0 then
+      for i = 1, #self.toRemove do
+         local e = self.toRemove[i]
 
          e.instances:remove(self)
          self.entities:remove(e)
@@ -80,8 +84,6 @@ function Instance:flush()
             self.systems:get(i):__remove(e)
          end
       end
-
-      self.removed = {}
    end
 
    return self
@@ -218,6 +220,8 @@ function Instance:clear()
       self.entities:get(i):destroy()
    end
    
+   self:flush()
+
    return self
 end
 
