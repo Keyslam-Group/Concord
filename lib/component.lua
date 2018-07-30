@@ -7,7 +7,6 @@ Component.__index = Component
 function Component.new(populate)
    local component = setmetatable({
       __populate = populate,
-      __inherit  = inherit,
 
       __isComponent = true,
    }, Component)

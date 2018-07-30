@@ -39,8 +39,9 @@ end
 -- @return self
 function List:remove(obj)
    local index = self.pointers[obj]
+   if not index then return end 
    local size  = self.size
-
+   
    if index == size then
       self.objects[size] = nil
    else
