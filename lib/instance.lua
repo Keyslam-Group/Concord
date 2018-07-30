@@ -70,10 +70,10 @@ end
 --- Completely removes all marked Entities in the Instance.
 -- @return self
 function Instance:flush()
-   self.toRemove = self.removed
-   self.removed  = {}
+   while #self.removed > 0 do
+      self.toRemove = self.removed
+      self.removed  = {}
 
-   if #self.toRemove > 0 then
       for i = 1, #self.toRemove do
          local e = self.toRemove[i]
 
