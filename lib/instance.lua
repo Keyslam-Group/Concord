@@ -120,6 +120,12 @@ function Instance:addSystem(system, eventName, callback, enabled)
          callback = callback or eventName,
          enabled  = enabled == nil and true or enabled,
       }
+
+      if enabled then
+         system:enabledCallback(callback or eventName)
+      else
+         system:disabledCallback(callback or eventName)
+      end
    end
 
    local e
