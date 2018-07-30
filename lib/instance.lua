@@ -118,10 +118,10 @@ function Instance:addSystem(system, eventName, callback, enabled)
       self.events[eventName][i] = {
          system   = system,
          callback = callback or eventName,
-         enabled  = enabled == nil and true or enabled,
+         enabled  = enabled == nil or enabled,
       }
 
-      if enabled == nil and true or enabled then
+      if enabled == nil or enabled then
          system:enabledCallback(callback or eventName)
       end
    end
