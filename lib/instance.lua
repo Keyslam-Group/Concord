@@ -121,7 +121,7 @@ function Instance:addSystem(system, eventName, callback, enabled)
          enabled  = enabled == nil and true or enabled,
       }
 
-      if enabled then
+      if enabled == nil and true or enabled then
          system:enabledCallback(callback or eventName)
       end
    end
