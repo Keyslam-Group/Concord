@@ -42,11 +42,6 @@ function System.new(...)
    return systemProto
 end
 
---- Default initialization function.
--- @param ... Varags
-function System:init(...)
-end
-
 --- Builds a Pool for the System.
 -- @param baseFilter The 'raw' Filter
 -- @return A new Pool
@@ -140,6 +135,11 @@ function System:__has(e)
    return self.__all[e] and true
 end
 
+--- Default callback for system initialization.
+-- @param ... Varags
+function System:init(...)
+end
+
 --- Default callback for adding an Entity.
 -- @param e The Entity that was added
 function System:entityAdded(e)
@@ -160,6 +160,21 @@ end
 -- @param e The Entity that was removed
 -- @param pool The pool the Entity was removed from
 function System:entityRemovedFrom(e, pool)
+end
+
+-- Default callback for when the System is added to an Instance.
+-- @param instance The Instance the System was added to
+function System:addedTo(instance)
+end
+
+-- Default callback for when a System's callback is enabled.
+-- @param callbackName The name of the callback that was enabled 
+function System:enabledCallback(callbackName)
+end
+
+-- Default callback for when a System's callback is disabled.
+-- @param callbackName The name of the callback that was disabled 
+function System:disabledCallback(callbackName)
 end
 
 return setmetatable(System, {

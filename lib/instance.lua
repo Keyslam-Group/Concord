@@ -107,6 +107,8 @@ function Instance:addSystem(system, eventName, callback, enabled)
    if not self.systems:has(system) then
       self.systems:add(system)
       system.__instance = self
+
+      system:addedTo(self)
    end
 
    if eventName then
@@ -177,7 +179,14 @@ function Instance:setSystem(system, eventName, callback, enable)
             local listener = listeners[i]
 
             if listener.system == system and listener.callback == callback then
+               if enable and not listener.enabled then
+                  system:enabledCallback(callback)
+               elseif not enable and listener.enabled then
+                  system:disabledCallback(callback)
+               end
+
                listener.enabled = enable
+
                break
             end
          end
