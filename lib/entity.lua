@@ -29,7 +29,9 @@ function Entity:give(component, ...)
       error("bad argument #1 to 'Entity:give' (Component expected, got "..type(component)..")", 2)
    end
 
-   self.components[component] = component:__initialize(...)
+   local comp = component:__initialize(...)
+   self.components[component] = comp
+   self[component] = comp
 
    return self
 end
@@ -56,6 +58,7 @@ function Entity:apply()
 
    for component, _ in pairs(self.removed) do
       self.components[component] = nil
+      self[component] = nil
       self.removed[component] = nil
    end
 
