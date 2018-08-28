@@ -32,6 +32,8 @@ function Instance:addEntity(e)
       error("bad argument #1 to 'Instance:addEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
+   self:onEntityAdded(e)
+
    e.instances:add(self)
    self.entities:add(e)
    self:checkEntity(e)
@@ -83,6 +85,8 @@ function Instance:flush()
          for i = 1, self.systems.size do
             self.systems:get(i):__remove(e)
          end
+
+         self:onEntityRemoved(e)
       end
    end
 
@@ -210,7 +214,7 @@ function Instance:emit(eventName, ...)
    end
 
    self:flush()
-   
+
    local listeners = self.events[eventName]
 
    if listeners then
@@ -232,10 +236,20 @@ function Instance:clear()
    for i = 1, self.entities.size do
       self.entities:get(i):destroy()
    end
-   
+
    self:flush()
 
    return self
+end
+
+--- Default callback for adding an Entity.
+-- @param e The Entity that was added
+function Instance:onEntityAdded(e)
+end
+
+--- Default callback for removing an Entity.
+-- @param e The Entity that was removed
+function Instance:onEntityRemoved(e)
 end
 
 return setmetatable(Instance, {
