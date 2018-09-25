@@ -4,6 +4,7 @@ Concord is a feature complete ECS.
 It's main focus is on speed and usage. You should be able to quickly write code that performs well.
 
 Documentation for Concord can be found in the [Wiki tab](https://github.com/Tjakka5/Concord/wiki).
+
 Auto generated docs for Concord can be found in the [Github page](https://tjakka5.github.io/Concord/). These are still work in progress and might be incomplete though.
 
 ## Installation
@@ -30,7 +31,7 @@ local Instance = require("concord.instance")
 ```
 Positive07: Constant support and a good rubberduck
 Brbl: Early testing and issue reporting
-Josh: Squashed a few bugs
+Josh: Squashed a few bugs and docs
 Erasio: Took inspiration from HooECS. Also introduced me to ECS.
 ```
 
