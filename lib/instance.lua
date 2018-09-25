@@ -1,3 +1,5 @@
+--- Instance
+
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Entity = require(PATH..".entity")

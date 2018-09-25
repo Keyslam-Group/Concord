@@ -1,3 +1,5 @@
+--- System
+
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Component = require(PATH..".component")
@@ -129,7 +131,7 @@ function System:getInstance()
 end
 
 --- Returns if the System has the Entity.
--- @param The Entity to check for
+-- @param e The Entity to check for
 -- @return True if the System has the Entity. False otherwise
 function System:__has(e)
    return self.__all[e] and true

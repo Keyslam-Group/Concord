@@ -1,3 +1,5 @@
+--- Component
+
 local Component = {}
 Component.__index = Component
 
