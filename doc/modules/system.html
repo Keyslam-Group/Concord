@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Concord</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/component.html">component</a></li>
+  <li><a href="../modules/entity.html">entity</a></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><a href="../modules/instance.html">instance</a></li>
+  <li><a href="../modules/list.html">list</a></li>
+  <li><a href="../modules/pool.html">pool</a></li>
+  <li><strong>system</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>system</code></h1>
+<p>System</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#System.new">System.new (...)</a></td>
+	<td class="summary">Creates a new System prototype.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:__buildPool">System:__buildPool (baseFilter)</a></td>
+	<td class="summary">Builds a Pool for the System.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:__check">System:__check (e)</a></td>
+	<td class="summary">Checks and applies an Entity to the System's pools.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:__remove">System:__remove (e)</a></td>
+	<td class="summary">Removed an Entity from the System.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:__tryAdd">System:__tryAdd (e)</a></td>
+	<td class="summary">Tries to add an Entity to the System.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:__tryRemove">System:__tryRemove (e)</a></td>
+	<td class="summary">Tries to remove an Entity from the System.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:getInstance">System:getInstance ()</a></td>
+	<td class="summary">Returns the Instance the System is in.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:__has">System:__has (e)</a></td>
+	<td class="summary">Returns if the System has the Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:init">System:init (...)</a></td>
+	<td class="summary">Default callback for system initialization.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:entityAdded">System:entityAdded (e)</a></td>
+	<td class="summary">Default callback for adding an Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:entityAddedTo">System:entityAddedTo (e, pool)</a></td>
+	<td class="summary">Default callback for adding an Entity to a pool.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:entityRemoved">System:entityRemoved (e)</a></td>
+	<td class="summary">Default callback for removing an Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#System:entityRemovedFrom">System:entityRemovedFrom (e, pool)</a></td>
+	<td class="summary">Default callback for removing an Entity from a pool.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "System.new"></a>
+    <strong>System.new (...)</strong>
+    </dt>
+    <dd>
+    Creates a new System prototype.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         Variable amounts of filters
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A new System prototype
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:__buildPool"></a>
+    <strong>System:__buildPool (baseFilter)</strong>
+    </dt>
+    <dd>
+    Builds a Pool for the System.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">baseFilter</span>
+         The 'raw' Filter
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A new Pool
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:__check"></a>
+    <strong>System:__check (e)</strong>
+    </dt>
+    <dd>
+    Checks and applies an Entity to the System's pools.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity to check
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if the Entity was added, false if it was removed. Nil if nothing happend
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:__remove"></a>
+    <strong>System:__remove (e)</strong>
+    </dt>
+    <dd>
+    Removed an Entity from the System.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity to remove
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:__tryAdd"></a>
+    <strong>System:__tryAdd (e)</strong>
+    </dt>
+    <dd>
+    Tries to add an Entity to the System.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity to add
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:__tryRemove"></a>
+    <strong>System:__tryRemove (e)</strong>
+    </dt>
+    <dd>
+    Tries to remove an Entity from the System.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity to remove
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:getInstance"></a>
+    <strong>System:getInstance ()</strong>
+    </dt>
+    <dd>
+    Returns the Instance the System is in.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:__has"></a>
+    <strong>System:__has (e)</strong>
+    </dt>
+    <dd>
+    Returns if the System has the Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity to check for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if the System has the Entity. False otherwise
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:init"></a>
+    <strong>System:init (...)</strong>
+    </dt>
+    <dd>
+    Default callback for system initialization.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         Varags
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:entityAdded"></a>
+    <strong>System:entityAdded (e)</strong>
+    </dt>
+    <dd>
+    Default callback for adding an Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity that was added
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:entityAddedTo"></a>
+    <strong>System:entityAddedTo (e, pool)</strong>
+    </dt>
+    <dd>
+    Default callback for adding an Entity to a pool.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity that was added
+        </li>
+        <li><span class="parameter">pool</span>
+         The pool the Entity was added to
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:entityRemoved"></a>
+    <strong>System:entityRemoved (e)</strong>
+    </dt>
+    <dd>
+    Default callback for removing an Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity that was removed
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:entityRemovedFrom"></a>
+    <strong>System:entityRemovedFrom (e, pool)</strong>
+    </dt>
+    <dd>
+    Default callback for removing an Entity from a pool.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity that was removed
+        </li>
+        <li><span class="parameter">pool</span>
+         The pool the Entity was removed from
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-09-25 18:42:43 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

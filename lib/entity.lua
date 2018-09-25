@@ -1,3 +1,5 @@
+--- Entity
+
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Type = require(PATH..".type")
@@ -87,7 +89,7 @@ function Entity:get(component)
 end
 
 --- Returns true if the Entity has the Component.
--- @params component The Component to check against
+-- @param component The Component to check against
 -- @return True if the entity has the Bag. False otherwise
 function Entity:has(component)
    if not Type.isComponent(component) then

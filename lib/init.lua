@@ -1,3 +1,5 @@
+--- init
+
 local PATH = (...):gsub('%.init$', '')
 
 local Type = require(PATH..".type")

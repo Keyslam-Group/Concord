@@ -1,3 +1,5 @@
+--- Pool
+
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local List = require(PATH..".list")

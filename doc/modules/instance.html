@@ -1,0 +1,463 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Concord</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/component.html">component</a></li>
+  <li><a href="../modules/entity.html">entity</a></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><strong>instance</strong></li>
+  <li><a href="../modules/list.html">list</a></li>
+  <li><a href="../modules/pool.html">pool</a></li>
+  <li><a href="../modules/system.html">system</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>instance</code></h1>
+<p>Instance</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Instance.new">Instance.new ()</a></td>
+	<td class="summary">Creates a new Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:addEntity">Instance:addEntity (e)</a></td>
+	<td class="summary">Adds an Entity to the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:checkEntity">Instance:checkEntity (e)</a></td>
+	<td class="summary">Checks an Entity against all the systems in the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:removeEntity">Instance:removeEntity (e)</a></td>
+	<td class="summary">Marks an Entity as removed from the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:flush">Instance:flush ()</a></td>
+	<td class="summary">Completely removes all marked Entities in the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:addSystem">Instance:addSystem (system, eventName, callback, enabled)</a></td>
+	<td class="summary">Adds a System to the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:enableSystem">Instance:enableSystem (system, eventName, callback)</a></td>
+	<td class="summary">Enables a System in the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:disableSystem">Instance:disableSystem (system, eventName, callback)</a></td>
+	<td class="summary">Disables a System in the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:setSystem">Instance:setSystem (system, eventName, callback, enable)</a></td>
+	<td class="summary">Sets a System 'enable' in the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:emit">Instance:emit (eventName, ...)</a></td>
+	<td class="summary">Emits an Event in the Instance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:clear">Instance:clear ()</a></td>
+	<td class="summary">Removes all entities from the Instance</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:onEntityAdded">Instance:onEntityAdded (e)</a></td>
+	<td class="summary">Default callback for adding an Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Instance:onEntityRemoved">Instance:onEntityRemoved (e)</a></td>
+	<td class="summary">Default callback for removing an Entity.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Instance.new"></a>
+    <strong>Instance.new ()</strong>
+    </dt>
+    <dd>
+    Creates a new Instance.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The new instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:addEntity"></a>
+    <strong>Instance:addEntity (e)</strong>
+    </dt>
+    <dd>
+    Adds an Entity to the Instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity to add
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:checkEntity"></a>
+    <strong>Instance:checkEntity (e)</strong>
+    </dt>
+    <dd>
+    Checks an Entity against all the systems in the Instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity to check
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:removeEntity"></a>
+    <strong>Instance:removeEntity (e)</strong>
+    </dt>
+    <dd>
+    Marks an Entity as removed from the Instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity to mark
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:flush"></a>
+    <strong>Instance:flush ()</strong>
+    </dt>
+    <dd>
+    Completely removes all marked Entities in the Instance.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:addSystem"></a>
+    <strong>Instance:addSystem (system, eventName, callback, enabled)</strong>
+    </dt>
+    <dd>
+    Adds a System to the Instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">system</span>
+         The System to add
+        </li>
+        <li><span class="parameter">eventName</span>
+         The Event to register to
+        </li>
+        <li><span class="parameter">callback</span>
+         The function name to call. Defaults to eventName
+        </li>
+        <li><span class="parameter">enabled</span>
+         If the system is enabled. Defaults to true
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:enableSystem"></a>
+    <strong>Instance:enableSystem (system, eventName, callback)</strong>
+    </dt>
+    <dd>
+    Enables a System in the Instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">system</span>
+         The System to enable
+        </li>
+        <li><span class="parameter">eventName</span>
+         The Event it was registered to
+        </li>
+        <li><span class="parameter">callback</span>
+         The callback it was registered with. Defaults to eventName
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:disableSystem"></a>
+    <strong>Instance:disableSystem (system, eventName, callback)</strong>
+    </dt>
+    <dd>
+    Disables a System in the Instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">system</span>
+         The System to disable
+        </li>
+        <li><span class="parameter">eventName</span>
+         The Event it was registered to
+        </li>
+        <li><span class="parameter">callback</span>
+         The callback it was registered with. Defaults to eventName
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:setSystem"></a>
+    <strong>Instance:setSystem (system, eventName, callback, enable)</strong>
+    </dt>
+    <dd>
+    Sets a System 'enable' in the Instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">system</span>
+         The System to set
+        </li>
+        <li><span class="parameter">eventName</span>
+         The Event it was registered to
+        </li>
+        <li><span class="parameter">callback</span>
+         The callback it was registered with. Defaults to eventName
+        </li>
+        <li><span class="parameter">enable</span>
+         The state to set it to
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:emit"></a>
+    <strong>Instance:emit (eventName, ...)</strong>
+    </dt>
+    <dd>
+    Emits an Event in the Instance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">eventName</span>
+         The Event that should be emitted
+        </li>
+        <li><span class="parameter">...</span>
+         Parameters passed to listeners
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:clear"></a>
+    <strong>Instance:clear ()</strong>
+    </dt>
+    <dd>
+    Removes all entities from the Instance
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:onEntityAdded"></a>
+    <strong>Instance:onEntityAdded (e)</strong>
+    </dt>
+    <dd>
+    Default callback for adding an Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity that was added
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Instance:onEntityRemoved"></a>
+    <strong>Instance:onEntityRemoved (e)</strong>
+    </dt>
+    <dd>
+    Default callback for removing an Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+         The Entity that was removed
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-09-25 18:42:43 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

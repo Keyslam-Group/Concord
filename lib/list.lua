@@ -1,3 +1,5 @@
+--- List
+
 local List = {}
 local mt = {__index = List}
 
@@ -66,7 +68,7 @@ end
 
 --- Gets if the List has the object.
 -- @param obj The object to search for
--- @param true if the list has the object, false otherwise
+-- true if the list has the object, false otherwise
 function List:has(obj)
    return self.pointers[obj] and true
 end

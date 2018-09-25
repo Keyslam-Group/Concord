@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Concord</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/component.html">component</a></li>
+  <li><strong>entity</strong></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><a href="../modules/instance.html">instance</a></li>
+  <li><a href="../modules/list.html">list</a></li>
+  <li><a href="../modules/pool.html">pool</a></li>
+  <li><a href="../modules/system.html">system</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>entity</code></h1>
+<p>Entity</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Entity.new">Entity.new ()</a></td>
+	<td class="summary">Creates and initializes a new Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:give">Entity:give (component, ...)</a></td>
+	<td class="summary">Gives an Entity a component with values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:remove">Entity:remove (component)</a></td>
+	<td class="summary">Removes a component from an Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:apply">Entity:apply ()</a></td>
+	<td class="summary">Checks the Entity against the pools again.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:destroy">Entity:destroy ()</a></td>
+	<td class="summary">Destroys the Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:get">Entity:get (component)</a></td>
+	<td class="summary">Gets a Component from the Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:has">Entity:has (component)</a></td>
+	<td class="summary">Returns true if the Entity has the Component.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Entity.new"></a>
+    <strong>Entity.new ()</strong>
+    </dt>
+    <dd>
+    Creates and initializes a new Entity.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A new Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:give"></a>
+    <strong>Entity:give (component, ...)</strong>
+    </dt>
+    <dd>
+    Gives an Entity a component with values.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">component</span>
+         The Component to add
+        </li>
+        <li><span class="parameter">...</span>
+         The values passed to the Component
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:remove"></a>
+    <strong>Entity:remove (component)</strong>
+    </dt>
+    <dd>
+    Removes a component from an Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">component</span>
+         The Component to remove
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:apply"></a>
+    <strong>Entity:apply ()</strong>
+    </dt>
+    <dd>
+    Checks the Entity against the pools again.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:destroy"></a>
+    <strong>Entity:destroy ()</strong>
+    </dt>
+    <dd>
+    Destroys the Entity.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:get"></a>
+    <strong>Entity:get (component)</strong>
+    </dt>
+    <dd>
+    Gets a Component from the Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">component</span>
+         The Component to get
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Bag from the Component
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:has"></a>
+    <strong>Entity:has (component)</strong>
+    </dt>
+    <dd>
+    Returns true if the Entity has the Component.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">component</span>
+         The Component to check against
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if the entity has the Bag. False otherwise
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-09-25 18:42:43 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
