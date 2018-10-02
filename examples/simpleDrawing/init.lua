@@ -31,10 +31,7 @@ end)
 
 local RectangleRenderer = System({Position, Rectangle})
 function RectangleRenderer:draw()
-   local e
-   for i = 1, self.pool.size do
-      e = self.pool:get(i)
-
+   for _, e in ipairs(self.pool) do
       local position  = e:get(Position)
       local rectangle = e:get(Rectangle)
       local color     = e:get(Color)
@@ -49,11 +46,16 @@ function RectangleRenderer:draw()
 end
 
 local CircleRenderer = System({Position, Circle})
-function CircleRenderer:draw()
-   local e
-   for i = 1, self.pool.size do
-      e = self.pool:get(i)
+function CircleRenderer:flush()
+   for _, e in ipairs(self.pool.removed) do
+      print(tostring(e).. " was removed from my pool D:")
+   end
 
+   self:clear()
+end
+
+function CircleRenderer:draw()
+   for _, e in ipairs(self.pool) do
       local position = e:get(Position)
       local circle   = e:get(Circle)
       local color    = e:get(Color)
@@ -76,7 +78,7 @@ end
 function RandomRemover:update(dt)
    self.time = self.time + dt
 
-   if self.time >= 0.25 then
+   if self.time >= 0.5 then
       self.time = 0
 
       if self.pool.size > 0 then

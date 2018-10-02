@@ -14,12 +14,21 @@ Pool.__index = Pool
 function Pool.new(name, filter)
    local pool = setmetatable(List(), Pool)
 
+   pool.added   = {}
+   pool.removed = {}
+
    pool.name   = name
    pool.filter = filter
 
    pool.__isPool = true
 
    return pool
+end
+
+function Pool:flush()
+   for i = 1, math.max(#self.added, #self.removed) do
+      self.added[i], self.removed[i] = nil, nil
+   end
 end
 
 --- Checks if an Entity is eligible for the Pool.

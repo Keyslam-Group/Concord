@@ -22,6 +22,12 @@ function Entity.new()
    return e
 end
 
+local function give(e, component, ...)
+   local comp = component:__initialize(...)
+   e.components[component] = comp
+   e[component] = comp
+end
+
 --- Gives an Entity a component with values.
 -- @param component The Component to add
 -- @param ... The values passed to the Component
@@ -31,9 +37,25 @@ function Entity:give(component, ...)
       error("bad argument #1 to 'Entity:give' (Component expected, got "..type(component)..")", 2)
    end
 
-   local comp = component:__initialize(...)
-   self.components[component] = comp
-   self[component] = comp
+   if self[component] then
+      self:remove(component):apply()
+   end
+
+   give(self, component, ...)
+
+   return self
+end
+
+function Entity:ensure(component, ...)
+   if not Type.isComponent(component) then
+      error("bad argument #1 to 'Entity:ensure' (Component expected, got "..type(component)..")", 2)
+   end
+
+   if self[component] then
+      return self
+   end
+
+   give(self, component, ...)
 
    return self
 end

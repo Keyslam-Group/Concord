@@ -92,6 +92,10 @@ function Instance:flush()
       end
    end
 
+   for i = 1, self.systems.size do
+      self.systems:get(i):flush()
+   end
+
    return self
 end
 

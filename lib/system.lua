@@ -66,7 +66,7 @@ end
 -- @param e The Entity to check
 -- @return True if the Entity was added, false if it was removed. Nil if nothing happend
 function System:__check(e)
-   local systemHas = self:__has(e)
+   local systemHas = self.__all[e]
 
    for _, pool in ipairs(self.__pools) do
       local poolHas  = pool:has(e)
@@ -74,23 +74,28 @@ function System:__check(e)
 
       if not poolHas and eligible then
          pool:add(e)
+         pool.added[#pool.added + 1] = e
+
          self:entityAddedTo(e, pool)
          self:__tryAdd(e)
       elseif poolHas and not eligible then
          pool:remove(e)
+         pool.removed[#pool.removed + 1] = e
+
          self:entityRemovedFrom(e, pool)
          self:__tryRemove(e)
       end
    end
 end
 
---- Removed an Entity from the System.
+--- Remove an Entity from the System.
 -- @param e The Entity to remove
 function System:__remove(e)
-   if self:__has(e) then
+   if self.__all[e] then
       for _, pool in ipairs(self.__pools) do
          if pool:has(e) then
             pool:remove(e)
+            pool.removed[#pool.removed + 1] = e
             self:entityRemovedFrom(e, pool)
          end
       end
@@ -103,7 +108,7 @@ end
 --- Tries to add an Entity to the System.
 -- @param e The Entity to add
 function System:__tryAdd(e)
-   if not self:__has(e) then
+   if not self.__all[e] then
       self.__all[e] = 0
       self:entityAdded(e)
    end
@@ -114,7 +119,7 @@ end
 --- Tries to remove an Entity from the System.
 -- @param e The Entity to remove
 function System:__tryRemove(e)
-   if self:__has(e) then
+   if self.__all[e] then
       self.__all[e] = self.__all[e] - 1
 
       if self.__all[e] == 0 then
@@ -124,17 +129,20 @@ function System:__tryRemove(e)
    end
 end
 
+function System:flush()
+   self:clear()
+end
+
+function System:clear()
+   for i = 1, #self.__pools do
+      self.__pools[i]:flush()
+   end
+end
+
 --- Returns the Instance the System is in.
 -- @return The Instance
 function System:getInstance()
    return self.__instance
-end
-
---- Returns if the System has the Entity.
--- @param e The Entity to check for
--- @return True if the System has the Entity. False otherwise
-function System:__has(e)
-   return self.__all[e] and true
 end
 
 --- Default callback for system initialization.
@@ -170,12 +178,12 @@ function System:addedTo(instance)
 end
 
 -- Default callback for when a System's callback is enabled.
--- @param callbackName The name of the callback that was enabled 
+-- @param callbackName The name of the callback that was enabled
 function System:enabledCallback(callbackName)
 end
 
 -- Default callback for when a System's callback is disabled.
--- @param callbackName The name of the callback that was disabled 
+-- @param callbackName The name of the callback that was disabled
 function System:disabledCallback(callbackName)
 end
 
