@@ -2,8 +2,6 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Entity = require(PATH..".entity")
-local System = require(PATH..".system")
 local Type   = require(PATH..".type")
 local List   = require(PATH..".list")
 
@@ -17,8 +15,9 @@ function Instance.new()
       entities = List(),
       systems  = List(),
       events   = {},
+
+      marked   = {},
       removed  = {},
-      toRemove = nil,
 
       __isInstance = true,
    }, Instance)
@@ -43,6 +42,29 @@ function Instance:addEntity(e)
    return self
 end
 
+--- Marks an Entity as removed from the Instance.
+-- @param e The Entity to mark
+-- @return self
+function Instance:removeEntity(e)
+   if not Type.isEntity(e) then
+      error("bad argument #1 to 'Instance:removeEntity' (Entity expected, got "..type(e)..")", 2)
+   end
+
+   self.removed[#self.removed + 1] = e
+
+   return self
+end
+
+function Instance:markEntity(e)
+   if not Type.isEntity(e) then
+      error("bad argument #1 to 'Instance:markEntity' (Entity expected, got "..type(e)..")", 2)
+   end
+
+   self.marked[#self.marked + 1] = e
+
+   return self
+end
+
 --- Checks an Entity against all the systems in the Instance.
 -- @param e The Entity to check
 -- @return self
@@ -58,34 +80,33 @@ function Instance:checkEntity(e)
    return self
 end
 
---- Marks an Entity as removed from the Instance.
--- @param e The Entity to mark
--- @return self
-function Instance:removeEntity(e)
-   if not Type.isEntity(e) then
-      error("bad argument #1 to 'Instance:removeEntity' (Entity expected, got "..type(e)..")", 2)
-   end
-
-   self.removed[#self.removed + 1] = e
-
-   return self
-end
-
 --- Completely removes all marked Entities in the Instance.
 -- @return self
 function Instance:flush()
-   while #self.removed > 0 do
-      self.toRemove = self.removed
+   while #self.marked > 0 do
+      local marked = self.removed
       self.removed  = {}
 
-      for i = 1, #self.toRemove do
-         local e = self.toRemove[i]
+      for i = 1, #marked do
+         local e = marked[i]
+
+         e.instances:apply()
+         e.instances:checkEntity(e)
+      end
+   end
+
+   while #self.removed > 0 do
+      local removed = self.removed
+      self.removed  = {}
+
+      for i = 1, #removed do
+         local e = removed[i]
 
          e.instances:remove(self)
          self.entities:remove(e)
 
-         for i = 1, self.systems.size do
-            self.systems:get(i):__remove(e)
+         for j = 1, self.systems.size do
+            self.systems:get(j):__remove(e)
          end
 
          self:onEntityRemoved(e)
@@ -93,7 +114,9 @@ function Instance:flush()
    end
 
    for i = 1, self.systems.size do
-      self.systems:get(i):flush()
+      local system = self.systems:get(i)
+      system:flush()
+      system:clear()
    end
 
    return self
@@ -250,12 +273,12 @@ end
 
 --- Default callback for adding an Entity.
 -- @param e The Entity that was added
-function Instance:onEntityAdded(e)
+function Instance:onEntityAdded(e) -- luacheck: ignore
 end
 
 --- Default callback for removing an Entity.
 -- @param e The Entity that was removed
-function Instance:onEntityRemoved(e)
+function Instance:onEntityRemoved(e) -- luacheck: ignore
 end
 
 return setmetatable(Instance, {

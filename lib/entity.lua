@@ -12,9 +12,8 @@ Entity.__index = Entity
 -- @return A new Entity
 function Entity.new()
    local e = setmetatable({
-      components = {},
-      removed    = {},
-      instances  = List(),
+      removed   = {},
+      instances = List(),
 
       __isEntity = true,
    }, Entity)
@@ -24,8 +23,9 @@ end
 
 local function give(e, component, ...)
    local comp = component:__initialize(...)
-   e.components[component] = comp
    e[component] = comp
+
+   e:mark()
 end
 
 --- Gives an Entity a component with values.
@@ -68,22 +68,36 @@ function Entity:remove(component)
       error("bad argument #1 to 'Entity:remove' (Component expected, got "..type(component)..")")
    end
 
-   self.removed[component] = true
+   self.removed[#self.removed + 1] = component
+
+   self:mark()
 
    return self
 end
 
---- Checks the Entity against the pools again.
--- @return self
-function Entity:apply()
-   for i = 1, self.instances.size do
-      self.instances:get(i):checkEntity(self)
+function Entity:assemble(assemblage, ...)
+   if not Type.isAssemblage(assemblage) then
+      error("bad argument #1 to 'Entity:assemble' (Assemblage expected, got "..type(assemblage)..")")
    end
 
-   for component, _ in pairs(self.removed) do
-      self.components[component] = nil
+   assemblage:assemble(self, ...)
+
+   return self
+end
+
+function Entity:mark()
+   for i = 1, self.instances.size do
+      self.instances:get(i):markEntity(self)
+   end
+end
+
+function Entity:apply()
+   for i = 1, #self.removed do
+      local component = self.removed[i]
+
       self[component] = nil
-      self.removed[component] = nil
+
+      self.removed[i] = nil
    end
 
    return self
@@ -107,7 +121,7 @@ function Entity:get(component)
       error("bad argument #1 to 'Entity:get' (Component expected, got "..type(component)..")")
    end
 
-   return self.components[component]
+   return self[component]
 end
 
 --- Returns true if the Entity has the Component.
@@ -118,7 +132,7 @@ function Entity:has(component)
       error("bad argument #1 to 'Entity:has' (Component expected, got "..type(component)..")")
    end
 
-   return self.components[component] ~= nil
+   return self[component] ~= nil
 end
 
 return setmetatable(Entity, {

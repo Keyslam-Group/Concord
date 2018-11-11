@@ -16,4 +16,8 @@ function Type.isInstance(t)
    return type(t) == "table" and t.__isInstance
 end
 
+function Type.isAssemblage(t)
+   return type(t) == "table" and t.__isAssemblage
+end
+
 return Type

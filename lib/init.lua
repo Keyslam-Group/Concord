@@ -22,7 +22,7 @@ local Concord = {
 
       The above copyright notice and this permission notice shall be included
       in all copies or substantial portions of the Software.
-      
+
       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
       OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
       MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -39,10 +39,11 @@ local Concord = {
 -- }
 -- @return Concord
 function Concord.init(settings)
-   Concord.entity       = require(PATH..".entity")
-   Concord.component    = require(PATH..".component")
-   Concord.system       = require(PATH..".system")
-   Concord.instance     = require(PATH..".instance")
+   Concord.entity     = require(PATH..".entity")
+   Concord.component  = require(PATH..".component")
+   Concord.system     = require(PATH..".system")
+   Concord.instance   = require(PATH..".instance")
+   Concord.assemblage = require(PATH..".assemblage")
 
    if settings and settings.useEvents then
       Concord.instances = {}

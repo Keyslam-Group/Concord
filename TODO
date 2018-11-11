@@ -3,6 +3,13 @@
 [x] Add Entity:ensure (maybe?)
 [ ] Put pools in the Instance and invert dependency.
 [ ] Share pools between systems
-[ ] Remove System callbacks
+[x] Remove System callbacks
 [x] Put .added and .removed in pools so they can be iterated over
-[ ] Implement assemblages
+[x] Implement assemblages
+[x] Do :apply automatically with marked entities
+[x] Remove Entity.components. Use Entity[Component] instead
+
+[ ] Add missing documentation
+[ ] Fix current documentation
+[ ] Write unit tests
+[ ] Write examples

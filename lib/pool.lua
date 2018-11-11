@@ -36,7 +36,7 @@ end
 -- @return True if the entity is eligible, false otherwise
 function Pool:eligible(e)
    for _, component in ipairs(self.filter) do
-      if not e.components[component] or e.removed[component] then
+      if not e[component] or e.removed[component] then
          return false
       end
    end

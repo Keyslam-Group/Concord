@@ -78,7 +78,7 @@ end
 function RandomRemover:update(dt)
    self.time = self.time + dt
 
-   if self.time >= 0.5 then
+   if self.time >= 0.05 then
       self.time = 0
 
       if self.pool.size > 0 then
@@ -95,7 +95,7 @@ Game:addSystem(RandomRemover(),     "update")
 Game:addSystem(RectangleRenderer(), "draw")
 Game:addSystem(CircleRenderer(),    "draw")
 
-for i = 1, 100 do
+for _ = 1, 100 do
    local e = Entity()
    e:give(Position, love.math.random(0, 700), love.math.random(0, 700))
    e:give(Rectangle, love.math.random(5, 20), love.math.random(5, 20))
@@ -107,7 +107,7 @@ for i = 1, 100 do
    Game:addEntity(e)
 end
 
-for i = 1, 100 do
+for _ = 1, 100 do
    local e = Entity()
    e:give(Position, love.math.random(0, 700), love.math.random(0, 700))
    e:give(Circle, love.math.random(5, 20))

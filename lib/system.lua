@@ -2,8 +2,7 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Component = require(PATH..".component")
-local Pool      = require(PATH..".pool")
+local Pool = require(PATH..".pool")
 
 local System = {}
 System.mt    = {
@@ -47,11 +46,11 @@ end
 --- Builds a Pool for the System.
 -- @param baseFilter The 'raw' Filter
 -- @return A new Pool
-function System:__buildPool(baseFilter)
+function System:__buildPool(baseFilter) -- luacheck: ignore
    local name   = "pool"
    local filter = {}
 
-   for i, v in ipairs(baseFilter) do
+   for _, v in ipairs(baseFilter) do
       if type(v) == "table" then
          filter[#filter + 1] = v
       elseif type(v) == "string" then
@@ -66,8 +65,6 @@ end
 -- @param e The Entity to check
 -- @return True if the Entity was added, false if it was removed. Nil if nothing happend
 function System:__check(e)
-   local systemHas = self.__all[e]
-
    for _, pool in ipairs(self.__pools) do
       local poolHas  = pool:has(e)
       local eligible = pool:eligible(e)
@@ -76,13 +73,11 @@ function System:__check(e)
          pool:add(e)
          pool.added[#pool.added + 1] = e
 
-         self:entityAddedTo(e, pool)
          self:__tryAdd(e)
       elseif poolHas and not eligible then
          pool:remove(e)
          pool.removed[#pool.removed + 1] = e
 
-         self:entityRemovedFrom(e, pool)
          self:__tryRemove(e)
       end
    end
@@ -96,12 +91,10 @@ function System:__remove(e)
          if pool:has(e) then
             pool:remove(e)
             pool.removed[#pool.removed + 1] = e
-            self:entityRemovedFrom(e, pool)
          end
       end
 
       self.__all[e] = nil
-      self:entityRemoved(e)
    end
 end
 
@@ -110,7 +103,6 @@ end
 function System:__tryAdd(e)
    if not self.__all[e] then
       self.__all[e] = 0
-      self:entityAdded(e)
    end
 
    self.__all[e] = self.__all[e] + 1
@@ -124,13 +116,11 @@ function System:__tryRemove(e)
 
       if self.__all[e] == 0 then
          self.__all[e] = nil
-         self:entityRemoved(e)
       end
    end
 end
 
-function System:flush()
-   self:clear()
+function System:flush() -- luacheck: ignore
 end
 
 function System:clear()
@@ -147,44 +137,22 @@ end
 
 --- Default callback for system initialization.
 -- @param ... Varags
-function System:init(...)
-end
-
---- Default callback for adding an Entity.
--- @param e The Entity that was added
-function System:entityAdded(e)
-end
-
---- Default callback for adding an Entity to a pool.
--- @param e The Entity that was added
--- @param pool The pool the Entity was added to
-function System:entityAddedTo(e, pool)
-end
-
---- Default callback for removing an Entity.
--- @param e The Entity that was removed
-function System:entityRemoved(e)
-end
-
---- Default callback for removing an Entity from a pool.
--- @param e The Entity that was removed
--- @param pool The pool the Entity was removed from
-function System:entityRemovedFrom(e, pool)
+function System:init(...) -- luacheck: ignore
 end
 
 -- Default callback for when the System is added to an Instance.
 -- @param instance The Instance the System was added to
-function System:addedTo(instance)
+function System:addedTo(instance) -- luacheck: ignore
 end
 
 -- Default callback for when a System's callback is enabled.
 -- @param callbackName The name of the callback that was enabled
-function System:enabledCallback(callbackName)
+function System:enabledCallback(callbackName) -- luacheck: ignore
 end
 
 -- Default callback for when a System's callback is disabled.
 -- @param callbackName The name of the callback that was disabled
-function System:disabledCallback(callbackName)
+function System:disabledCallback(callbackName) -- luacheck: ignore
 end
 
 return setmetatable(System, {
