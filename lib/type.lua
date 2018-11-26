@@ -1,3 +1,5 @@
+-- Type
+
 local Type = {}
 
 function Type.isComponent(t)

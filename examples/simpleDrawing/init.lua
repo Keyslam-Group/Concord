@@ -1,12 +1,10 @@
-local Concord = require("lib").init({
-   useEvents = true
-})
+local Concord = require("lib")
+
 local Entity    = Concord.entity
 local Component = Concord.component
 local System    = Concord.system
 
 local Game = Concord.instance()
-Concord.addInstance(Game)
 
 local Position = Component(function(e, x, y)
    e.x = x
@@ -117,4 +115,13 @@ for _ = 1, 100 do
    end
 
    Game:addEntity(e)
+end
+
+
+function love.update(dt)
+   Game:emit("update", dt)
+end
+
+function love.draw()
+   Game:emit("draw")
 end

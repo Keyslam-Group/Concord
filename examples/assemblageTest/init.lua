@@ -1,13 +1,11 @@
-local Concord = require("lib").init({
-   useEvents = true
-})
+local Concord = require("lib")
+
 local Entity     = Concord.entity
 local Component  = Concord.component
 local System     = Concord.system
 local Assemblage = Concord.assemblage
 
 local Game = Concord.instance()
-Concord.addInstance(Game)
 
 local Legs = Component(function(e, legCount)
    e.legCount = legCount or 0
