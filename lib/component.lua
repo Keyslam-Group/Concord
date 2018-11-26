@@ -33,5 +33,7 @@ function Component:__initialize(...)
 end
 
 return setmetatable(Component, {
-   __call = function(_, ...) return Component.new(...) end,
+   __call = function(_, ...)
+      return Component.new(...)
+   end,
 })

@@ -46,5 +46,7 @@ end
 
 return setmetatable(Pool, {
    __index = List,
-   __call  = function(_, ...) return Pool.new(...) end,
+   __call  = function(_, ...)
+      return Pool.new(...)
+   end,
 })

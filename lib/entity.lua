@@ -136,5 +136,7 @@ function Entity:has(component)
 end
 
 return setmetatable(Entity, {
-   __call = function(_, ...) return Entity.new(...) end,
+   __call = function(_, ...)
+      return Entity.new(...)
+   end,
 })

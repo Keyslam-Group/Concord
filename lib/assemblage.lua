@@ -10,8 +10,6 @@ function Assemblage.new(assemble)
       __isAssemblage = true,
    }, Assemblage)
 
-   Assemblage.__mt = {__index = assemblage}
-
    return assemblage
 end
 
@@ -22,5 +20,7 @@ function Assemblage:assemble(e, ...)
 end
 
 return setmetatable(Assemblage, {
-   __call = function(_, ...) return Assemblage.new(...) end,
+   __call = function(_, ...)
+      return Assemblage.new(...)
+   end,
 })

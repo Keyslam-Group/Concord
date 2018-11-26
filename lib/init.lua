@@ -61,9 +61,11 @@ function Concord.init(settings)
             error("bad argument #1 to 'Concord.addInstance' (Instance expected, got "..type(instance)..")", 2)
          end
 
-         for i, instance in ipairs(Concord.instances) do
-            table.remove(Concord.instances, i)
-            break
+         for i, _instance in ipairs(Concord.instances) do
+            if (instance == _instance) then
+               table.remove(Concord.instances, i)
+               break
+            end
          end
       end
 

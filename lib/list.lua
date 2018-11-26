@@ -77,5 +77,7 @@ function List:has(obj)
 end
 
 return setmetatable(List, {
-   __call = function() return List.new() end,
+   __call = function()
+      return List.new()
+   end,
 })

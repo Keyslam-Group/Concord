@@ -282,5 +282,7 @@ function Instance:onEntityRemoved(e) -- luacheck: ignore
 end
 
 return setmetatable(Instance, {
-   __call = function(_, ...) return Instance.new(...) end,
+   __call = function(_, ...)
+      return Instance.new(...)
+   end,
 })

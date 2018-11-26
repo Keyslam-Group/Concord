@@ -156,5 +156,7 @@ function System:disabledCallback(callbackName) -- luacheck: ignore
 end
 
 return setmetatable(System, {
-   __call = function(_, ...) return System.new(...) end,
+   __call = function(_, ...)
+      return System.new(...)
+   end,
 })
