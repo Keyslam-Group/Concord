@@ -11,7 +11,7 @@ System.mt    = {
       local system = setmetatable({
          __all      = {},
          __pools    = {},
-         __instance = nil,
+         __context = nil,
 
          __isSystem = true,
       }, systemProto)
@@ -129,10 +129,10 @@ function System:clear()
    end
 end
 
---- Returns the Instance the System is in.
--- @return The Instance
-function System:getInstance()
-   return self.__instance
+--- Returns the Context the System is in.
+-- @return The Context
+function System:getContext()
+   return self.__context
 end
 
 --- Default callback for system initialization.
@@ -140,9 +140,9 @@ end
 function System:init(...) -- luacheck: ignore
 end
 
--- Default callback for when the System is added to an Instance.
--- @param instance The Instance the System was added to
-function System:addedTo(instance) -- luacheck: ignore
+-- Default callback for when the System is added to an Context.
+-- @param context The Context the System was added to
+function System:addedTo(context) -- luacheck: ignore
 end
 
 -- Default callback for when a System's callback is enabled.

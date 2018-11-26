@@ -1,17 +1,17 @@
---- Instance
+--- Context
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Type   = require(PATH..".type")
 local List   = require(PATH..".list")
 
-local Instance = {}
-Instance.__index = Instance
+local Context = {}
+Context.__index = Context
 
---- Creates a new Instance.
--- @return The new instance
-function Instance.new()
-   local instance = setmetatable({
+--- Creates a new Context.
+-- @return The new context
+function Context.new()
+   local context = setmetatable({
       entities = List(),
       systems  = List(),
       events   = {},
@@ -19,35 +19,35 @@ function Instance.new()
       marked   = {},
       removed  = {},
 
-      __isInstance = true,
-   }, Instance)
+      __isContext = true,
+   }, Context)
 
-   return instance
+   return context
 end
 
---- Adds an Entity to the Instance.
+--- Adds an Entity to the Context.
 -- @param e The Entity to add
 -- @return self
-function Instance:addEntity(e)
+function Context:addEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'Instance:addEntity' (Entity expected, got "..type(e)..")", 2)
+      error("bad argument #1 to 'Context:addEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
    self:onEntityAdded(e)
 
-   e.instances:add(self)
+   e.contexts:add(self)
    self.entities:add(e)
    self:checkEntity(e)
 
    return self
 end
 
---- Marks an Entity as removed from the Instance.
+--- Marks an Entity as removed from the Context.
 -- @param e The Entity to mark
 -- @return self
-function Instance:removeEntity(e)
+function Context:removeEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'Instance:removeEntity' (Entity expected, got "..type(e)..")", 2)
+      error("bad argument #1 to 'Context:removeEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
    self.removed[#self.removed + 1] = e
@@ -55,9 +55,9 @@ function Instance:removeEntity(e)
    return self
 end
 
-function Instance:markEntity(e)
+function Context:markEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'Instance:markEntity' (Entity expected, got "..type(e)..")", 2)
+      error("bad argument #1 to 'Context:markEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
    self.marked[#self.marked + 1] = e
@@ -65,12 +65,12 @@ function Instance:markEntity(e)
    return self
 end
 
---- Checks an Entity against all the systems in the Instance.
+--- Checks an Entity against all the systems in the Context.
 -- @param e The Entity to check
 -- @return self
-function Instance:checkEntity(e)
+function Context:checkEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'Instance:checkEntity' (Entity expected, got "..type(e)..")", 2)
+      error("bad argument #1 to 'Context:checkEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
    for i = 1, self.systems.size do
@@ -80,9 +80,9 @@ function Instance:checkEntity(e)
    return self
 end
 
---- Completely removes all marked Entities in the Instance.
+--- Completely removes all marked Entities in the Context.
 -- @return self
-function Instance:flush()
+function Context:flush()
    while #self.marked > 0 do
       local marked = self.removed
       self.removed  = {}
@@ -90,8 +90,8 @@ function Instance:flush()
       for i = 1, #marked do
          local e = marked[i]
 
-         e.instances:apply()
-         e.instances:checkEntity(e)
+         e.contexts:apply()
+         e.contexts:checkEntity(e)
       end
    end
 
@@ -102,7 +102,7 @@ function Instance:flush()
       for i = 1, #removed do
          local e = removed[i]
 
-         e.instances:remove(self)
+         e.contexts:remove(self)
          self.entities:remove(e)
 
          for j = 1, self.systems.size do
@@ -122,24 +122,24 @@ function Instance:flush()
    return self
 end
 
---- Adds a System to the Instance.
+--- Adds a System to the Context.
 -- @param system The System to add
 -- @param eventName The Event to register to
 -- @param callback The function name to call. Defaults to eventName
 -- @param enabled If the system is enabled. Defaults to true
 -- @return self
-function Instance:addSystem(system, eventName, callback, enabled)
+function Context:addSystem(system, eventName, callback, enabled)
    if not Type.isSystem(system) then
-      error("bad argument #1 to 'Instance:addSystem' (System expected, got "..type(system)..")", 2)
+      error("bad argument #1 to 'Context:addSystem' (System expected, got "..type(system)..")", 2)
    end
 
-   if system.__instance and system.__instance ~= self then
-      error("System already in instance '" ..tostring(system.__instance).."'")
+   if system.__context and system.__context ~= self then
+      error("System already in context '" ..tostring(system.__context).."'")
    end
 
    if not self.systems:has(system) then
       self.systems:add(system)
-      system.__instance = self
+      system.__context = self
 
       system:addedTo(self)
    end
@@ -169,41 +169,41 @@ function Instance:addSystem(system, eventName, callback, enabled)
    return self
 end
 
---- Enables a System in the Instance.
+--- Enables a System in the Context.
 -- @param system The System to enable
 -- @param eventName The Event it was registered to
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @return self
-function Instance:enableSystem(system, eventName, callback)
+function Context:enableSystem(system, eventName, callback)
    if not Type.isSystem(system) then
-      error("bad argument #1 to 'Instance:enableSystem' (System expected, got "..type(system)..")", 2)
+      error("bad argument #1 to 'Context:enableSystem' (System expected, got "..type(system)..")", 2)
    end
 
    return self:setSystem(system, eventName, callback, true)
 end
 
---- Disables a System in the Instance.
+--- Disables a System in the Context.
 -- @param system The System to disable
 -- @param eventName The Event it was registered to
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @return self
-function Instance:disableSystem(system, eventName, callback)
+function Context:disableSystem(system, eventName, callback)
    if not Type.isSystem(system) then
-      error("bad argument #1 to 'Instance:disableSystem' (System expected, got "..type(system)..")", 2)
+      error("bad argument #1 to 'Context:disableSystem' (System expected, got "..type(system)..")", 2)
    end
 
    return self:setSystem(system, eventName, callback, false)
 end
 
---- Sets a System 'enable' in the Instance.
+--- Sets a System 'enable' in the Context.
 -- @param system The System to set
 -- @param eventName The Event it was registered to
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @param enable The state to set it to
 -- @return self
-function Instance:setSystem(system, eventName, callback, enable)
+function Context:setSystem(system, eventName, callback, enable)
    if not Type.isSystem(system) then
-      error("bad argument #1 to 'Instance:setSystem' (System expected, got "..type(system)..")", 2)
+      error("bad argument #1 to 'Context:setSystem' (System expected, got "..type(system)..")", 2)
    end
 
    callback = callback or eventName
@@ -233,13 +233,13 @@ function Instance:setSystem(system, eventName, callback, enable)
    return self
 end
 
---- Emits an Event in the Instance.
+--- Emits an Event in the Context.
 -- @param eventName The Event that should be emitted
 -- @param ... Parameters passed to listeners
 -- @return self
-function Instance:emit(eventName, ...)
+function Context:emit(eventName, ...)
    if not eventName or type(eventName) ~= "string" then
-      error("bad argument #1 to 'Instance:emit' (String expected, got "..type(eventName)..")")
+      error("bad argument #1 to 'Context:emit' (String expected, got "..type(eventName)..")")
    end
 
    self:flush()
@@ -259,9 +259,9 @@ function Instance:emit(eventName, ...)
    return self
 end
 
---- Removes all entities from the Instance
+--- Removes all entities from the Context
 -- @return self
-function Instance:clear()
+function Context:clear()
    for i = 1, self.entities.size do
       self.entities:get(i):destroy()
    end
@@ -273,16 +273,16 @@ end
 
 --- Default callback for adding an Entity.
 -- @param e The Entity that was added
-function Instance:onEntityAdded(e) -- luacheck: ignore
+function Context:onEntityAdded(e) -- luacheck: ignore
 end
 
 --- Default callback for removing an Entity.
 -- @param e The Entity that was removed
-function Instance:onEntityRemoved(e) -- luacheck: ignore
+function Context:onEntityRemoved(e) -- luacheck: ignore
 end
 
-return setmetatable(Instance, {
+return setmetatable(Context, {
    __call = function(_, ...)
-      return Instance.new(...)
+      return Context.new(...)
    end,
 })

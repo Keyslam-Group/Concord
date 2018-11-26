@@ -1,10 +1,10 @@
-local Concord = require("lib")
+local Concord = require("src")
 
 local Entity    = Concord.entity
 local Component = Concord.component
 local System    = Concord.system
 
-local Game = Concord.instance()
+local Game = Concord.context()
 
 local Position = Component(function(e, x, y)
    e.x = x

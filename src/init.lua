@@ -34,7 +34,7 @@ local Concord = {
 Concord.entity     = require(PATH..".entity")
 Concord.component  = require(PATH..".component")
 Concord.system     = require(PATH..".system")
-Concord.instance   = require(PATH..".instance")
+Concord.context    = require(PATH..".context")
 Concord.assemblage = require(PATH..".assemblage")
 
 return Concord

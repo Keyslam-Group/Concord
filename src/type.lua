@@ -14,8 +14,8 @@ function Type.isSystem(t)
    return type(t) == "table" and t.__isSystem
 end
 
-function Type.isInstance(t)
-   return type(t) == "table" and t.__isInstance
+function Type.isContext(t)
+   return type(t) == "table" and t.__isContext
 end
 
 function Type.isAssemblage(t)
