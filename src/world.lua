@@ -1,17 +1,17 @@
---- Context
+--- World
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Type   = require(PATH..".type")
 local List   = require(PATH..".list")
 
-local Context = {}
-Context.__index = Context
+local World = {}
+World.__index = World
 
---- Creates a new Context.
--- @return The new context
-function Context.new()
-   local context = setmetatable({
+--- Creates a new World.
+-- @return The new World
+function World.new()
+   local world = setmetatable({
       entities = List(),
       systems  = List(),
       events   = {},
@@ -19,35 +19,35 @@ function Context.new()
       marked   = {},
       removed  = {},
 
-      __isContext = true,
-   }, Context)
+      __isWorld = true,
+   }, World)
 
-   return context
+   return world
 end
 
---- Adds an Entity to the Context.
+--- Adds an Entity to the World.
 -- @param e The Entity to add
 -- @return self
-function Context:addEntity(e)
+function World:addEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'Context:addEntity' (Entity expected, got "..type(e)..")", 2)
+      error("bad argument #1 to 'World:addEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
    self:onEntityAdded(e)
 
-   e.contexts:add(self)
+   e.worlds:add(self)
    self.entities:add(e)
    self:checkEntity(e)
 
    return self
 end
 
---- Marks an Entity as removed from the Context.
+--- Marks an Entity as removed from the World.
 -- @param e The Entity to mark
 -- @return self
-function Context:removeEntity(e)
+function World:removeEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'Context:removeEntity' (Entity expected, got "..type(e)..")", 2)
+      error("bad argument #1 to 'World:removeEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
    self.removed[#self.removed + 1] = e
@@ -55,9 +55,9 @@ function Context:removeEntity(e)
    return self
 end
 
-function Context:markEntity(e)
+function World:markEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'Context:markEntity' (Entity expected, got "..type(e)..")", 2)
+      error("bad argument #1 to 'World:markEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
    self.marked[#self.marked + 1] = e
@@ -65,12 +65,12 @@ function Context:markEntity(e)
    return self
 end
 
---- Checks an Entity against all the systems in the Context.
+--- Checks an Entity against all the systems in the World.
 -- @param e The Entity to check
 -- @return self
-function Context:checkEntity(e)
+function World:checkEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'Context:checkEntity' (Entity expected, got "..type(e)..")", 2)
+      error("bad argument #1 to 'World:checkEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
    for i = 1, self.systems.size do
@@ -80,9 +80,9 @@ function Context:checkEntity(e)
    return self
 end
 
---- Completely removes all marked Entities in the Context.
+--- Completely removes all marked Entities in the World.
 -- @return self
-function Context:flush()
+function World:flush()
    while #self.marked > 0 do
       local marked = self.removed
       self.removed  = {}
@@ -90,8 +90,8 @@ function Context:flush()
       for i = 1, #marked do
          local e = marked[i]
 
-         e.contexts:apply()
-         e.contexts:checkEntity(e)
+         e.Worlds:apply()
+         e.Worlds:checkEntity(e)
       end
    end
 
@@ -102,7 +102,7 @@ function Context:flush()
       for i = 1, #removed do
          local e = removed[i]
 
-         e.contexts:remove(self)
+         e.worlds:remove(self)
          self.entities:remove(e)
 
          for j = 1, self.systems.size do
@@ -122,24 +122,24 @@ function Context:flush()
    return self
 end
 
---- Adds a System to the Context.
+--- Adds a System to the World.
 -- @param system The System to add
 -- @param eventName The Event to register to
 -- @param callback The function name to call. Defaults to eventName
 -- @param enabled If the system is enabled. Defaults to true
 -- @return self
-function Context:addSystem(system, eventName, callback, enabled)
+function World:addSystem(system, eventName, callback, enabled)
    if not Type.isSystem(system) then
-      error("bad argument #1 to 'Context:addSystem' (System expected, got "..type(system)..")", 2)
+      error("bad argument #1 to 'World:addSystem' (System expected, got "..type(system)..")", 2)
    end
 
-   if system.__context and system.__context ~= self then
-      error("System already in context '" ..tostring(system.__context).."'")
+   if system.__World and system.__World ~= self then
+      error("System already in World '" ..tostring(system.__World).."'")
    end
 
    if not self.systems:has(system) then
       self.systems:add(system)
-      system.__context = self
+      system.__World = self
 
       system:addedTo(self)
    end
@@ -169,41 +169,41 @@ function Context:addSystem(system, eventName, callback, enabled)
    return self
 end
 
---- Enables a System in the Context.
+--- Enables a System in the World.
 -- @param system The System to enable
 -- @param eventName The Event it was registered to
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @return self
-function Context:enableSystem(system, eventName, callback)
+function World:enableSystem(system, eventName, callback)
    if not Type.isSystem(system) then
-      error("bad argument #1 to 'Context:enableSystem' (System expected, got "..type(system)..")", 2)
+      error("bad argument #1 to 'World:enableSystem' (System expected, got "..type(system)..")", 2)
    end
 
    return self:setSystem(system, eventName, callback, true)
 end
 
---- Disables a System in the Context.
+--- Disables a System in the World.
 -- @param system The System to disable
 -- @param eventName The Event it was registered to
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @return self
-function Context:disableSystem(system, eventName, callback)
+function World:disableSystem(system, eventName, callback)
    if not Type.isSystem(system) then
-      error("bad argument #1 to 'Context:disableSystem' (System expected, got "..type(system)..")", 2)
+      error("bad argument #1 to 'World:disableSystem' (System expected, got "..type(system)..")", 2)
    end
 
    return self:setSystem(system, eventName, callback, false)
 end
 
---- Sets a System 'enable' in the Context.
+--- Sets a System 'enable' in the World.
 -- @param system The System to set
 -- @param eventName The Event it was registered to
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @param enable The state to set it to
 -- @return self
-function Context:setSystem(system, eventName, callback, enable)
+function World:setSystem(system, eventName, callback, enable)
    if not Type.isSystem(system) then
-      error("bad argument #1 to 'Context:setSystem' (System expected, got "..type(system)..")", 2)
+      error("bad argument #1 to 'World:setSystem' (System expected, got "..type(system)..")", 2)
    end
 
    callback = callback or eventName
@@ -233,13 +233,13 @@ function Context:setSystem(system, eventName, callback, enable)
    return self
 end
 
---- Emits an Event in the Context.
+--- Emits an Event in the World.
 -- @param eventName The Event that should be emitted
 -- @param ... Parameters passed to listeners
 -- @return self
-function Context:emit(eventName, ...)
+function World:emit(eventName, ...)
    if not eventName or type(eventName) ~= "string" then
-      error("bad argument #1 to 'Context:emit' (String expected, got "..type(eventName)..")")
+      error("bad argument #1 to 'World:emit' (String expected, got "..type(eventName)..")")
    end
 
    self:flush()
@@ -259,9 +259,9 @@ function Context:emit(eventName, ...)
    return self
 end
 
---- Removes all entities from the Context
+--- Removes all entities from the World
 -- @return self
-function Context:clear()
+function World:clear()
    for i = 1, self.entities.size do
       self.entities:get(i):destroy()
    end
@@ -273,16 +273,16 @@ end
 
 --- Default callback for adding an Entity.
 -- @param e The Entity that was added
-function Context:onEntityAdded(e) -- luacheck: ignore
+function World:onEntityAdded(e) -- luacheck: ignore
 end
 
 --- Default callback for removing an Entity.
 -- @param e The Entity that was removed
-function Context:onEntityRemoved(e) -- luacheck: ignore
+function World:onEntityRemoved(e) -- luacheck: ignore
 end
 
-return setmetatable(Context, {
+return setmetatable(World, {
    __call = function(_, ...)
-      return Context.new(...)
+      return World.new(...)
    end,
 })

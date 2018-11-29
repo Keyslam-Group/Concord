@@ -4,7 +4,7 @@ local Entity    = Concord.entity
 local Component = Concord.component
 local System    = Concord.system
 
-local Game = Concord.context()
+local Game = Concord.world()
 
 local Position = Component(function(e, x, y)
    e.x = x
@@ -48,8 +48,6 @@ function CircleRenderer:flush()
    for _, e in ipairs(self.pool.removed) do
       print(tostring(e).. " was removed from my pool D:")
    end
-
-   self:clear()
 end
 
 function CircleRenderer:draw()

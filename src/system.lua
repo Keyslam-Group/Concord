@@ -9,9 +9,9 @@ System.mt    = {
    __index = System,
    __call  = function(systemProto, ...)
       local system = setmetatable({
-         __all      = {},
-         __pools    = {},
-         __context = nil,
+         __all   = {},
+         __pools = {},
+         __world = nil,
 
          __isSystem = true,
       }, systemProto)
@@ -129,10 +129,10 @@ function System:clear()
    end
 end
 
---- Returns the Context the System is in.
--- @return The Context
-function System:getContext()
-   return self.__context
+--- Returns the World the System is in.
+-- @return The world the system is in
+function System:getWorld()
+   return self.__world
 end
 
 --- Default callback for system initialization.
@@ -140,9 +140,9 @@ end
 function System:init(...) -- luacheck: ignore
 end
 
--- Default callback for when the System is added to an Context.
--- @param context The Context the System was added to
-function System:addedTo(context) -- luacheck: ignore
+-- Default callback for when the System is added to an World.
+-- @param world The World the System was added to
+function System:addedTo(World) -- luacheck: ignore
 end
 
 -- Default callback for when a System's callback is enabled.

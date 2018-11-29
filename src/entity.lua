@@ -13,7 +13,7 @@ Entity.__index = Entity
 function Entity.new()
    local e = setmetatable({
       removed   = {},
-      contexts = List(),
+      worlds = List(),
 
       __isEntity = true,
    }, Entity)
@@ -86,8 +86,8 @@ function Entity:assemble(assemblage, ...)
 end
 
 function Entity:mark()
-   for i = 1, self.contexts.size do
-      self.contexts:get(i):markEntity(self)
+   for i = 1, self.worlds.size do
+      self.worlds:get(i):markEntity(self)
    end
 end
 
@@ -96,7 +96,6 @@ function Entity:apply()
       local component = self.removed[i]
 
       self[component] = nil
-
       self.removed[i] = nil
    end
 
@@ -106,8 +105,8 @@ end
 --- Destroys the Entity.
 -- @return self
 function Entity:destroy()
-   for i = 1, self.contexts.size do
-      self.contexts:get(i):removeEntity(self)
+   for i = 1, self.worlds.size do
+      self.worlds:get(i):removeEntity(self)
    end
 
    return self
