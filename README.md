@@ -27,12 +27,17 @@ local System = require("concord.system")
 local Instance = require("concord.instance")
 ```
 
+## Example games
+[A Cat Game](https://github.com/flamendless/ECS-A-Cat-Game) by Brbl
+[Tetris](https://github.com/pikashira/tetris-love-ecs) by Pikashira
+
 ## Contributors
 ```
 Positive07: Constant support and a good rubberduck
 Brbl: Early testing and issue reporting
 Josh: Squashed a few bugs and docs
 Erasio: Took inspiration from HooECS. Also introduced me to ECS.
+Brbl, Pikashria: Example games
 ```
 
 ## Licence
