@@ -29,6 +29,7 @@ local Instance = require("concord.instance")
 
 ## Example games
 [A Cat Game](https://github.com/flamendless/ECS-A-Cat-Game) by Brbl
+
 [Tetris](https://github.com/pikashira/tetris-love-ecs) by Pikashira
 
 ## Contributors
