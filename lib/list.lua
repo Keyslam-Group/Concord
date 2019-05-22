@@ -68,7 +68,7 @@ end
 
 --- Gets if the List has the object.
 -- @param obj The object to search for
--- true if the list has the object, false otherwise
+-- @return true if the list has the object, false otherwise
 function List:has(obj)
    return self.pointers[obj] and true
 end
