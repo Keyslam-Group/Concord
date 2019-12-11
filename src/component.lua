@@ -6,14 +6,29 @@ Component.__index = Component
 --- Creates a new Component.
 -- @param populate A function that populates the Bag with values
 -- @return A Component object
-function Component.new(populate)
+function Component.new(name, populate)
+   if (type(name) ~= "string") then
+      error("bad argument #1 to 'Component.new' (string expected, got "..type(name)..")", 2)
+   end
+
+   if not (populate == nil or type(populate) == "function") then
+      error("bad argument #2 to 'Component.new' (function/nil expected, got "..type(populate)..")", 2)
+   end
+
+   if (Component[name] ~= nil) then
+      error("bad argument #2 to 'Component.new' (Component with name '"..name.."' already exists", 2)
+   end
+
    local component = setmetatable({
+      __name = name,
       __populate = populate,
 
       __isComponent = true,
    }, Component)
 
    component.__mt = {__index = component}
+
+   Component[name] = component
 
    return component
 end
