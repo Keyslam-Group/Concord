@@ -15,7 +15,8 @@ local Systems = Concord.systems
 
 local Entity = Concord.entity
 
-local World = Concord.world
+local World  = Concord.world
+local Worlds = Concord.worlds
 
 Component("test_comp_1", function(e, x, y)
     e.x = x
@@ -58,12 +59,12 @@ function test_system:update2(dt) -- luacheck: ignore
 end
 
 
-local world = World()
+local world = World("testWorld")
 
 local entity = Entity()
 entity:give(Components.test_comp_1, 100, 100)
 
-world:addEntity(entity)
+Worlds.testWorld:addEntity(entity)
 
 world:addSystem(Systems.test_system, "update")
 world:addSystem(Systems.test_system, "update", "update2")

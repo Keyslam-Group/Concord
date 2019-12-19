@@ -19,7 +19,7 @@ function Worlds.register(name, world)
         error("bad argument #2 to 'Worlds.register' (World with name '"..name.."' is already registerd)", 3)
     end
 
-    Worlds[name] = component
+    Worlds[name] = world
 end
 
 return setmetatable(Worlds, {

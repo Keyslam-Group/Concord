@@ -2,7 +2,7 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Worlds = require(PATH..".world")
+local Worlds = require(PATH..".worlds")
 local Type   = require(PATH..".type")
 local List   = require(PATH..".list")
 
@@ -13,7 +13,7 @@ World.__index = World
 -- @return The new World
 function World.new(name)
    if (type(name) ~= "string") then
-      error("bad argument #1 to 'Component.new' (string expected, got "..type(name)..")", 2)
+      error("bad argument #1 to 'World.new' (string expected, got "..type(name)..")", 2)
    end
 
    local world = setmetatable({
@@ -31,7 +31,7 @@ function World.new(name)
       __isWorld = true,
    }, World)
 
-   Worlds.register(world)
+   Worlds.register(name, world)
 
    return world
 end
