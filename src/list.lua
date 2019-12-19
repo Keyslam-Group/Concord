@@ -73,7 +73,7 @@ end
 -- @param obj The object to search for
 -- true if the list has the object, false otherwise
 function List:has(obj)
-   return self[obj] and true
+   return self[obj] and true or false
 end
 
 return setmetatable(List, {

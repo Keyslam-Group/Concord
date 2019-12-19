@@ -9,7 +9,6 @@ System.mt    = {
    __index = System,
    __call  = function(systemProto, ...)
       local system = setmetatable({
-         __all   = {},
          __pools = {},
          __world = nil,
 
@@ -63,22 +62,15 @@ end
 
 --- Checks and applies an Entity to the System's pools.
 -- @param e The Entity to check
--- @return True if the Entity was added, false if it was removed. Nil if nothing happend
-function System:__check(e)
+function System:__evaluate(e)
    for _, pool in ipairs(self.__pools) do
-      local poolHas  = pool:has(e)
+      local has  = pool:has(e)
       local eligible = pool:eligible(e)
 
-      if not poolHas and eligible then
+      if not has and eligible then
          pool:add(e)
-         pool.added[#pool.added + 1] = e
-
-         self:__tryAdd(e)
-      elseif poolHas and not eligible then
+      elseif has and not eligible then
          pool:remove(e)
-         pool.removed[#pool.removed + 1] = e
-
-         self:__tryRemove(e)
       end
    end
 end
@@ -86,46 +78,16 @@ end
 --- Remove an Entity from the System.
 -- @param e The Entity to remove
 function System:__remove(e)
-   if self.__all[e] then
-      for _, pool in ipairs(self.__pools) do
-         if pool:has(e) then
-            pool:remove(e)
-            pool.removed[#pool.removed + 1] = e
-         end
-      end
-
-      self.__all[e] = nil
-   end
-end
-
---- Tries to add an Entity to the System.
--- @param e The Entity to add
-function System:__tryAdd(e)
-   if not self.__all[e] then
-      self.__all[e] = 0
-   end
-
-   self.__all[e] = self.__all[e] + 1
-end
-
---- Tries to remove an Entity from the System.
--- @param e The Entity to remove
-function System:__tryRemove(e)
-   if self.__all[e] then
-      self.__all[e] = self.__all[e] - 1
-
-      if self.__all[e] == 0 then
-         self.__all[e] = nil
+   for _, pool in ipairs(self.__pools) do
+      if pool:has(e) then
+         pool:remove(e)
       end
    end
-end
-
-function System:flush() -- luacheck: ignore
 end
 
 function System:clear()
    for i = 1, #self.__pools do
-      self.__pools[i]:flush()
+      self.__pools[i]:clear()
    end
 end
 
@@ -142,7 +104,7 @@ end
 
 -- Default callback for when the System is added to an World.
 -- @param world The World the System was added to
-function System:addedTo(World) -- luacheck: ignore
+function System:addedTo(world) -- luacheck: ignore
 end
 
 -- Default callback for when a System's callback is enabled.

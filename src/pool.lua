@@ -14,9 +14,6 @@ Pool.__index = Pool
 function Pool.new(name, filter)
    local pool = setmetatable(List(), Pool)
 
-   pool.added   = {}
-   pool.removed = {}
-
    pool.name   = name
    pool.filter = filter
 
@@ -25,23 +22,33 @@ function Pool.new(name, filter)
    return pool
 end
 
-function Pool:flush()
-   for i = 1, math.max(#self.added, #self.removed) do
-      self.added[i], self.removed[i] = nil, nil
-   end
-end
-
 --- Checks if an Entity is eligible for the Pool.
 -- @param e The Entity to check
 -- @return True if the entity is eligible, false otherwise
 function Pool:eligible(e)
    for _, component in ipairs(self.filter) do
-      if not e[component] or e.removed[component] then
+      if not e[component] then
          return false
       end
    end
 
    return true
+end
+
+function Pool:add(e)
+   List.add(self, e)
+   self:onEntityAdded(e)
+end
+
+function Pool:remove(e)
+   List.remove(self, e)
+   self:onEntityRemoved(e)
+end
+
+function Pool:onEntityAdded(e)
+end
+
+function Pool:onEntityRemoved(e)
 end
 
 return setmetatable(Pool, {

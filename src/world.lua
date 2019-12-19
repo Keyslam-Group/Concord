@@ -16,8 +16,8 @@ function World.new()
       systems  = List(),
       events   = {},
 
-      marked   = {},
-      removed  = {},
+      __added   = {},
+      __removed = {},
 
       __isWorld = true,
    }, World)
@@ -33,16 +33,19 @@ function World:addEntity(e)
       error("bad argument #1 to 'World:addEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
-   self:onEntityAdded(e)
+   if e.world then
+      error("bad argument #1 to 'World:addEntity' (Entity was already added to a world)", 2)
+   end
 
-   e.worlds:add(self)
+   e.world = self
+   e.__wasAdded = true
+
    self.entities:add(e)
-   self:checkEntity(e)
 
    return self
 end
 
---- Marks an Entity as removed from the World.
+--- Removes an entity from the World.
 -- @param e The Entity to mark
 -- @return self
 function World:removeEntity(e)
@@ -50,73 +53,46 @@ function World:removeEntity(e)
       error("bad argument #1 to 'World:removeEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
-   self.removed[#self.removed + 1] = e
+   e.__wasRemoved = true
 
    return self
 end
 
-function World:markEntity(e)
-   if not Type.isEntity(e) then
-      error("bad argument #1 to 'World:markEntity' (Entity expected, got "..type(e)..")", 2)
-   end
-
-   self.marked[#self.marked + 1] = e
-
-   return self
-end
-
---- Checks an Entity against all the systems in the World.
--- @param e The Entity to check
--- @return self
-function World:checkEntity(e)
-   if not Type.isEntity(e) then
-      error("bad argument #1 to 'World:checkEntity' (Entity expected, got "..type(e)..")", 2)
-   end
-
-   for i = 1, self.systems.size do
-      self.systems:get(i):__check(e)
-   end
-
-   return self
-end
-
---- Completely removes all marked Entities in the World.
 -- @return self
 function World:flush()
-   while #self.marked > 0 do
-      local marked = self.removed
-      self.removed  = {}
+   local e
+   for i = 1, self.entities.size do
+      e = self.entities:get(i)
 
-      for i = 1, #marked do
-         local e = marked[i]
+      if e.__wasAdded then
+         e.__wasAdded = false
+         e.__isDirty = false
 
-         e.Worlds:apply()
-         e.Worlds:checkEntity(e)
-      end
-   end
-
-   while #self.removed > 0 do
-      local removed = self.removed
-      self.removed  = {}
-
-      for i = 1, #removed do
-         local e = removed[i]
-
-         e.worlds:remove(self)
-         self.entities:remove(e)
-
-         for j = 1, self.systems.size do
-            self.systems:get(j):__remove(e)
+         for i = 1, self.systems.size do
+            self.systems:get(i):__evaluate(e)
          end
 
-         self:onEntityRemoved(e)
+         self:onEntityAdded(e)
       end
-   end
 
-   for i = 1, self.systems.size do
-      local system = self.systems:get(i)
-      system:flush()
-      system:clear()
+      if e.__wasRemoved then
+         e.world = nil
+         self.entities:remove(e)
+
+         for i = 1, self.systems.size do
+            self.systems:get(i):__remove(e)
+         end
+
+         e.__wasRemoved = false
+      end
+
+      if e.__isDirty then
+         for i = 1, self.systems.size do
+            self.systems:get(i):__evaluate(e)
+         end
+
+         e.__isDirty = false
+      end
    end
 
    return self
@@ -142,6 +118,10 @@ function World:addSystem(system, eventName, callback, enabled)
       system.__World = self
 
       system:addedTo(self)
+
+      for i = 1, self.entities.size do
+         system:__evaluate(self.entities:get(i))
+      end
    end
 
    if eventName then
@@ -157,13 +137,6 @@ function World:addSystem(system, eventName, callback, enabled)
       if enabled == nil or enabled then
          system:enabledCallback(callback or eventName)
       end
-   end
-
-   local e
-   for i = 1, self.entities.size do
-      e = self.entities:get(i)
-
-      self:checkEntity(e)
    end
 
    return self
@@ -241,8 +214,6 @@ function World:emit(eventName, ...)
    if not eventName or type(eventName) ~= "string" then
       error("bad argument #1 to 'World:emit' (String expected, got "..type(eventName)..")")
    end
-
-   self:flush()
 
    local listeners = self.events[eventName]
 

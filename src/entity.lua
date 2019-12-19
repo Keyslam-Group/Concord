@@ -3,7 +3,6 @@
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Type = require(PATH..".type")
-local List = require(PATH..".list")
 
 local Entity = {}
 Entity.__index = Entity
@@ -12,8 +11,11 @@ Entity.__index = Entity
 -- @return A new Entity
 function Entity.new()
    local e = setmetatable({
-      removed   = {},
-      worlds = List(),
+      world = nil,
+
+      __isDirty    = true,
+      __wasAdded   = false,
+      __wasRemoved = false,
 
       __isEntity = true,
    }, Entity)
@@ -25,7 +27,13 @@ local function give(e, component, ...)
    local comp = component:__initialize(...)
    e[component] = comp
 
-   e:mark()
+   e.__isDirty = true
+end
+
+local function remove(e, component)
+   e[component] = nil
+
+   e.__isDirty = true
 end
 
 --- Gives an Entity a component with values.
@@ -35,10 +43,6 @@ end
 function Entity:give(component, ...)
    if not Type.isComponent(component) then
       error("bad argument #1 to 'Entity:give' (Component expected, got "..type(component)..")", 2)
-   end
-
-   if self[component] then
-      self:remove(component):apply()
    end
 
    give(self, component, ...)
@@ -68,9 +72,7 @@ function Entity:remove(component)
       error("bad argument #1 to 'Entity:remove' (Component expected, got "..type(component)..")")
    end
 
-   self.removed[#self.removed + 1] = component
-
-   self:mark()
+   remove(self, component)
 
    return self
 end
@@ -85,28 +87,11 @@ function Entity:assemble(assemblage, ...)
    return self
 end
 
-function Entity:mark()
-   for i = 1, self.worlds.size do
-      self.worlds:get(i):markEntity(self)
-   end
-end
-
-function Entity:apply()
-   for i = 1, #self.removed do
-      local component = self.removed[i]
-
-      self[component] = nil
-      self.removed[i] = nil
-   end
-
-   return self
-end
-
 --- Destroys the Entity.
 -- @return self
 function Entity:destroy()
-   for i = 1, self.worlds.size do
-      self.worlds:get(i):removeEntity(self)
+   if self.world then
+      self.world:removeEntity(self)
    end
 
    return self

@@ -51,4 +51,4 @@ return setmetatable(Component, {
    __call = function(_, ...)
       return Component.new(...)
    end,
-})
+})                                                                                                                                                
