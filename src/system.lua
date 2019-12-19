@@ -14,6 +14,7 @@ System.mt    = {
          __world = world,
 
          __isSystem = true,
+         __isBaseSystem = false, -- Overwrite value from baseSystem
       }, baseSystem)
 
       for _, filter in pairs(baseSystem.__filter) do

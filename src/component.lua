@@ -38,7 +38,7 @@ end
 -- @return A new initialized Bag
 function Component:__initialize(...)
    if self.__populate then
-      local bag = setmetatable({}, self.__mt)
+      local bag = setmetatable({}, self)
       self.__populate(bag, ...)
 
       return bag

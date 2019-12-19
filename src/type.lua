@@ -18,6 +18,10 @@ function Type.isSystem(t)
    return type(t) == "table" and t.__isSystem or false
 end
 
+function Type.isWorld(t)
+   return type(t) == "table" and t.__isWorld or false
+end
+
 function Type.isAssemblage(t)
    return type(t) == "table" and t.__isAssemblage or false
 end

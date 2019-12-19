@@ -2,6 +2,7 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
+local Worlds = require(PATH..".world")
 local Type   = require(PATH..".type")
 local List   = require(PATH..".list")
 
@@ -10,7 +11,11 @@ World.__index = World
 
 --- Creates a new World.
 -- @return The new World
-function World.new()
+function World.new(name)
+   if (type(name) ~= "string") then
+      error("bad argument #1 to 'Component.new' (string expected, got "..type(name)..")", 2)
+   end
+
    local world = setmetatable({
       entities = List(),
       systems  = List(),
@@ -22,8 +27,11 @@ function World.new()
 
       __systemLookup = {},
 
+      __name    = name,
       __isWorld = true,
    }, World)
+
+   Worlds.register(world)
 
    return world
 end
@@ -115,9 +123,6 @@ function World:addSystem(baseSystem, callbackName, callback, enabled)
    local system = self.__systemLookup[baseSystem]
    if (not system) then
       -- System was not created for this world yet, so we create it ourselves
-
-      print("Created system")
-
       system = baseSystem(self)
 
       self.__systemLookup[baseSystem] = system
@@ -240,7 +245,7 @@ end
 -- @return self
 function World:clear()
    for i = 1, self.entities.size do
-      self.removeEntity(self.entities:get(i))
+      self.removeEntity(self.entities[i])
    end
 
    return self

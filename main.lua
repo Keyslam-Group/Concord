@@ -46,7 +46,11 @@ function test_system:init()
 end
 
 function test_system:update(dt) -- luacheck: ignore
-    --print(#self.pool)
+    --[=[
+    for _, v in ipairs(self.pool) do
+        print(v)
+    end
+    ]=]
 end
 
 function test_system:update2(dt) -- luacheck: ignore
