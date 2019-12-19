@@ -6,50 +6,63 @@ require(file)
 ]=]--
 
 local Concord = require("src")
-local Component = require("src.component")
 
-local test_comp_1 = Concord.component("test_comp_1", function(e, x, y)
+local Component  = require("src.component")
+local Components = require("src.components")
+
+local System  = Concord.system
+local Systems = Concord.systems
+
+local Entity = Concord.entity
+
+local World = Concord.world
+
+Component("test_comp_1", function(e, x, y)
     e.x = x
     e.y = y
 end)
 
-local test_comp_2 = Concord.component("test_comp_2", function(e, a)
+Component("test_comp_2", function(e, a)
     e.a = a
 end)
 
-local test_comp_3 = Concord.component("test_comp_3", function(e, b)
+Component("test_comp_3", function(e, b)
     e.b = b
 end)
 
-local test_system = Concord.system({Component.test_comp_1})
+local test_system = System("test_system", {Components.test_comp_1})
 
-function onEntityAdded(e)
+local function onEntityAdded(e) -- luacheck: ignore
     print("Added")
 end
 
-function onEntityRemoved(e)
+local function onEntityRemoved(e) -- luacheck: ignore
     print("Removed")
 end
 
 function test_system:init()
-    self.pool.onEntityAdded = onEntityAdded
+    self.pool.onEntityAdded   = onEntityAdded
     self.pool.onEntityRemoved = onEntityRemoved
 end
 
-function test_system:update(dt)
+function test_system:update(dt) -- luacheck: ignore
+    --print(#self.pool)
+end
+
+function test_system:update2(dt) -- luacheck: ignore
     --print(#self.pool)
 end
 
 
+local world = World()
 
-local world = Concord.world()
-
-local entity = Concord.entity()
-entity:give(Component.test_comp_1, 100, 100)
+local entity = Entity()
+entity:give(Components.test_comp_1, 100, 100)
 
 world:addEntity(entity)
 
-world:addSystem(test_system(), "update")
+world:addSystem(Systems.test_system, "update")
+world:addSystem(Systems.test_system, "update", "update2")
 
 function love.update(dt)
     world:flush()
@@ -59,10 +72,10 @@ end
 
 function love.keypressed(key)
     if key == "q" then
-        entity:remove(Component.test_comp_1)
+        entity:remove(Components.test_comp_1)
     end
     if key == "w" then
-        entity:give(Component.test_comp_1)
+        entity:give(Components.test_comp_1)
     end
     if key == "e" then
         world:removeEntity(entity)

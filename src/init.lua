@@ -33,7 +33,9 @@ local Concord = {
 
 Concord.entity     = require(PATH..".entity")
 Concord.component  = require(PATH..".component")
+Concord.components = require(PATH..".components")
 Concord.system     = require(PATH..".system")
+Concord.systems    = require(PATH..".systems")
 Concord.world      = require(PATH..".world")
 Concord.assemblage = require(PATH..".assemblage")
 

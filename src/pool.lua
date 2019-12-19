@@ -45,10 +45,10 @@ function Pool:remove(e)
    self:onEntityRemoved(e)
 end
 
-function Pool:onEntityAdded(e)
+function Pool:onEntityAdded(e) -- luacheck: ignore
 end
 
-function Pool:onEntityRemoved(e)
+function Pool:onEntityRemoved(e)  -- luacheck: ignore
 end
 
 return setmetatable(Pool, {

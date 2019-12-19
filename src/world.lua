@@ -14,10 +14,13 @@ function World.new()
    local world = setmetatable({
       entities = List(),
       systems  = List(),
+
       events   = {},
 
       __added   = {},
       __removed = {},
+
+      __systemLookup = {},
 
       __isWorld = true,
    }, World)
@@ -68,8 +71,8 @@ function World:flush()
          e.__wasAdded = false
          e.__isDirty = false
 
-         for i = 1, self.systems.size do
-            self.systems:get(i):__evaluate(e)
+         for j = 1, self.systems.size do
+            self.systems:get(j):__evaluate(e)
          end
 
          self:onEntityAdded(e)
@@ -79,16 +82,16 @@ function World:flush()
          e.world = nil
          self.entities:remove(e)
 
-         for i = 1, self.systems.size do
-            self.systems:get(i):__remove(e)
+         for j = 1, self.systems.size do
+            self.systems:get(j):__remove(e)
          end
 
          e.__wasRemoved = false
       end
 
       if e.__isDirty then
-         for i = 1, self.systems.size do
-            self.systems:get(i):__evaluate(e)
+         for j = 1, self.systems.size do
+            self.systems:get(j):__evaluate(e)
          end
 
          e.__isDirty = false
@@ -99,43 +102,46 @@ function World:flush()
 end
 
 --- Adds a System to the World.
--- @param system The System to add
--- @param eventName The Event to register to
--- @param callback The function name to call. Defaults to eventName
+-- @param baseSystem The BaseSystem of the system to add
+-- @param callbackName The callbackName to register to
+-- @param callback The function name to call. Defaults to callbackName
 -- @param enabled If the system is enabled. Defaults to true
 -- @return self
-function World:addSystem(system, eventName, callback, enabled)
-   if not Type.isSystem(system) then
-      error("bad argument #1 to 'World:addSystem' (System expected, got "..type(system)..")", 2)
+function World:addSystem(baseSystem, callbackName, callback, enabled)
+   if not Type.isBaseSystem(baseSystem) then
+      error("bad argument #1 to 'World:addSystem' (baseSystem expected, got "..type(baseSystem)..")", 2)
    end
 
-   if system.__World and system.__World ~= self then
-      error("System already in World '" ..tostring(system.__World).."'")
-   end
+   local system = self.__systemLookup[baseSystem]
+   if (not system) then
+      -- System was not created for this world yet, so we create it ourselves
 
-   if not self.systems:has(system) then
+      print("Created system")
+
+      system = baseSystem(self)
+
+      self.__systemLookup[baseSystem] = system
+
       self.systems:add(system)
-      system.__World = self
-
-      system:addedTo(self)
-
-      for i = 1, self.entities.size do
-         system:__evaluate(self.entities:get(i))
-      end
    end
 
-   if eventName then
-      self.events[eventName] = self.events[eventName] or {}
+   -- Retroactively evaluate all entities for this system
+   for i = 1, self.entities.size do
+      system:__evaluate(self.entities:get(i))
+   end
 
-      local i = #self.events[eventName] + 1
-      self.events[eventName][i] = {
+   if callbackName then
+      self.events[callbackName] = self.events[callbackName] or {}
+
+      local i = #self.events[callbackName] + 1
+      self.events[callbackName][i] = {
          system   = system,
-         callback = callback or eventName,
+         callback = callback or callbackName,
          enabled  = enabled == nil or enabled,
       }
 
       if enabled == nil or enabled then
-         system:enabledCallback(callback or eventName)
+         system:enabledCallback(callback or callbackName)
       end
    end
 
@@ -144,15 +150,15 @@ end
 
 --- Enables a System in the World.
 -- @param system The System to enable
--- @param eventName The Event it was registered to
+-- @param callbackName The Event it was registered to
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @return self
-function World:enableSystem(system, eventName, callback)
+function World:enableSystem(system, callbackName, callback)
    if not Type.isSystem(system) then
       error("bad argument #1 to 'World:enableSystem' (System expected, got "..type(system)..")", 2)
    end
 
-   return self:setSystem(system, eventName, callback, true)
+   return self:setSystem(system, callbackName, callback, true)
 end
 
 --- Disables a System in the World.
@@ -160,12 +166,12 @@ end
 -- @param eventName The Event it was registered to
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @return self
-function World:disableSystem(system, eventName, callback)
+function World:disableSystem(system, callbackName, callback)
    if not Type.isSystem(system) then
       error("bad argument #1 to 'World:disableSystem' (System expected, got "..type(system)..")", 2)
    end
 
-   return self:setSystem(system, eventName, callback, false)
+   return self:setSystem(system, callbackName, callback, false)
 end
 
 --- Sets a System 'enable' in the World.
@@ -174,15 +180,15 @@ end
 -- @param callback The callback it was registered with. Defaults to eventName
 -- @param enable The state to set it to
 -- @return self
-function World:setSystem(system, eventName, callback, enable)
+function World:setSystem(system, callbackName, callback, enable)
    if not Type.isSystem(system) then
       error("bad argument #1 to 'World:setSystem' (System expected, got "..type(system)..")", 2)
    end
 
-   callback = callback or eventName
+   callback = callback or callbackName
 
    if callback then
-      local listeners = self.events[eventName]
+      local listeners = self.events[callbackName]
 
       if listeners then
          for i = 1, #listeners do
@@ -210,12 +216,12 @@ end
 -- @param eventName The Event that should be emitted
 -- @param ... Parameters passed to listeners
 -- @return self
-function World:emit(eventName, ...)
-   if not eventName or type(eventName) ~= "string" then
-      error("bad argument #1 to 'World:emit' (String expected, got "..type(eventName)..")")
+function World:emit(callbackName, ...)
+   if not callbackName or type(callbackName) ~= "string" then
+      error("bad argument #1 to 'World:emit' (String expected, got "..type(callbackName)..")")
    end
 
-   local listeners = self.events[eventName]
+   local listeners = self.events[callbackName]
 
    if listeners then
       for i = 1, #listeners do
@@ -234,10 +240,8 @@ end
 -- @return self
 function World:clear()
    for i = 1, self.entities.size do
-      self.entities:get(i):destroy()
+      self.removeEntity(self.entities:get(i))
    end
-
-   self:flush()
 
    return self
 end

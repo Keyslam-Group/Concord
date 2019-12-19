@@ -1,5 +1,9 @@
 --- Component
 
+local PATH = (...):gsub('%.[^%.]+$', '')
+
+local Components = require(PATH..".components")
+
 local Component = {}
 Component.__index = Component
 
@@ -15,10 +19,6 @@ function Component.new(name, populate)
       error("bad argument #2 to 'Component.new' (function/nil expected, got "..type(populate)..")", 2)
    end
 
-   if (Component[name] ~= nil) then
-      error("bad argument #2 to 'Component.new' (Component with name '"..name.."' already exists", 2)
-   end
-
    local component = setmetatable({
       __name = name,
       __populate = populate,
@@ -28,7 +28,7 @@ function Component.new(name, populate)
 
    component.__mt = {__index = component}
 
-   Component[name] = component
+   Components.register(name, component)
 
    return component
 end
@@ -51,4 +51,4 @@ return setmetatable(Component, {
    __call = function(_, ...)
       return Component.new(...)
    end,
-})                                                                                                                                                
+})

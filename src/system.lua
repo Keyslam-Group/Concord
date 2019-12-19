@@ -2,20 +2,21 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Pool = require(PATH..".pool")
+local Systems = require(PATH..".systems")
+local Pool    = require(PATH..".pool")
 
 local System = {}
 System.mt    = {
    __index = System,
-   __call  = function(systemProto, ...)
+   __call  = function(baseSystem, world)
       local system = setmetatable({
          __pools = {},
-         __world = nil,
+         __world = world,
 
          __isSystem = true,
-      }, systemProto)
+      }, baseSystem)
 
-      for _, filter in pairs(systemProto.__filter) do
+      for _, filter in pairs(baseSystem.__filter) do
          local pool = system:__buildPool(filter)
          if not system[pool.name] then
             system[pool.name]                   = pool
@@ -25,7 +26,8 @@ System.mt    = {
          end
       end
 
-      system:init(...)
+      system:init(world)
+
       return system
    end,
 }
@@ -33,13 +35,21 @@ System.mt    = {
 --- Creates a new System prototype.
 -- @param ... Variable amounts of filters
 -- @return A new System prototype
-function System.new(...)
-   local systemProto = setmetatable({
+function System.new(name, ...)
+   if (type(name) ~= "string") then
+      error("bad argument #1 to 'System.new' (string expected, got "..type(name)..")", 2)
+   end
+
+   local baseSystem = setmetatable({
+      __name = name,
+      __isBaseSystem = true,
       __filter = {...},
    }, System.mt)
-   systemProto.__index = systemProto
+   baseSystem.__index = baseSystem
 
-   return systemProto
+   Systems.register(name, baseSystem)
+
+   return baseSystem
 end
 
 --- Builds a Pool for the System.
@@ -98,13 +108,8 @@ function System:getWorld()
 end
 
 --- Default callback for system initialization.
--- @param ... Varags
-function System:init(...) -- luacheck: ignore
-end
-
--- Default callback for when the System is added to an World.
 -- @param world The World the System was added to
-function System:addedTo(world) -- luacheck: ignore
+function System:init(world) -- luacheck: ignore
 end
 
 -- Default callback for when a System's callback is enabled.

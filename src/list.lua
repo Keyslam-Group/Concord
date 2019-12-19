@@ -60,6 +60,8 @@ function List:remove(obj)
 
    self[obj] = nil
    self.size = size - 1
+
+   return self
 end
 
 --- Gets an object by numerical index.
