@@ -5,6 +5,8 @@ local file = "examples.simpleDrawing"
 require(file)
 ]=]--
 
+--test
+
 local Concord = require("src")
 
 local Component  = require("src.component")
