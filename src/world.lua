@@ -109,6 +109,22 @@ function World:flush()
    return self
 end
 
+function World:hasSystem(baseSystem)
+   if not Type.isBaseSystem(baseSystem) then
+      error("bad argument #1 to 'World:getSystem' (baseSystem expected, got "..type(baseSystem)..")", 2)
+   end
+
+   return self.__systemLookup[baseSystem] and true or false
+end
+
+function World:getSystem(baseSystem)
+   if not Type.isBaseSystem(baseSystem) then
+      error("bad argument #1 to 'World:getSystem' (baseSystem expected, got "..type(baseSystem)..")", 2)
+   end
+
+   return self.__systemLookup[baseSystem]
+end
+
 --- Adds a System to the World.
 -- @param baseSystem The BaseSystem of the system to add
 -- @param callbackName The callbackName to register to
