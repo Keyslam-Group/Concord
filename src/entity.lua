@@ -13,6 +13,8 @@ function Entity.new()
    local e = setmetatable({
       world = nil,
 
+      __components = {},
+
       __isDirty    = true,
       __wasAdded   = false,
       __wasRemoved = false,
@@ -23,15 +25,18 @@ function Entity.new()
    return e
 end
 
-local function give(e, component, ...)
-   local comp = component:__initialize(...)
-   e[component] = comp
+local function give(e, baseComponent, ...)
+   local component = baseComponent:__initialize(...)
+
+   e[baseComponent] = component
+   e.__components[baseComponent] = component
 
    e.__isDirty = true
 end
 
-local function remove(e, component)
-   e[component] = nil
+local function remove(e, baseComponent)
+   e[baseComponent] = nil
+   e.__components[baseComponent] = nil
 
    e.__isDirty = true
 end
@@ -117,6 +122,10 @@ function Entity:has(component)
    end
 
    return self[component] ~= nil
+end
+
+function Entity:getComponents()
+   return self.__components
 end
 
 return setmetatable(Entity, {
