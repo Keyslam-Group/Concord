@@ -2,7 +2,6 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Worlds = require(PATH..".worlds")
 local Type   = require(PATH..".type")
 local List   = require(PATH..".list")
 
@@ -11,11 +10,7 @@ World.__index = World
 
 --- Creates a new World.
 -- @return The new World
-function World.new(name)
-   if (type(name) ~= "string") then
-      error("bad argument #1 to 'World.new' (string expected, got "..type(name)..")", 2)
-   end
-
+function World.new()
    local world = setmetatable({
       entities = List(),
       systems  = List(),
@@ -27,11 +22,8 @@ function World.new(name)
 
       __systemLookup = {},
 
-      __name    = name,
       __isWorld = true,
    }, World)
-
-   Worlds.register(name, world)
 
    return world
 end

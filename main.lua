@@ -9,8 +9,8 @@ require(file)
 
 local Concord = require("src")
 
-local Component  = require("src.component")
-local Components = require("src.components")
+local Component  = Concord.component
+local Components = Concord.components
 
 local System  = Concord.system
 local Systems = Concord.systems
@@ -20,20 +20,23 @@ local Entity = Concord.entity
 local World  = Concord.world
 local Worlds = Concord.worlds
 
-Component("test_comp_1", function(e, x, y)
-    e.x = x
-    e.y = y
-end)
+Concord.loadComponents("test/components")
 
-Component("test_comp_2", function(e, a)
+
+local test_comp_2 = Component(function(e, a)
     e.a = a
 end)
+Components.register("test_comp_2", test_comp_2)
 
-Component("test_comp_3", function(e, b)
+
+local test_comp_3 = Component(function(e, b)
     e.b = b
 end)
+Components.register("test_comp_3", test_comp_3)
 
-local test_system = System("test_system", {Components.test_comp_1})
+
+local test_system = System({Components.test_comp_1})
+Systems.register("test_system", test_system)
 
 local function onEntityAdded(pool, e) -- luacheck: ignore
     print("Added")
@@ -61,7 +64,8 @@ function test_system:update2(dt) -- luacheck: ignore
 end
 
 
-local world = World("testWorld")
+local world = World()
+Worlds.register("testWorld", world)
 
 local entity = Entity()
 entity
