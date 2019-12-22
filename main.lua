@@ -29,9 +29,7 @@ end)
 Components.register("test_comp_2", test_comp_2)
 
 
-local test_comp_3 = Component(function(e, b)
-    e.b = b
-end)
+local test_comp_3 = Component()
 Components.register("test_comp_3", test_comp_3)
 
 
@@ -72,7 +70,7 @@ entity
 :give(Components.test_comp_1, 100, 100)
 :remove(Components.test_comp_1)
 :give(Components.test_comp_1, 200, 100)
-
+:give(Components.test_comp_3, 200, 100)
 
 Worlds.testWorld:addEntity(entity)
 

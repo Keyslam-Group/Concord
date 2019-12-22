@@ -7,8 +7,8 @@ Component.__index = Component
 -- @param populate A function that populates the Bag with values
 -- @return A Component object
 function Component.new(populate)
-   if not (type(populate) == "function") then
-      error("bad argument #1 to 'Component.new' (function expected, got "..type(populate)..")", 2)
+   if (type(populate) ~= "function" and type(populate) ~= "nil") then
+      error("bad argument #1 to 'Component.new' (function/nil expected, got "..type(populate)..")", 2)
    end
 
    local baseComponent = setmetatable({
@@ -20,6 +20,9 @@ function Component.new(populate)
    baseComponent.__mt = {__index = baseComponent}
 
    return baseComponent
+end
+
+function Component:__populate() -- luacheck: ignore
 end
 
 --- Creates and initializes a new Component.
