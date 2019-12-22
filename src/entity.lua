@@ -108,7 +108,7 @@ function Entity:assemble(assemblage, ...)
    return self
 end
 
-function Entity:flush()
+function Entity:__flush()
    local addi, removei = 1, 1
 
    for i = 1, #self.__operations do

@@ -76,7 +76,7 @@ function World:flush()
       e = self.entities:get(i)
 
       if e.__isDirty then
-         e:flush()
+         e:__flush()
 
          if (not e.__wasAdded) then -- The __wasAdded check below will handle this instead
             for j = 1, self.systems.size do
