@@ -13,9 +13,13 @@ function Entity.new()
    local e = setmetatable({
       world = nil,
 
+      __addedComponents   = {},
+      __removedComponents = {},
+      __operations        = {},
+
       __components = {},
 
-      __isDirty    = true,
+      __isDirty    = false,
       __wasAdded   = false,
       __wasRemoved = false,
 
@@ -25,18 +29,30 @@ function Entity.new()
    return e
 end
 
-local function give(e, baseComponent, ...)
-   local component = baseComponent:__initialize(...)
+local function giveOperation(e, component)
+   local baseComponent = component.__baseComponent
 
    e[baseComponent] = component
    e.__components[baseComponent] = component
+end
+
+local function removeOperation(e, baseComponent)
+   e[baseComponent] = nil
+   e.__components[baseComponent] = nil
+end
+
+local function give(e, baseComponent, ...)
+   local component = baseComponent:__initialize(...)
+
+   e.__addedComponents[#e.__addedComponents + 1] = component
+   e.__operations[#e.__operations + 1] = giveOperation
 
    e.__isDirty = true
 end
 
 local function remove(e, baseComponent)
-   e[baseComponent] = nil
-   e.__components[baseComponent] = nil
+   e.__removedComponents[#e.__removedComponents + 1] = baseComponent
+   e.__operations[#e.__operations + 1] = removeOperation
 
    e.__isDirty = true
 end
@@ -90,6 +106,26 @@ function Entity:assemble(assemblage, ...)
    assemblage:assemble(self, ...)
 
    return self
+end
+
+function Entity:flush()
+   local addi, removei = 1, 1
+
+   for i = 1, #self.__operations do
+      local operation = self.__operations[i]
+
+      if (operation == giveOperation) then
+         operation(self, self.__addedComponents[addi])
+         self.__addedComponents[addi] = nil
+         addi = addi + 1
+      elseif (operation == removeOperation) then
+         operation(self, self.__removedComponents[removei])
+         self.__removedComponents[removei] = nil
+         removei = removei + 1
+      end
+
+      self.__operations[i] = nil
+   end
 end
 
 --- Destroys the Entity.

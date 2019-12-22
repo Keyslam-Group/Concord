@@ -35,11 +35,12 @@ end)
 
 local test_system = System("test_system", {Components.test_comp_1})
 
-local function onEntityAdded(e) -- luacheck: ignore
-    print("Added")
+local function onEntityAdded(pool, e) -- luacheck: ignore
+    local test_comp = e:get(Components.test_comp_1)
+    print(test_comp.x)
 end
 
-local function onEntityRemoved(e) -- luacheck: ignore
+local function onEntityRemoved(pool, e) -- luacheck: ignore
     print("Removed")
 end
 
@@ -64,7 +65,11 @@ end
 local world = World("testWorld")
 
 local entity = Entity()
-entity:give(Components.test_comp_1, 100, 100)
+entity
+:give(Components.test_comp_1, 100, 100)
+:remove(Components.test_comp_1)
+:give(Components.test_comp_1, 200, 100)
+
 
 Worlds.testWorld:addEntity(entity)
 
