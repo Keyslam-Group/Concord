@@ -61,26 +61,26 @@ end
 -- @param component The Component to add
 -- @param ... The values passed to the Component
 -- @return self
-function Entity:give(component, ...)
-   if not Type.isComponent(component) then
-      error("bad argument #1 to 'Entity:give' (Component expected, got "..type(component)..")", 2)
+function Entity:give(baseComponent, ...)
+   if not Type.isBaseComponent(baseComponent) then
+      error("bad argument #1 to 'Entity:give' (BaseComponent expected, got "..type(baseComponent)..")", 2)
    end
 
-   give(self, component, ...)
+   give(self, baseComponent, ...)
 
    return self
 end
 
-function Entity:ensure(component, ...)
-   if not Type.isComponent(component) then
-      error("bad argument #1 to 'Entity:ensure' (Component expected, got "..type(component)..")", 2)
+function Entity:ensure(baseComponent, ...)
+   if not Type.isBaseComponent(baseComponent) then
+      error("bad argument #1 to 'Entity:ensure' (BaseComponent expected, got "..type(baseComponent)..")", 2)
    end
 
-   if self[component] then
+   if self[baseComponent] then
       return self
    end
 
-   give(self, component, ...)
+   give(self, baseComponent, ...)
 
    return self
 end
@@ -88,12 +88,12 @@ end
 --- Removes a component from an Entity.
 -- @param component The Component to remove
 -- @return self
-function Entity:remove(component)
-   if not Type.isComponent(component) then
-      error("bad argument #1 to 'Entity:remove' (Component expected, got "..type(component)..")")
+function Entity:remove(baseComponent)
+   if not Type.isBaseComponent(baseComponent) then
+      error("bad argument #1 to 'Entity:remove' (BaseComponent expected, got "..type(baseComponent)..")")
    end
 
-   remove(self, component)
+   remove(self, baseComponent)
 
    return self
 end
@@ -141,23 +141,23 @@ end
 --- Gets a Component from the Entity.
 -- @param component The Component to get
 -- @return The Bag from the Component
-function Entity:get(component)
-   if not Type.isComponent(component) then
-      error("bad argument #1 to 'Entity:get' (Component expected, got "..type(component)..")")
+function Entity:get(baseComponent)
+   if not Type.isBaseComponent(baseComponent) then
+      error("bad argument #1 to 'Entity:get' (BaseComponent expected, got "..type(baseComponent)..")")
    end
 
-   return self[component]
+   return self[baseComponent]
 end
 
 --- Returns true if the Entity has the Component.
 -- @param component The Component to check against
 -- @return True if the entity has the Bag. False otherwise
-function Entity:has(component)
-   if not Type.isComponent(component) then
-      error("bad argument #1 to 'Entity:has' (Component expected, got "..type(component)..")")
+function Entity:has(baseComponent)
+   if not Type.isBaseComponent(baseComponent) then
+      error("bad argument #1 to 'Entity:has' (BaseComponent expected, got "..type(baseComponent)..")")
    end
 
-   return self[component] ~= nil
+   return self[baseComponent] ~= nil
 end
 
 function Entity:getComponents()

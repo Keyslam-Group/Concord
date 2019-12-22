@@ -15,39 +15,38 @@ function Component.new(name, populate)
       error("bad argument #1 to 'Component.new' (string expected, got "..type(name)..")", 2)
    end
 
-   if not (populate == nil or type(populate) == "function") then
-      error("bad argument #2 to 'Component.new' (function/nil expected, got "..type(populate)..")", 2)
+   if not (type(populate) == "function") then
+      error("bad argument #2 to 'Component.new' (function expected, got "..type(populate)..")", 2)
    end
 
-   local component = setmetatable({
+   local baseComponent = setmetatable({
       __name = name,
       __populate = populate,
 
-      __isComponent = true,
+      __isBaseComponent = true,
    }, Component)
 
-   component.__mt = {__index = component}
+   baseComponent.__mt = {__index = baseComponent}
 
-   Components.register(name, component)
+   Components.register(name, baseComponent)
 
-   return component
+   return baseComponent
 end
 
---- Creates and initializes a new Bag.
+--- Creates and initializes a new Component.
 -- @param ... The values passed to the populate function
--- @return A new initialized Bag
+-- @return A new initialized Component
 function Component:__initialize(...)
-   if self.__populate then
-      local bag = setmetatable({
-         __baseComponent = self,
-      }, self)
+   local component = setmetatable({
+      __baseComponent = self,
 
-      self.__populate(bag, ...)
+      __isComponent     = true,
+      __isBaseComponent = false,
+   }, self)
 
-      return bag
-   end
+   self.__populate(component, ...)
 
-   return true
+   return component
 end
 
 return setmetatable(Component, {

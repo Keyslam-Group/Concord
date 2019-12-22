@@ -36,8 +36,7 @@ end)
 local test_system = System("test_system", {Components.test_comp_1})
 
 local function onEntityAdded(pool, e) -- luacheck: ignore
-    local test_comp = e:get(Components.test_comp_1)
-    print(test_comp.x)
+    print("Added")
 end
 
 local function onEntityRemoved(pool, e) -- luacheck: ignore

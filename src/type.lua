@@ -2,12 +2,16 @@
 
 local Type = {}
 
-function Type.isComponent(t)
-   return type(t) == "table" and t.__isComponent or false
-end
-
 function Type.isEntity(t)
    return type(t) == "table" and t.__isEntity or false
+end
+
+function Type.isBaseComponent(t)
+   return type(t) == "table" and t.__isBaseComponent or false
+end
+
+function Type.isComponent(t)
+   return type(t) == "table" and t.__isComponent or false
 end
 
 function Type.isBaseSystem(t)
