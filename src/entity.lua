@@ -11,7 +11,7 @@ Entity.__index = Entity
 -- @return A new Entity
 function Entity.new()
    local e = setmetatable({
-      world = nil,
+      __world = nil,
 
       __addedComponents   = {},
       __removedComponents = {},
@@ -162,6 +162,10 @@ end
 
 function Entity:getComponents()
    return self.__components
+end
+
+function Entity:getWorld()
+   return self.__world
 end
 
 return setmetatable(Entity, {
