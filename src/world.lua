@@ -17,8 +17,9 @@ function World.new()
 
       events   = {},
 
-      __added   = {},
-      __removed = {},
+      __added   = List(), __backAdded   = List(),
+      __removed = List(), __backRemoved = List(),
+      __dirty   = List(), __backDirty   = List(),
 
       __systemLookup = {},
 
@@ -36,14 +37,16 @@ function World:addEntity(e)
       error("bad argument #1 to 'World:addEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
-   if e.world then
+   if e.__world then
       error("bad argument #1 to 'World:addEntity' (Entity was already added to a world)", 2)
    end
 
-   e.world = self
+   e.__world = self
    e.__wasAdded = true
 
-   self.entities:add(e)
+   self.__added:add(e)
+
+   --self.entities:add(e)
 
    return self
 end
@@ -58,50 +61,65 @@ function World:removeEntity(e)
 
    e.__wasRemoved = true
 
+   self.__removed:add(e)
+
    return self
 end
 
+function World:__dirtyEntity(e)
+   if not self.__dirty:has(e) then
+      self.__dirty:add(e)
+   end
+end
+
+
 -- @return self
-function World:flush()
+function World:__flush()
+   -- Switch buffers
+   self.__added,   self.__backAdded   = self.__backAdded,   self.__added
+   self.__removed, self.__backRemoved = self.__backRemoved, self.__removed
+   self.__dirty,   self.__backDirty   = self.__backDirty,   self.__dirty
+
    local e
-   for i = 1, self.entities.size do
-      e = self.entities:get(i)
 
-      if e.__isDirty then
-         e:__flush()
+   -- Added
+   for i = 1, self.__backAdded.size do
+      e = self.__backAdded:get(i)
 
-         if (not e.__wasAdded) then -- The __wasAdded check below will handle this instead
-            for j = 1, self.systems.size do
-               self.systems:get(j):__evaluate(e)
-            end
-         end
+      self.entities:add(e)
 
-         e.__isDirty = false
+      for j = 1, self.systems.size do
+         self.systems:get(j):__evaluate(e)
       end
 
-      if e.__wasAdded then
-         e.__wasAdded = false
+      self:onEntityAdded(e)
+   end
+   self.__backAdded:clear()
 
-         for j = 1, self.systems.size do
-            self.systems:get(j):__evaluate(e)
-         end
+   -- Removed
+   for i = 1, self.__backRemoved.size do
+      e = self.__backRemoved:get(i)
 
-         self:onEntityAdded(e)
+      e.__world = nil
+      self.entities:remove(e)
+
+      for j = 1, self.systems.size do
+         self.systems:get(j):__remove(e)
       end
 
-      if e.__wasRemoved then
-         e.world = nil
-         self.entities:remove(e)
+      self:onEntityRemoved(e)
+   end
+   self.__backRemoved:clear()
 
-         for j = 1, self.systems.size do
-            self.systems:get(j):__remove(e)
-         end
+   -- Dirty
+   for i = 1, self.__backDirty.size do
+      e = self.__backDirty:get(i)
 
-         e.__wasRemoved = false
-
-         self:onEntityRemoved(e)
+      for j = 1, self.systems.size do
+         self.systems:get(j):__evaluate(e)
       end
    end
+   self.__backDirty:clear()
 
    return self
 end
@@ -246,6 +264,8 @@ function World:emit(callbackName, ...)
          local listener = listeners[i]
 
          if listener.enabled then
+            self:__flush()
+
             listener.system[listener.callback](listener.system, ...)
          end
       end

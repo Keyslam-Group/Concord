@@ -20,77 +20,72 @@ local Entity = Concord.entity
 local World  = Concord.world
 local Worlds = Concord.worlds
 
-Concord.loadComponents("test/components")
 
+local test_comp_1 = Component(function(e, a)
+    e.a = a
+end)
 
 local test_comp_2 = Component(function(e, a)
     e.a = a
 end)
-Components.register("test_comp_2", test_comp_2)
-
 
 local test_comp_3 = Component()
-Components.register("test_comp_3", test_comp_3)
 
+local test_system_1 = System({test_comp_1})
 
-local test_system = System({Components.test_comp_1})
-Systems.register("test_system", test_system)
+function test_system_1:init()
+    self.pool.onEntityAdded   = function()
+        
+        
 
-local function onEntityAdded(pool, e) -- luacheck: ignore
-    print("Added")
-end
-
-local function onEntityRemoved(pool, e) -- luacheck: ignore
-    print("Removed")
-end
-
-function test_system:init()
-    self.pool.onEntityAdded   = onEntityAdded
-    self.pool.onEntityRemoved = onEntityRemoved
-end
-
-function test_system:update(dt) -- luacheck: ignore
-    --[=[
-    for _, v in ipairs(self.pool) do
-        print(v)
+        print("Added to test_system 1")
     end
-    ]=]
+    self.pool.onEntityRemoved = function() print("Removed from test_system 1") end
 end
 
-function test_system:update2(dt) -- luacheck: ignore
-    --print(#self.pool)
+function test_system_1:test()
+    print("Running test_system_1 with: " ..#self.pool)
+
+    for _, e in ipairs(self.pool) do
+        local newE = Entity()
+        newE:give(test_comp_1)
+        self:getWorld():addEntity(newE)
+
+        e:give(test_comp_2)
+    end
 end
 
+
+
+local test_system_2 = System({test_comp_2})
+
+function test_system_2:init()
+    self.pool.onEntityAdded   = function(pool, e) print("Added to test_system 2") e:remove(test_comp_1) end
+    self.pool.onEntityRemoved = function() print("Removed from test_system 2") end
+end
+
+function test_system_2:test()
+    print("Running test_system_2 with: " ..#self.pool)
+
+    for _, e in ipairs(self.pool) do
+    end
+end
 
 local world = World()
-Worlds.register("testWorld", world)
 
 local entity = Entity()
-entity
-:give(Components.test_comp_1, 100, 100)
-:remove(Components.test_comp_1)
-:give(Components.test_comp_1, 200, 100)
-:give(Components.test_comp_3, 200, 100)
+entity:give(test_comp_1, 100, 100)
 
-Worlds.testWorld:addEntity(entity)
+world:addEntity(entity)
 
-world:addSystem(Systems.test_system, "update")
-world:addSystem(Systems.test_system, "update", "update2")
+world:addSystem(test_system_1, "test")
+world:addSystem(test_system_2, "test")
 
-function love.update(dt)
-    world:flush()
+print("Iteration: 1")
+world:emit("test")
 
-    world:emit("update", dt)
-end
+print("Iteration: 2")
+world:emit("test")
 
-function love.keypressed(key)
-    if key == "q" then
-        entity:remove(Components.test_comp_1)
-    end
-    if key == "w" then
-        entity:give(Components.test_comp_1)
-    end
-    if key == "e" then
-        world:removeEntity(entity)
-    end
-end
+print("Iteration: 3")
+world:emit("test")

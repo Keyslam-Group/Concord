@@ -13,10 +13,6 @@ function Entity.new()
    local e = setmetatable({
       __world = nil,
 
-      __addedComponents   = {},
-      __removedComponents = {},
-      __operations        = {},
-
       __components = {},
 
       __isDirty    = false,
@@ -29,32 +25,22 @@ function Entity.new()
    return e
 end
 
-local function giveOperation(e, component)
-   local baseComponent = component.__baseComponent
-
-   e[baseComponent] = component
-   e.__components[baseComponent] = component
-end
-
-local function removeOperation(e, baseComponent)
-   e[baseComponent] = nil
-   e.__components[baseComponent] = nil
-end
-
 local function give(e, baseComponent, ...)
    local component = baseComponent:__initialize(...)
 
-   e.__addedComponents[#e.__addedComponents + 1] = component
-   e.__operations[#e.__operations + 1] = giveOperation
+   e[baseComponent] = component
+   e.__components[baseComponent] = component
 
    e.__isDirty = true
+   e:__dirty()
 end
 
 local function remove(e, baseComponent)
-   e.__removedComponents[#e.__removedComponents + 1] = baseComponent
-   e.__operations[#e.__operations + 1] = removeOperation
+   e[baseComponent] = nil
+   e.__components[baseComponent] = nil
 
    e.__isDirty = true
+   e:__dirty()
 end
 
 --- Gives an Entity a component with values.
@@ -108,34 +94,20 @@ function Entity:assemble(assemblage, ...)
    return self
 end
 
-function Entity:__flush()
-   local addi, removei = 1, 1
-
-   for i = 1, #self.__operations do
-      local operation = self.__operations[i]
-
-      if (operation == giveOperation) then
-         operation(self, self.__addedComponents[addi])
-         self.__addedComponents[addi] = nil
-         addi = addi + 1
-      elseif (operation == removeOperation) then
-         operation(self, self.__removedComponents[removei])
-         self.__removedComponents[removei] = nil
-         removei = removei + 1
-      end
-
-      self.__operations[i] = nil
-   end
-end
-
 --- Destroys the Entity.
 -- @return self
 function Entity:destroy()
-   if self.world then
-      self.world:removeEntity(self)
+   if self.__world then
+      self.__world:removeEntity(self)
    end
 
    return self
+end
+
+function Entity:__dirty()
+   if self.__world then
+      self.__world:__dirtyEntity(self)
+   end
 end
 
 --- Gets a Component from the Entity.
