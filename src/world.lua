@@ -2,8 +2,8 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Type   = require(PATH..".type")
-local List   = require(PATH..".list")
+local Type = require(PATH..".type")
+local List = require(PATH..".list")
 
 local World = {}
 World.__index = World
@@ -42,11 +42,7 @@ function World:addEntity(e)
    end
 
    e.__world = self
-   e.__wasAdded = true
-
    self.__added:add(e)
-
-   --self.entities:add(e)
 
    return self
 end
@@ -58,8 +54,6 @@ function World:removeEntity(e)
    if not Type.isEntity(e) then
       error("bad argument #1 to 'World:removeEntity' (Entity expected, got "..type(e)..")", 2)
    end
-
-   e.__wasRemoved = true
 
    self.__removed:add(e)
 
@@ -84,12 +78,12 @@ function World:__flush()
 
    -- Added
    for i = 1, self.__backAdded.size do
-      e = self.__backAdded:get(i)
+      e = self.__backAdded[i]
 
       self.entities:add(e)
 
       for j = 1, self.systems.size do
-         self.systems:get(j):__evaluate(e)
+         self.systems[j]:__evaluate(e)
       end
 
       self:onEntityAdded(e)
@@ -98,13 +92,13 @@ function World:__flush()
 
    -- Removed
    for i = 1, self.__backRemoved.size do
-      e = self.__backRemoved:get(i)
+      e = self.__backRemoved[i]
 
       e.__world = nil
       self.entities:remove(e)
 
       for j = 1, self.systems.size do
-         self.systems:get(j):__remove(e)
+         self.systems[j]:__remove(e)
       end
 
       self:onEntityRemoved(e)
@@ -113,10 +107,10 @@ function World:__flush()
 
    -- Dirty
    for i = 1, self.__backDirty.size do
-      e = self.__backDirty:get(i)
+      e = self.__backDirty[i]
 
       for j = 1, self.systems.size do
-         self.systems:get(j):__evaluate(e)
+         self.systems[j]:__evaluate(e)
       end
    end
    self.__backDirty:clear()
@@ -163,7 +157,7 @@ function World:addSystem(baseSystem, callbackName, callback, enabled)
 
    -- Retroactively evaluate all entities for this system
    for i = 1, self.entities.size do
-      system:__evaluate(self.entities:get(i))
+      system:__evaluate(self.entities[i])
    end
 
    if callbackName then

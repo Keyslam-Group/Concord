@@ -64,13 +64,6 @@ function List:remove(obj)
    return self
 end
 
---- Gets an object by numerical index.
--- @param index The index to look at
--- @return The object at the index
-function List:get(index)
-   return self[index]
-end
-
 --- Gets if the List has the object.
 -- @param obj The object to search for
 -- true if the list has the object, false otherwise

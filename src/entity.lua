@@ -11,13 +11,8 @@ Entity.__index = Entity
 -- @return A new Entity
 function Entity.new()
    local e = setmetatable({
-      __world = nil,
-
+      __world      = nil,
       __components = {},
-
-      __isDirty    = false,
-      __wasAdded   = false,
-      __wasRemoved = false,
 
       __isEntity = true,
    }, Entity)
@@ -31,7 +26,6 @@ local function give(e, baseComponent, ...)
    e[baseComponent] = component
    e.__components[baseComponent] = component
 
-   e.__isDirty = true
    e:__dirty()
 end
 
@@ -39,7 +33,6 @@ local function remove(e, baseComponent)
    e[baseComponent] = nil
    e.__components[baseComponent] = nil
 
-   e.__isDirty = true
    e:__dirty()
 end
 
