@@ -70,10 +70,8 @@ end
 
 local world = World()
 
-local entity = Entity()
+local entity = Entity(world)
 entity:give(test_comp_1, 100, 100)
-
-world:addEntity(entity)
 
 world:addSystem(test_system_1, "test")
 world:addSystem(test_system_2, "test")

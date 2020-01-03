@@ -9,13 +9,21 @@ Entity.__index = Entity
 
 --- Creates and initializes a new Entity.
 -- @return A new Entity
-function Entity.new()
+function Entity.new(world)
+   if (world ~= nil and not Type.isWorld(world)) then
+      error("bad argument #1 to 'Entity.new' (world/nil expected, got "..type(world)..")", 2)
+   end
+
    local e = setmetatable({
       __world      = nil,
       __components = {},
 
       __isEntity = true,
    }, Entity)
+
+   if (world) then
+      world:addEntity(e)
+   end
 
    return e
 end
