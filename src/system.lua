@@ -9,6 +9,8 @@ System.mt    = {
    __index = System,
    __call  = function(baseSystem, world)
       local system = setmetatable({
+         __enabled = true,
+
          __pools = {},
          __world = world,
 
@@ -94,6 +96,32 @@ function System:clear()
    end
 end
 
+function System:enable()
+   self:setEnabled(true)
+end
+
+function System:disable()
+   self:setEnabled(false)
+end
+
+function System:toggleEnable()
+   self:setEnabled(not self.__enabled)
+end
+
+function System:setEnabled(enable)
+   if (not self.__enabled and enable) then
+      self.__enabled = true
+      self:onEnabledCallback()
+   elseif (self.__enabled and not enable) then
+      self.__enabled = false
+      self:onDisabledCallback()
+   end
+end
+
+function System:isEnabled()
+   return self.__enabled
+end
+
 --- Returns the World the System is in.
 -- @return The world the system is in
 function System:getWorld()
@@ -107,12 +135,12 @@ end
 
 -- Default callback for when a System's callback is enabled.
 -- @param callbackName The name of the callback that was enabled
-function System:enabledCallback(callbackName) -- luacheck: ignore
+function System:onEnabledCallback(callbackName) -- luacheck: ignore
 end
 
 -- Default callback for when a System's callback is disabled.
 -- @param callbackName The name of the callback that was disabled
-function System:disabledCallback(callbackName) -- luacheck: ignore
+function System:onDisabledCallback(callbackName) -- luacheck: ignore
 end
 
 return setmetatable(System, {

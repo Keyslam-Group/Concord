@@ -129,7 +129,7 @@ local blacklistedSystemMethods = {
 
 function World:addSystem(baseSystem)
    if (not Type.isBaseSystem(baseSystem)) then
-      error("bad argument #"..i.." to 'World:addSystems' (baseSystem expected, got "..type(baseSystem)..")", 2)
+      error("bad argument #1 to 'World:addSystems' (baseSystem expected, got "..type(baseSystem)..")", 2)
    end
 
    -- TODO: Check if baseSystem was already added
@@ -203,9 +203,11 @@ function World:emit(callbackName, ...)
       for i = 1, #listeners do
          local listener = listeners[i]
 
-         self:__flush()
+         if (listener.system.__enabled) then
+            self:__flush()
 
-         listener.callback(listener.system, ...)
+            listener.callback(listener.system, ...)
+         end
       end
    end
 
