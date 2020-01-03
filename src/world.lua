@@ -15,7 +15,7 @@ function World.new()
       entities = List(),
       systems  = List(),
 
-      events   = {},
+      events = {},
 
       __added   = List(), __backAdded   = List(),
       __removed = List(), __backRemoved = List(),
@@ -69,6 +69,11 @@ end
 
 -- @return self
 function World:__flush()
+   -- Early out
+   if (self.__added.size == 0 and self.__removed.size == 0 and self.__dirty.size == 0) then
+      return self
+   end
+
    -- Switch buffers
    self.__added,   self.__backAdded   = self.__backAdded,   self.__added
    self.__removed, self.__backRemoved = self.__backRemoved, self.__removed
@@ -76,7 +81,7 @@ function World:__flush()
 
    local e
 
-   -- Added
+   -- Process added entities
    for i = 1, self.__backAdded.size do
       e = self.__backAdded[i]
 
@@ -90,7 +95,7 @@ function World:__flush()
    end
    self.__backAdded:clear()
 
-   -- Removed
+   -- Process removed entities
    for i = 1, self.__backRemoved.size do
       e = self.__backRemoved[i]
 
@@ -105,7 +110,7 @@ function World:__flush()
    end
    self.__backRemoved:clear()
 
-   -- Dirty
+   -- Process dirty entities
    for i = 1, self.__backDirty.size do
       e = self.__backDirty[i]
 
@@ -117,6 +122,55 @@ function World:__flush()
 
    return self
 end
+
+local blacklistedSystemMethods = {
+   "init",
+}
+
+function World:addSystem(baseSystem)
+   if (not Type.isBaseSystem(baseSystem)) then
+      error("bad argument #"..i.." to 'World:addSystems' (baseSystem expected, got "..type(baseSystem)..")", 2)
+   end
+
+   -- TODO: Check if baseSystem was already added
+
+   -- Create instance of system
+   local system = baseSystem(self)
+
+   self.__systemLookup[baseSystem] = system
+   self.systems:add(system)
+
+   for callbackName, callback in pairs(baseSystem) do
+      -- Skip callback if its blacklisted
+      if (not blacklistedSystemMethods[callbackName]) then
+         -- Make container for all listeners of the callback if it does not exist yet
+         if (not self.events[callbackName]) then
+            self.events[callbackName] = {}
+         end
+
+         -- Add callback to listeners
+         local listeners = self.events[callbackName]
+         listeners[#listeners + 1] = {
+            system   = system,
+            callback = callback,
+         }
+      end
+   end
+
+   -- Evaluate all existing entities
+   for j = 1, self.entities.size do
+      system:__evaluate(self.entities[j])
+   end
+end
+
+function World:addSystems(...)
+   for i = 1, select("#", ...) do
+      local baseSystem = select(i, ...)
+
+      self:addSystem(baseSystem)
+   end
+end
+
 
 function World:hasSystem(baseSystem)
    if not Type.isBaseSystem(baseSystem) then
@@ -134,114 +188,6 @@ function World:getSystem(baseSystem)
    return self.__systemLookup[baseSystem]
 end
 
---- Adds a System to the World.
--- @param baseSystem The BaseSystem of the system to add
--- @param callbackName The callbackName to register to
--- @param callback The function name to call. Defaults to callbackName
--- @param enabled If the system is enabled. Defaults to true
--- @return self
-function World:addSystem(baseSystem, callbackName, callback, enabled)
-   if not Type.isBaseSystem(baseSystem) then
-      error("bad argument #1 to 'World:addSystem' (baseSystem expected, got "..type(baseSystem)..")", 2)
-   end
-
-   local system = self.__systemLookup[baseSystem]
-   if (not system) then
-      -- System was not created for this world yet, so we create it ourselves
-      system = baseSystem(self)
-
-      self.__systemLookup[baseSystem] = system
-
-      self.systems:add(system)
-   end
-
-   -- Retroactively evaluate all entities for this system
-   for i = 1, self.entities.size do
-      system:__evaluate(self.entities[i])
-   end
-
-   if callbackName then
-      self.events[callbackName] = self.events[callbackName] or {}
-
-      local i = #self.events[callbackName] + 1
-      self.events[callbackName][i] = {
-         system   = system,
-         callback = callback or callbackName,
-         enabled  = enabled == nil or enabled,
-      }
-
-      if enabled == nil or enabled then
-         system:enabledCallback(callback or callbackName)
-      end
-   end
-
-   return self
-end
-
---- Enables a System in the World.
--- @param system The System to enable
--- @param callbackName The Event it was registered to
--- @param callback The callback it was registered with. Defaults to eventName
--- @return self
-function World:enableSystem(system, callbackName, callback)
-   if not Type.isSystem(system) then
-      error("bad argument #1 to 'World:enableSystem' (System expected, got "..type(system)..")", 2)
-   end
-
-   return self:setSystem(system, callbackName, callback, true)
-end
-
---- Disables a System in the World.
--- @param system The System to disable
--- @param eventName The Event it was registered to
--- @param callback The callback it was registered with. Defaults to eventName
--- @return self
-function World:disableSystem(system, callbackName, callback)
-   if not Type.isSystem(system) then
-      error("bad argument #1 to 'World:disableSystem' (System expected, got "..type(system)..")", 2)
-   end
-
-   return self:setSystem(system, callbackName, callback, false)
-end
-
---- Sets a System 'enable' in the World.
--- @param system The System to set
--- @param eventName The Event it was registered to
--- @param callback The callback it was registered with. Defaults to eventName
--- @param enable The state to set it to
--- @return self
-function World:setSystem(system, callbackName, callback, enable)
-   if not Type.isSystem(system) then
-      error("bad argument #1 to 'World:setSystem' (System expected, got "..type(system)..")", 2)
-   end
-
-   callback = callback or callbackName
-
-   if callback then
-      local listeners = self.events[callbackName]
-
-      if listeners then
-         for i = 1, #listeners do
-            local listener = listeners[i]
-
-            if listener.system == system and listener.callback == callback then
-               if enable and not listener.enabled then
-                  system:enabledCallback(callback)
-               elseif not enable and listener.enabled then
-                  system:disabledCallback(callback)
-               end
-
-               listener.enabled = enable
-
-               break
-            end
-         end
-      end
-   end
-
-   return self
-end
-
 --- Emits an Event in the World.
 -- @param eventName The Event that should be emitted
 -- @param ... Parameters passed to listeners
@@ -257,11 +203,9 @@ function World:emit(callbackName, ...)
       for i = 1, #listeners do
          local listener = listeners[i]
 
-         if listener.enabled then
-            self:__flush()
+         self:__flush()
 
-            listener.system[listener.callback](listener.system, ...)
-         end
+         listener.callback(listener.system, ...)
       end
    end
 

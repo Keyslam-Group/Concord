@@ -73,8 +73,7 @@ local world = World()
 local entity = Entity(world)
 entity:give(test_comp_1, 100, 100)
 
-world:addSystem(test_system_1, "test")
-world:addSystem(test_system_2, "test")
+world:addSystems(test_system_1, test_system_2)
 
 print("Iteration: 1")
 world:emit("test")
