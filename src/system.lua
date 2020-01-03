@@ -2,9 +2,13 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Pool    = require(PATH..".pool")
+local Pool  = require(PATH..".pool")
+local Utils = require(PATH..".utils")
 
-local System = {}
+local System = {
+   ENABLE_OPTIMIZATION = true,
+}
+
 System.mt    = {
    __index = System,
    __call  = function(baseSystem, world)
@@ -17,6 +21,13 @@ System.mt    = {
          __isSystem = true,
          __isBaseSystem = false, -- Overwrite value from baseSystem
       }, baseSystem)
+
+      -- Optimization: We deep copy the World class into our instance of a world.
+      -- This grants slightly faster access times at the cost of memory.
+      -- Since there (generally) won't be many instances of worlds this is a worthwhile tradeoff
+      if (System.ENABLE_OPTIMIZATION) then
+         Utils.shallowCopy(System, system)
+      end
 
       for _, filter in pairs(baseSystem.__filter) do
          local pool = system:__buildPool(filter)

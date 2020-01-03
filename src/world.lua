@@ -2,10 +2,13 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Type = require(PATH..".type")
-local List = require(PATH..".list")
+local Type  = require(PATH..".type")
+local List  = require(PATH..".list")
+local Utils = require(PATH..".utils")
 
-local World = {}
+local World = {
+   ENABLE_OPTIMIZATION = true,
+}
 World.__index = World
 
 --- Creates a new World.
@@ -25,6 +28,13 @@ function World.new()
 
       __isWorld = true,
    }, World)
+
+   -- Optimization: We deep copy the World class into our instance of a world.
+   -- This grants slightly faster access times at the cost of memory.
+   -- Since there (generally) won't be many instances of worlds this is a worthwhile tradeoff
+   if (World.ENABLE_OPTIMIZATION) then
+      Utils.shallowCopy(World, world)
+   end
 
    return world
 end
