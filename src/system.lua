@@ -78,6 +78,8 @@ function System:__evaluate(e)
          pool:remove(e)
       end
    end
+
+   return self
 end
 
 --- Remove an Entity from the System.
@@ -88,24 +90,34 @@ function System:__remove(e)
          pool:remove(e)
       end
    end
+
+   return self
 end
 
 function System:clear()
    for i = 1, #self.__pools do
       self.__pools[i]:clear()
    end
+
+   return self
 end
 
 function System:enable()
    self:setEnabled(true)
+
+   return self
 end
 
 function System:disable()
    self:setEnabled(false)
+
+   return self
 end
 
 function System:toggleEnable()
    self:setEnabled(not self.__enabled)
+
+   return self
 end
 
 function System:setEnabled(enable)
@@ -116,6 +128,8 @@ function System:setEnabled(enable)
       self.__enabled = false
       self:onDisabledCallback()
    end
+
+   return self
 end
 
 function System:isEnabled()
