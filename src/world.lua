@@ -272,7 +272,7 @@ end
 -- @return self
 function World:clear()
    for i = 1, self.entities.size do
-      self.removeEntity(self.entities[i])
+      self:removeEntity(self.entities[i])
    end
 
    return self

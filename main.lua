@@ -35,9 +35,6 @@ local test_system_1 = System({test_comp_1})
 
 function test_system_1:init()
     self.pool.onEntityAdded   = function()
-        
-        
-
         print("Added to test_system 1")
     end
     self.pool.onEntityRemoved = function() print("Removed from test_system 1") end
