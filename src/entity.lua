@@ -137,6 +137,10 @@ function Entity:getComponents()
    return self.__components
 end
 
+function Entity:hasWorld()
+   return self.__world and true or false
+end
+
 function Entity:getWorld()
    return self.__world
 end
