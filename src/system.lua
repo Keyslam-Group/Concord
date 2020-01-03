@@ -9,7 +9,7 @@ local System = {
    ENABLE_OPTIMIZATION = true,
 }
 
-System.mt    = {
+System.mt = {
    __index = System,
    __call  = function(baseSystem, world)
       local system = setmetatable({
@@ -31,8 +31,8 @@ System.mt    = {
 
       for _, filter in pairs(baseSystem.__filter) do
          local pool = system:__buildPool(filter)
-         if not system[pool.name] then
-            system[pool.name]                   = pool
+         if not system[pool.__name] then
+            system[pool.__name]                 = pool
             system.__pools[#system.__pools + 1] = pool
          else
             error("Pool with name '"..pool.name.."' already exists.")
@@ -81,12 +81,12 @@ end
 function System:__evaluate(e)
    for _, pool in ipairs(self.__pools) do
       local has  = pool:has(e)
-      local eligible = pool:eligible(e)
+      local eligible = pool:__eligible(e)
 
       if not has and eligible then
-         pool:add(e)
+         pool:__add(e)
       elseif has and not eligible then
-         pool:remove(e)
+         pool:__remove(e)
       end
    end
 
@@ -98,7 +98,7 @@ end
 function System:__remove(e)
    for _, pool in ipairs(self.__pools) do
       if pool:has(e) then
-         pool:remove(e)
+         pool:__remove(e)
       end
    end
 
@@ -107,7 +107,7 @@ end
 
 function System:clear()
    for i = 1, #self.__pools do
-      self.__pools[i]:clear()
+      self.__pools[i]:__clear()
    end
 
    return self

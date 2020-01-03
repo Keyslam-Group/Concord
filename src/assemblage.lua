@@ -1,14 +1,16 @@
 --- Assemblage
 
 local Assemblage = {}
-Assemblage.__index = Assemblage
+Assemblage.__mt = {
+   __index = Assemblage,
+}
 
 function Assemblage.new(assemble)
    local assemblage = setmetatable({
       __assemble = assemble,
 
       __isAssemblage = true,
-   }, Assemblage)
+   }, Assemblage.__mt)
 
    return assemblage
 end

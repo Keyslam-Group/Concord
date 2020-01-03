@@ -1,7 +1,9 @@
 --- Component
 
 local Component = {}
-Component.__index = Component
+Component.__mt = {
+   __index = Component,
+}
 
 --- Creates a new Component.
 -- @param populate A function that populates the Bag with values
@@ -15,9 +17,11 @@ function Component.new(populate)
       __populate = populate,
 
       __isBaseComponent = true,
-   }, Component)
+   }, Component.__mt)
 
-   baseComponent.__mt = {__index = baseComponent}
+   baseComponent.__mt = {
+      __index = baseComponent
+   }
 
    return baseComponent
 end

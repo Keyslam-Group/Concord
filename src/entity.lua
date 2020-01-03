@@ -5,7 +5,9 @@ local PATH = (...):gsub('%.[^%.]+$', '')
 local Type = require(PATH..".type")
 
 local Entity = {}
-Entity.__index = Entity
+Entity.__mt = {
+   __index = Entity,
+}
 
 --- Creates and initializes a new Entity.
 -- @return A new Entity
@@ -19,7 +21,7 @@ function Entity.new(world)
       __components = {},
 
       __isEntity = true,
-   }, Entity)
+   }, Entity.__mt)
 
    if (world) then
       world:addEntity(e)

@@ -9,7 +9,9 @@ local Utils = require(PATH..".utils")
 local World = {
    ENABLE_OPTIMIZATION = true,
 }
-World.__index = World
+World.__mt = {
+   __index = World,
+}
 
 --- Creates a new World.
 -- @return The new World
@@ -27,7 +29,7 @@ function World.new()
       __systemLookup = {},
 
       __isWorld = true,
-   }, World)
+   }, World.__mt)
 
    -- Optimization: We deep copy the World class into our instance of a world.
    -- This grants slightly faster access times at the cost of memory.
@@ -52,7 +54,7 @@ function World:addEntity(e)
    end
 
    e.__world = self
-   self.__added:add(e)
+   self.__added:__add(e)
 
    return self
 end
@@ -65,14 +67,14 @@ function World:removeEntity(e)
       error("bad argument #1 to 'World:removeEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
-   self.__removed:add(e)
+   self.__removed:__add(e)
 
    return self
 end
 
 function World:__dirtyEntity(e)
    if not self.__dirty:has(e) then
-      self.__dirty:add(e)
+      self.__dirty:__add(e)
    end
 end
 
@@ -95,7 +97,7 @@ function World:__flush()
    for i = 1, self.__backAdded.size do
       e = self.__backAdded[i]
 
-      self.entities:add(e)
+      self.entities:__add(e)
 
       for j = 1, self.systems.size do
          self.systems[j]:__evaluate(e)
@@ -103,14 +105,14 @@ function World:__flush()
 
       self:onEntityAdded(e)
    end
-   self.__backAdded:clear()
+   self.__backAdded:__clear()
 
    -- Process removed entities
    for i = 1, self.__backRemoved.size do
       e = self.__backRemoved[i]
 
       e.__world = nil
-      self.entities:remove(e)
+      self.entities:__remove(e)
 
       for j = 1, self.systems.size do
          self.systems[j]:__remove(e)
@@ -118,7 +120,7 @@ function World:__flush()
 
       self:onEntityRemoved(e)
    end
-   self.__backRemoved:clear()
+   self.__backRemoved:__clear()
 
    -- Process dirty entities
    for i = 1, self.__backDirty.size do
@@ -128,7 +130,7 @@ function World:__flush()
          self.systems[j]:__evaluate(e)
       end
    end
-   self.__backDirty:clear()
+   self.__backDirty:__clear()
 
    return self
 end
@@ -148,7 +150,7 @@ function World:addSystem(baseSystem)
    local system = baseSystem(self)
 
    self.__systemLookup[baseSystem] = system
-   self.systems:add(system)
+   self.systems:__add(system)
 
    for callbackName, callback in pairs(baseSystem) do
       -- Skip callback if its blacklisted
