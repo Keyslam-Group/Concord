@@ -151,23 +151,27 @@ All the above applies the same to all the other containers.
 When defining a ComponentClass you usually pass in a `populate` function. This will fill the Component with values.
 
 ```lua
--- Define the ComponentClass.
+-- Create the ComponentClass with a populate function
 -- The component variable is the actual Component given to an Entity
 -- The x and y variables are values we pass in when we create the Component 
-local PositionComponentClass = Concord.component(function(component, x, y)
+local positionComponentClass = Concord.component(function(component, x, y)
     component.x = x or 0
     component.y = y or 0
 end)
 
--- We can manually register the Component to the container if we want
-Concord.components.register("positionComponent", PositionComponentClass)
-
--- Otherwise we just return the Component so it can be required
-return PositionComponentClass
+-- Create a ComponentClass without a populate function
+-- Components of this type won't have any fields.
+-- This can be useful to indiciate state.
+local pushableComponentClass = Concord.component()
 ```
 
-You can also pass nothing. This will keep the Component empty.
-This can be useful for Components that define a boolean state. For example `pushable` or `crouching`.
+```lua
+-- Manually register the Component to the container if we want
+Concord.components.register("positionComponent", positionComponentClass)
+
+-- Otherwise return the Component so it can be required
+return positionComponentClass
+```
 
 ### Entities
 Entities can be freely made and be given Components. You pass the ComponentClass and the values you want to pass. It will then create the Component for you.
@@ -183,28 +187,28 @@ local myEntity = Entity(myWorld) -- To add it to a world immediately ( See World
 ```
 
 ```lua
--- Give the entity the position component defined above
+-- Give the entity the position Component defined above
 -- x will become 100. y will become 50
-myEntity:give(Concord.components.positionComponent, 100, 50)
+myEntity:give(positionComponentClass, 100, 50)
 ```
 
 ```lua
 -- Retrieve a Component
-local positionComponent = myEntity[Concord.components.positionComponent]
+local positionComponent = myEntity[positionComponentClass]
 -- or
-local positionComponent = myEntity:get(Concord.components.positionComponents)
+local positionComponent = myEntity:get(positionComponentClass)
 
 print(positionComponent.x, positionComponent.y) -- 100, 50
 ```
 
 ```lua
 -- Remove a Component
-myEntity:remove(Concord.components.positionComponent)
+myEntity:remove(positionComponentClass)
 ```
 
 ```lua
 -- Check if the Entity has a Component
-local hasPositionComponent = myEntity:has(Concord.components.positionComponent)
+local hasPositionComponent = myEntity:has(positionComponentClass)
 print(hasPositionComponent) -- false
 ```
 
@@ -212,16 +216,16 @@ print(hasPositionComponent) -- false
 -- Entity:give will override a Component if the Entity already has it
 -- Entity:ensure will only put the Component if the Entity does not already have it
 
-Entity:ensure(Concord.components.positionComponents, 0, 0) -- Will give
+Entity:ensure(positionComponentClass, 0, 0) -- Will give
 -- Position is {x = 0, y = 0}
 
-Entity:give(Concord.components.positionComponent, 50, 50) -- Will override
+Entity:give(positionComponentClass, 50, 50) -- Will override
 -- Position is {x = 50, y = 50}
 
-Entity:give(Concord.components.positionComponent, 100, 100) -- Will override
+Entity:give(positionComponentClass, 100, 100) -- Will override
 -- Position is {x = 100, y = 100}
 
-Entity:ensure(Concord.components.positionComponents, 0, 0) -- Wont do anything
+Entity:ensure(positionComponentClass, 0, 0) -- Wont do anything
 -- Position is {x = 100, y = 100}
 ```
 
@@ -255,7 +259,94 @@ myEntity:destroy()
 
 ### Systems
 
-TODO
+Systems are definded as a SystemClass. Concord will automatically create an instance of a System when it is needed.
+
+Systems get access to Entities through `pools`. They are created using a filter.
+Systems can have multiple pools.
+
+```lua
+-- Create a System
+local mySystemClass = Concord.system({positionComponentClass}) -- Pool will contain all Entities with a position Component
+
+-- Create a System with multiple pools
+local mySystemClass = Concord.system(
+    { -- This Pool's name will default to 'pool'
+        positionCompomponentClass,
+        velocityComponentClass,
+    },
+    { -- This Pool's name will be 'secondPool'
+        healthComponentClass,
+        damageableComponentClass,
+        "secondPool",
+    }
+)
+```
+
+```lua
+-- Manually register the Component to the container if we want
+Concord.system.register("mySystem", mySystemClass)
+
+-- Otherwise return the Component so it can be required
+return mySystemClass
+```
+
+```lua
+-- If a System has a :init function it will be called on creation
+
+-- world is the World the System was created for
+function mySystemClass:init(world)
+    -- Do stuff
+end
+```
+
+```lua
+-- Defining a function
+function mySystemClass:update(dt)
+    -- Iterate over all entities in the Pool
+    for _, e in ipairs(self.pool) 
+        -- Get the Entity's Components
+        local positionComponent = e[positionComponentClass]
+        local velocityComponent = e[velocityComponentClass]
+
+        -- Do something with the Components
+        positionComponent.x = positionComponent.x + velocityComponent.x * dt
+        positionComponent.y = positionComponent.y + velocityComponent.y * dt
+    end
+
+
+    -- Iterate over all entities in the second Pool
+    for _, e in ipairs(self.secondPool) 
+        -- Do something
+    end
+end
+```
+
+```lua
+-- Systems can be enabled and disabled
+-- Systems are enabled by default
+
+-- Enable a System
+mySystem:enable()
+-- or
+mySystem:setEnable(true)
+
+-- Disable a System
+mySystem:disable()
+-- or
+mySystem:setEnable(false)
+
+-- Toggle the enable state
+mySystem:toggleEnabled()
+
+-- Get enabled state
+local isEnabled = mySystem:isEnabled()
+print(isEnabled) -- true
+```
+
+```lua
+-- Get the World the System is in
+local world = System:getWorld()
+```
 
 ### Worlds
 

@@ -268,7 +268,7 @@ function World:clear()
    end
 
    for i = 1, self.systems.size do
-      self.systems[i]:clear()
+      self.systems[i]:__clear()
    end
 
    return self

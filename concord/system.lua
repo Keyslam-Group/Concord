@@ -119,7 +119,7 @@ end
 
 --- Internal: Clears all Entities from the System.
 -- @return self
-function System:clear()
+function System:__clear()
    for i = 1, #self.__pools do
       self.__pools[i]:__clear()
    end
@@ -145,7 +145,7 @@ end
 
 --- Toggles if the System is enabled.
 -- @return self
-function System:toggleEnable()
+function System:toggleEnabled()
    self:setEnabled(not self.__enabled)
 
    return self
