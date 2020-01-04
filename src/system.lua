@@ -29,7 +29,7 @@ System.mt = {
       -- This grants slightly faster access times at the cost of memory.
       -- Since there (generally) won't be many instances of worlds this is a worthwhile tradeoff
       if (System.ENABLE_OPTIMIZATION) then
-         Utils.shallowCopy(System, system)
+         Utils.shallowCopy(systemClass, system)
       end
 
       for _, filter in pairs(systemClass.__filter) do
@@ -57,6 +57,13 @@ function System.new(...)
       __filter = {...},
    }, System.mt)
    systemClass.__index = systemClass
+
+   -- Optimization: We deep copy the World class into our instance of a world.
+   -- This grants slightly faster access times at the cost of memory.
+   -- Since there (generally) won't be many instances of worlds this is a worthwhile tradeoff
+   if (System.ENABLE_OPTIMIZATION) then
+      Utils.shallowCopy(System, systemClass)
+   end
 
    return systemClass
 end

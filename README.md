@@ -199,7 +199,7 @@ print(positionComponent.x, positionComponent.y) -- 100, 50
 
 ```lua
 -- Remove a Component
-myEntity:remove(Concord.compoennts.positionComponent)
+myEntity:remove(Concord.components.positionComponent)
 ```
 
 ```lua
@@ -209,7 +209,7 @@ print(hasPositionComponent) -- false
 ```
 
 ```lua
--- Entity:give will override a Component if the Entity already had it
+-- Entity:give will override a Component if the Entity already has it
 -- Entity:ensure will only put the Component if the Entity does not already have it
 
 Entity:ensure(Concord.components.positionComponents, 0, 0) -- Will give

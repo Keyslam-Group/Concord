@@ -243,7 +243,7 @@ function World:emit(functionName, ...)
       error("bad argument #1 to 'World:emit' (String expected, got "..type(functionName)..")")
    end
 
-   local listeners = self.events[functionName]
+	local listeners = self.events[functionName]
 
    if listeners then
       for i = 1, #listeners do
