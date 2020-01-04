@@ -1,39 +1,281 @@
 # Concord
 
-Concord is a feature complete ECS.
-It's main focus is on speed and usage. You should be able to quickly write code that performs well.
+Concord is a feature complete ECS for LÖVE.
+It's main focus is performance and ease of use.
+With Concord it is possibile to easily write fast and clean code. 
 
-Documentation for Concord can be found in the [Wiki tab](https://github.com/Tjakka5/Concord/wiki).
+This readme will explain how to use Concord.
 
-Auto generated docs for Concord can be found in the [Github page](https://tjakka5.github.io/Concord/). These are still work in progress and might be incomplete though.
+Additionally all of Concord is documented using the LDoc format.
+Auto generated docs for Concord can be found in `docs` folder, or on the [Github page](https://tjakka5.github.io/Concord/).
 
 ## Installation
-Download the repository and drop it in your project, then simply require it as:
+Download the repository and copy the 'src' folder in your project. Rename it to something that makes sense (Probably 'concord'), then require it in your project like so: 
 ```lua
-local Concord = require(PathToConcord).init()
-
-You will only need to call .init once when you first require it.
+local Concord = require("path.to.concord")
 ```
 
-## Modules
-Below is a list of modules.
-More information about what each done can be found in the Wiki
+Concord has a bunch of modules. These can be accessed through Concord:
 
 ```lua
-local Concord = require("concord")
-local Entity = require("concord.entity")
-local Component = require("concord.component")
-local System = require("concord.system")
-local Instance = require("concord.instance")
+-- Modules
+local Entity     = Concord.entity
+local Component  = Concord.component
+local System     = Concord.system
+local World      = Concord.world
+local Assemblage = Concord.assemblage
+
+-- Containers
+local Components  = Concord.components
+local Systems     = Concord.systems
+local Worlds      = Concord.worlds
+local Assemblages = Concord.assemblages
 ```
+
+## ECS
+Concord is an Entity Component System (ECS for short) library.
+This is a coding paradigm where _composition_ is used over _inheritance_.
+Because of this it is easier to write more modular code. It often allowes you to combine any form of behaviour for the objects in your game (Entities).
+
+As the name might suggest, ECS consists of 3 core things: Entities, Components, and Systems. A proper understanding of these is required to use Concord effectively.
+We'll start with the simplest one.
+
+### Components
+Components are pure raw data. In Concord this is just a table with some fields.
+A position component might look like 
+`{ x = 100, y = 50}`, whereas a health Component might look like `{ currentHealth = 10, maxHealth = 100 }`.
+What is most important is that Components are data and nothing more. They have 0 functionality.
+
+### Entities
+Entities are the actual objects in your game. Like a player, an enemy, a crate, or a bullet.
+Every Entity has it's own set of Components, with their own values.
+
+A crate might have the following components:
+```lua
+{
+    position = { x = 100, y = 200 },
+    texture  = { path = "crate.png", image = Image },
+    pushable = { },
+}
+```
+
+Whereas a player might have the following components:
+```lua
+{
+    position     = { x = 200, y = 300 },
+    texture      = { path = "player.png", image = Image },
+    controllable = { keys = "wasd" },
+    health       = { currentHealth = 10, maxHealth = 100},
+}
+```
+
+Any Component can be given to any Entity (once). Which Components an Entity has will determine how it behaves. This is done through the last thing...
+
+### Systems
+Systems are the things that actually _do_ stuff. They contain all your fancy algorithms and cool game logic.
+Each System will do one specific task like say, drawing Entities.
+For this they will only act on Entities that have the Components needed for this: `position` and `texture`. All other Components are irrelevant.
+
+In Concord this is done something alike this:
+
+```lua
+drawSystem = System({position, texture}) -- Define a System that takes all Entities with a position and texture Component
+
+function drawSystem:draw() -- Give it a draw function
+    for _, entity in ipairs(self.pool) do -- Iterate over all Entities that this System acts on
+        local position = entity[position] -- Get the position Component of this Entity
+        local texture = entity[texture] -- Get the texture Component of this Entity
+
+        -- Draw the Entity
+        love.graphics.draw(texture.image, position.x, position.y)
+    end
+end
+```
+
+### To summarize...
+- Components contain only data.
+- Entities contain any set of Components.
+- Systems act on Entities that have a required set of Components.
+
+By creating Components and Systems you create modular behaviour that can apply to any Entity.
+What if we took our crate from before and gave it the `controllable` Component? It would respond to our user input of course.
+
+Or what if the enemy shot bullets with a `health` Component? It would create bullets that we'd be able to destroy by shooting them.
+
+And all that without writing a single extra line of code. Just reusing code that already existed and is guaranteed to be reuseable.
+
+## Documentation
+
+### General design
+
+#### Classes
+Concord does a few things that might not be immediately clear. This segment should help understanding.
+
+When you define a Component or System you are actually defining a `ComponentClass` and `SystemClass` respectively. From these instances of them can be created. They also act as identifiers for Concord.
+
+For example. If you want to get a specific Component from an Entity, you'd do `Component = Entity:get(ComponentClass)`.
+When ComponentClasses or SystemClasses are required it will be written clearly in the Documentation.
+
+#### Containers
+Since you'll be defining or creating lots of Components, Systems, Worlds and Assemblages Concord adds container tables for each of them so that they are easily accessible.
+
+These containers can be accessed through
+```lua
+local Components  = require("path.to.concord").components
+local Systems     = require("path.to.concord").systems
+local Worlds      = require("path.to.concord").worlds
+local Assemblages = require("path.to.concord").aorlds
+```
+
+Concord has helper functions to fill these containers. There are the following options depending on your needs / preference:
+```lua
+-- Loads each file. They are put in the container according to it's filename ( 'src.components.component_1.lua' becomes 'component_1' )
+Concord.loadComponents({"path.to.component_1", "path.to.component_2", "etc"})
+
+-- Loads all files in the directory. They are put in the container according to it's filename ( 'src.components.component_1.lua' becomes 'component_1' )
+Concord.loadComponents("path.to.directory.containing.components")
+
+
+-- Put the ComponentClass into the container directly. Useful if you want more manual control. Note that you need to require the file in this case
+Components.register("componentName", ComponentClass)
+```
+Things can then be accessed through their names:
+```lua
+local component_1_class   = Components.component_1
+local componentName_class = Components.componentName
+```
+
+All the above applies the same to all the other containers.
+
+### Components
+When defining a ComponentClass you usually pass in a `populate` function. This will fill the Component with values.
+
+```lua
+-- Define the ComponentClass.
+-- The component variable is the actual Component given to an Entity
+-- The x and y variables are values we pass in when we create the Component 
+local PositionComponentClass = Concord.component(function(component, x, y)
+    component.x = x or 0
+    component.y = y or 0
+end)
+
+-- We can manually register the Component to the container if we want
+Concord.components.register("positionComponent", PositionComponentClass)
+
+-- Otherwise we just return the Component so it can be required
+return PositionComponentClass
+```
+
+You can also pass nothing. This will keep the Component empty.
+This can be useful for Components that define a boolean state. For example `pushable` or `crouching`.
+
+### Entities
+Entities can be freely made and be given Components. You pass the ComponentClass and the values you want to pass. It will then create the Component for you.
+
+Entities can only have a maximum of one of each Component.
+Entities can not share Components.
+
+```lua
+-- Create a new Entity
+local myEntity = Entity() 
+-- or
+local myEntity = Entity(myWorld) -- To add it to a world immediately ( See World )
+```
+
+```lua
+-- Give the entity the position component defined above
+-- x will become 100. y will become 50
+myEntity:give(Concord.components.positionComponent, 100, 50)
+```
+
+```lua
+-- Retrieve a Component
+local positionComponent = myEntity[Concord.components.positionComponent]
+-- or
+local positionComponent = myEntity:get(Concord.components.positionComponents)
+
+print(positionComponent.x, positionComponent.y) -- 100, 50
+```
+
+```lua
+-- Remove a Component
+myEntity:remove(Concord.compoennts.positionComponent)
+```
+
+```lua
+-- Check if the Entity has a Component
+local hasPositionComponent = myEntity:has(Concord.components.positionComponent)
+print(hasPositionComponent) -- false
+```
+
+```lua
+-- Entity:give will override a Component if the Entity already had it
+-- Entity:ensure will only put the Component if the Entity does not already have it
+
+Entity:ensure(Concord.components.positionComponents, 0, 0) -- Will give
+-- Position is {x = 0, y = 0}
+
+Entity:give(Concord.components.positionComponent, 50, 50) -- Will override
+-- Position is {x = 50, y = 50}
+
+Entity:give(Concord.components.positionComponent, 100, 100) -- Will override
+-- Position is {x = 100, y = 100}
+
+Entity:ensure(Concord.components.positionComponents, 0, 0) -- Wont do anything
+-- Position is {x = 100, y = 100}
+```
+
+```lua
+-- Retrieve all Components
+-- WARNING: Do not modify this table. It is read-only
+local allComponents = myEntity:getComponents()
+
+for ComponentClass, Component in ipairs(allComponents) do
+    -- Do stuff
+end
+```
+
+```lua
+-- Assemble the Entity ( See Assemblages )
+myEntity:assemble(myAssemblage, 100, true, "foo")
+```
+
+```lua
+-- Check if the Entity is in a world
+local inWorld = myEntity:inWorld()
+
+-- Get the World the Entity is in
+local world = myEntity:getWorld()
+```
+
+```lua
+-- Destroy the Entity
+myEntity:destroy()
+```
+
+### Systems
+
+TODO
+
+### Worlds
+
+TODO
+
+### Assemblages
+
+TODO
+
+### Type
+
+TODO
 
 ## Contributors
-```
-Positive07: Constant support and a good rubberduck
-Brbl: Early testing and issue reporting
-Josh: Squashed a few bugs and docs
-Erasio: Took inspiration from HooECS. Also introduced me to ECS.
-```
-
+- __Positive07__: Constant support and a good rubberduck
+- __Brbl__: Early testing and issue reporting
+- __Josh__: Squashed a few bugs and generated docs
+- __Erasio__: I took inspiration from HooECS. He also introduced me to ECS
+- __Speak__: Lots of testing for new features of Concord
+- __Tesselode__: Brainstorming and helpful support
+  
 ## Licence
 MIT Licensed - Copyright Justin van der Leij (Tjakka5)
