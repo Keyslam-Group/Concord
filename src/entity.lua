@@ -1,4 +1,7 @@
 --- Entity
+-- Entities are the concrete objects that exist in your project.
+-- An Entity have Components and are processed by Systems.
+-- An Entity is contained by a maximum of 1 World.
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -9,7 +12,8 @@ Entity.__mt = {
    __index = Entity,
 }
 
---- Creates and initializes a new Entity.
+--- Creates a new Entity. Optionally adds it to a World.
+-- @param world Optional World to add the entity to
 -- @return A new Entity
 function Entity.new(world)
    if (world ~= nil and not Type.isWorld(world)) then
@@ -30,63 +34,73 @@ function Entity.new(world)
    return e
 end
 
-local function give(e, baseComponent, ...)
-   local component = baseComponent:__initialize(...)
+local function give(e, componentClass, ...)
+   local component = componentClass:__initialize(...)
 
-   e[baseComponent] = component
-   e.__components[baseComponent] = component
-
-   e:__dirty()
-end
-
-local function remove(e, baseComponent)
-   e[baseComponent] = nil
-   e.__components[baseComponent] = nil
+   e[componentClass] = component
+   e.__components[componentClass] = component
 
    e:__dirty()
 end
 
---- Gives an Entity a component with values.
--- @param component The Component to add
--- @param ... The values passed to the Component
+local function remove(e, componentClass)
+   e[componentClass] = nil
+   e.__components[componentClass] = nil
+
+   e:__dirty()
+end
+
+--- Gives an Entity a Component.
+-- If the Component already exists, it's overridden by this new Component
+-- @param componentClass ComponentClass to add an instance of
+-- @param ... varargs passed to the Component's populate function
 -- @return self
-function Entity:give(baseComponent, ...)
-   if not Type.isBaseComponent(baseComponent) then
-      error("bad argument #1 to 'Entity:give' (BaseComponent expected, got "..type(baseComponent)..")", 2)
+function Entity:give(componentClass, ...)
+   if not Type.isComponentClass(componentClass) then
+      error("bad argument #1 to 'Entity:give' (ComponentClass expected, got "..type(componentClass)..")", 2)
    end
 
-   give(self, baseComponent, ...)
+   give(self, componentClass, ...)
 
    return self
 end
 
-function Entity:ensure(baseComponent, ...)
-   if not Type.isBaseComponent(baseComponent) then
-      error("bad argument #1 to 'Entity:ensure' (BaseComponent expected, got "..type(baseComponent)..")", 2)
+--- Ensures an Entity to have a Component.
+-- If the Component already exists, no action is taken
+-- @param componentClass ComponentClass to add an instance of
+-- @param ... varargs passed to the Component's populate function
+-- @return self
+function Entity:ensure(componentClass, ...)
+   if not Type.isComponentClass(componentClass) then
+      error("bad argument #1 to 'Entity:ensure' (ComponentClass expected, got "..type(componentClass)..")", 2)
    end
 
-   if self[baseComponent] then
+   if self[componentClass] then
       return self
    end
 
-   give(self, baseComponent, ...)
+   give(self, componentClass, ...)
 
    return self
 end
 
---- Removes a component from an Entity.
--- @param component The Component to remove
+--- Removes a Component from an Entity.
+-- @param componentClass ComponentClass of the Component to remove
 -- @return self
-function Entity:remove(baseComponent)
-   if not Type.isBaseComponent(baseComponent) then
-      error("bad argument #1 to 'Entity:remove' (BaseComponent expected, got "..type(baseComponent)..")")
+function Entity:remove(componentClass)
+   if not Type.isComponentClass(componentClass) then
+      error("bad argument #1 to 'Entity:remove' (ComponentClass expected, got "..type(componentClass)..")")
    end
 
-   remove(self, baseComponent)
+   remove(self, componentClass)
 
    return self
 end
 
+--- Assembles an Entity.
+-- @see Assemblage:assemble
+-- @param assemblage Assemblage to assemble with
+-- @param ... Varargs to pass to the Assemblage's assemble function.
 function Entity:assemble(assemblage, ...)
    if not Type.isAssemblage(assemblage) then
       error("bad argument #1 to 'Entity:assemble' (Assemblage expected, got "..type(assemblage)..")")
@@ -98,6 +112,7 @@ function Entity:assemble(assemblage, ...)
 end
 
 --- Destroys the Entity.
+-- Removes the Entity from it's World if it's in one.
 -- @return self
 function Entity:destroy()
    if self.__world then
@@ -107,42 +122,54 @@ function Entity:destroy()
    return self
 end
 
+--- Internal: Tells the World it's in that this Entity is dirty.
+-- @return self
 function Entity:__dirty()
    if self.__world then
       self.__world:__dirtyEntity(self)
    end
+
+   return self
+end
+
+--- Returns true if the Entity has a Component.
+-- @param componentClass ComponentClass of the Component to check
+-- @return True if the Entity has the Component, false otherwise
+function Entity:has(componentClass)
+   if not Type.isComponentClass(componentClass) then
+      error("bad argument #1 to 'Entity:has' (ComponentClass expected, got "..type(componentClass)..")")
+   end
+
+   return self[componentClass] ~= nil
 end
 
 --- Gets a Component from the Entity.
--- @param component The Component to get
--- @return The Bag from the Component
-function Entity:get(baseComponent)
-   if not Type.isBaseComponent(baseComponent) then
-      error("bad argument #1 to 'Entity:get' (BaseComponent expected, got "..type(baseComponent)..")")
+-- @param componentClass ComponentClass of the Component to get
+-- @return The Component
+function Entity:get(componentClass)
+   if not Type.isComponentClass(componentClass) then
+      error("bad argument #1 to 'Entity:get' (ComponentClass expected, got "..type(componentClass)..")")
    end
 
-   return self[baseComponent]
+   return self[componentClass]
 end
 
---- Returns true if the Entity has the Component.
--- @param component The Component to check against
--- @return True if the entity has the Bag. False otherwise
-function Entity:has(baseComponent)
-   if not Type.isBaseComponent(baseComponent) then
-      error("bad argument #1 to 'Entity:has' (BaseComponent expected, got "..type(baseComponent)..")")
-   end
-
-   return self[baseComponent] ~= nil
-end
-
+--- Returns a table of all Components the Entity has.
+-- Warning: Do not modify this table.
+-- Use Entity:give/ensure/remove instead
+-- @return Table of all Components the Entity has
 function Entity:getComponents()
    return self.__components
 end
 
-function Entity:hasWorld()
+--- Returns true if the Entity is in a World.
+-- @return True if the Entity is in a World, false otherwise
+function Entity:inWorld()
    return self.__world and true or false
 end
 
+--- Returns the World the Entity is in.
+-- @return The World the Entity is in.
 function Entity:getWorld()
    return self.__world
 end

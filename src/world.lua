@@ -1,4 +1,8 @@
 --- World
+-- A World is a collection of Systems and Entities
+-- A world emits to let Systems iterate
+-- A World contains any amount of Systems
+-- A World contains any amount of Entities
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -42,7 +46,7 @@ function World.new()
 end
 
 --- Adds an Entity to the World.
--- @param e The Entity to add
+-- @param e Entity to add
 -- @return self
 function World:addEntity(e)
    if not Type.isEntity(e) then
@@ -59,8 +63,8 @@ function World:addEntity(e)
    return self
 end
 
---- Removes an entity from the World.
--- @param e The Entity to mark
+--- Removes an Entity from the World.
+-- @param e Entity to remove
 -- @return self
 function World:removeEntity(e)
    if not Type.isEntity(e) then
@@ -72,13 +76,18 @@ function World:removeEntity(e)
    return self
 end
 
+--- Internal: Marks an Entity as dirty.
+-- @see Entity:__dirty
+-- @param e Entity to mark as dirty
 function World:__dirtyEntity(e)
    if not self.__dirty:has(e) then
       self.__dirty:__add(e)
    end
 end
 
-
+--- Internal: Flushes all changes to Entities.
+-- This processes all entities. Adding and removing entities, as well as reevaluating dirty entities.
+-- @see System:__evaluate
 -- @return self
 function World:__flush()
    -- Early out
@@ -135,26 +144,37 @@ function World:__flush()
    return self
 end
 
-local blacklistedSystemMethods = {
+-- These functions won't be seen as callbacks that will be emitted to.
+local blacklistedSystemFunctions = {
    "init",
+   "onEnabled",
+   "onDisabled",
 }
 
-function World:addSystem(baseSystem)
-   if (not Type.isBaseSystem(baseSystem)) then
-      error("bad argument #1 to 'World:addSystems' (baseSystem expected, got "..type(baseSystem)..")", 2)
+--- Adds a System to the World.
+-- Callbacks are registered automatically
+-- Entities added before are added to the System retroactively
+-- @see World:emit
+-- @param systemClass SystemClass of System to add
+-- @return self
+function World:addSystem(systemClass)
+   if (not Type.isSystemClass(systemClass)) then
+      error("bad argument #1 to 'World:addSystems' (SystemClass expected, got "..type(systemClass)..")", 2)
    end
 
-   -- TODO: Check if baseSystem was already added
+   if (self.__systemLookup[systemClass]) then
+      error("bad argument #1 to 'World:addSystems' (SystemClass was already added to World)", 2)
+   end
 
    -- Create instance of system
-   local system = baseSystem(self)
+   local system = systemClass(self)
 
-   self.__systemLookup[baseSystem] = system
+   self.__systemLookup[systemClass] = system
    self.systems:__add(system)
 
-   for callbackName, callback in pairs(baseSystem) do
+   for callbackName, callback in pairs(systemClass) do
       -- Skip callback if its blacklisted
-      if (not blacklistedSystemMethods[callbackName]) then
+      if (not blacklistedSystemFunctions[callbackName]) then
          -- Make container for all listeners of the callback if it does not exist yet
          if (not self.events[callbackName]) then
             self.events[callbackName] = {}
@@ -173,43 +193,59 @@ function World:addSystem(baseSystem)
    for j = 1, self.entities.size do
       system:__evaluate(self.entities[j])
    end
+
+   return self
 end
 
+--- Adds multiple Systems to the World.
+-- Callbacks are registered automatically
+-- @see World:addSystem
+-- @see World:emit
+-- @param ... SystemClasses of Systems to add
+-- @return self
 function World:addSystems(...)
    for i = 1, select("#", ...) do
-      local baseSystem = select(i, ...)
+      local systemClass = select(i, ...)
 
-      self:addSystem(baseSystem)
-   end
-end
-
-
-function World:hasSystem(baseSystem)
-   if not Type.isBaseSystem(baseSystem) then
-      error("bad argument #1 to 'World:getSystem' (baseSystem expected, got "..type(baseSystem)..")", 2)
+      self:addSystem(systemClass)
    end
 
-   return self.__systemLookup[baseSystem] and true or false
+   return self
 end
 
-function World:getSystem(baseSystem)
-   if not Type.isBaseSystem(baseSystem) then
-      error("bad argument #1 to 'World:getSystem' (baseSystem expected, got "..type(baseSystem)..")", 2)
+--- Returns if the World has a System.
+-- @param systemClass SystemClass of System to check for
+-- @return True if World has System, false otherwise
+function World:hasSystem(systemClass)
+   if not Type.isSystemClass(systemClass) then
+      error("bad argument #1 to 'World:getSystem' (systemClass expected, got "..type(systemClass)..")", 2)
    end
 
-   return self.__systemLookup[baseSystem]
+   return self.__systemLookup[systemClass] and true or false
 end
 
---- Emits an Event in the World.
--- @param eventName The Event that should be emitted
--- @param ... Parameters passed to listeners
+--- Gets a System from the World.
+-- @param systemClass SystemClass of System to get
+-- @return System to get
+function World:getSystem(systemClass)
+   if not Type.isSystemClass(systemClass) then
+      error("bad argument #1 to 'World:getSystem' (systemClass expected, got "..type(systemClass)..")", 2)
+   end
+
+   return self.__systemLookup[systemClass]
+end
+
+--- Emits a callback in the World.
+-- Calls all functions with the functionName of added Systems
+-- @param functionName Name of functions to call.
+-- @param ... Parameters passed to System's functions
 -- @return self
-function World:emit(callbackName, ...)
-   if not callbackName or type(callbackName) ~= "string" then
-      error("bad argument #1 to 'World:emit' (String expected, got "..type(callbackName)..")")
+function World:emit(functionName, ...)
+   if not functionName or type(functionName) ~= "string" then
+      error("bad argument #1 to 'World:emit' (String expected, got "..type(functionName)..")")
    end
 
-   local listeners = self.events[callbackName]
+   local listeners = self.events[functionName]
 
    if listeners then
       for i = 1, #listeners do
@@ -233,15 +269,19 @@ function World:clear()
       self:removeEntity(self.entities[i])
    end
 
+   for i = 1, self.systems.size do
+      self.systems[i]:clear()
+   end
+
    return self
 end
 
---- Default callback for adding an Entity.
+--- Callback for when an Entity is added to the World.
 -- @param e The Entity that was added
 function World:onEntityAdded(e) -- luacheck: ignore
 end
 
---- Default callback for removing an Entity.
+--- Callback for when an Entity is removed from the World.
 -- @param e The Entity that was removed
 function World:onEntityRemoved(e) -- luacheck: ignore
 end

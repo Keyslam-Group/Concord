@@ -1,4 +1,5 @@
--- Worlds
+--- Worlds
+-- Container for registered Worlds
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -6,6 +7,9 @@ local Type = require(PATH..".type")
 
 local Worlds = {}
 
+--- Registers a World.
+-- @param name Name to register under
+-- @param world World to register
 function Worlds.register(name, world)
     if (type(name) ~= "string") then
         error("bad argument #1 to 'Worlds.register' (string expected, got "..type(name)..")", 3)

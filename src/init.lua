@@ -47,13 +47,13 @@ Concord.assemblages = require(PATH..".assemblages")
 
 local function load(pathOrFiles, namespace)
    if (type(pathOrFiles) ~= "string" and type(pathOrFiles) ~= "table") then
-      error("bad argument #1 to 'load' (string/table of strings expected, got "..type(pathOrFiles)..")", 3) -- luacheck: ignore
+      error("bad argument #1 to 'load' (string/table of strings expected, got "..type(pathOrFiles)..")", 3)
    end
 
    if (type(pathOrFiles) == "string") then
       local info = love.filesystem.getInfo(pathOrFiles) -- luacheck: ignore
       if (info == nil or info.type ~= "directory") then
-         error("bad argument #1 to 'load' (path '"..pathOrFiles.."' not found)", 3) -- luacheck: ignore
+         error("bad argument #1 to 'load' (path '"..pathOrFiles.."' not found)", 3)
       end
 
       local files = love.filesystem.getDirectoryItems(pathOrFiles)
@@ -82,18 +82,34 @@ local function load(pathOrFiles, namespace)
    end
 end
 
+--- Loads ComponentClasses and puts them in the Components container.
+-- Accepts a table of paths to files: {"component_1", "component_2", "etc"}
+-- Accepts a path to a directory with ComponentClasses: "components"
+--@see Components
 function Concord.loadComponents(pathOrFiles)
    load(pathOrFiles, Concord.components)
 end
 
+--- Loads SystemClasses and puts them in the Systems container.
+-- Accepts a table of paths to files: {"system_1", "system_2", "etc"}
+-- Accepts a path to a directory with SystemClasses: "systems"
+--@see Systems
 function Concord.loadSystems(pathOrFiles)
    load(pathOrFiles, Concord.systems)
 end
 
+--- Loads Worlds and puts them in the Worlds container.
+-- Accepts a table of paths to files: {"world_1", "world_2", "etc"}
+-- Accepts a path to a directory with Worlds: "worlds"
+--@see Worlds
 function Concord.loadWorlds(pathOrFiles)
    load(pathOrFiles, Concord.worlds)
 end
 
+--- Loads Assemblages and puts them in the Assemblages container.
+-- Accepts a table of paths to files: {"assemblage_1", "assemblage_2", "etc"}
+-- Accepts a path to a directory with Assemblages: "assemblages"
+--@see Assemblages
 function Concord.loadAssemblages(pathOrFiles)
    load(pathOrFiles, Concord.assemblages)
 end

@@ -1,4 +1,6 @@
 --- Pool
+-- A Pool is used to iterate over Entities with a specific Components
+-- A Pool contain a any amount of Entities.
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -10,8 +12,8 @@ Pool.__mt = {
 }
 
 --- Creates a new Pool
--- @param name Identifier for the Pool.
--- @param filter Table containing the required Components
+-- @param name Name for the Pool.
+-- @param filter Table containing the required BaseComponents
 -- @return The new Pool
 function Pool.new(name, filter)
    local pool = setmetatable(List(), Pool.__mt)
@@ -25,7 +27,7 @@ function Pool.new(name, filter)
 end
 
 --- Checks if an Entity is eligible for the Pool.
--- @param e The Entity to check
+-- @param e Entity to check
 -- @return True if the entity is eligible, false otherwise
 function Pool:__eligible(e)
    for _, component in ipairs(self.__filter) do
@@ -37,27 +39,46 @@ function Pool:__eligible(e)
    return true
 end
 
+--- Internal: Adds an Entity to the Pool.
+-- @param e Entity to add
+-- @return self
 function Pool:__add(e)
    List.__add(self, e)
    self:onEntityAdded(e)
+
+   return self
 end
 
+--- Internal: Removed an Entity from the Pool.
+-- @param e Entity to remove
+-- @return self
 function Pool:__remove(e)
    List.__remove(self, e)
    self:onEntityRemoved(e)
+
+   return self
 end
 
+--- Gets the name of the Pool
+-- @return Name of the Pool.
 function Pool:getName()
    return self.__name
 end
 
+--- Gets the filter of the Pool.
+-- Warning: Do not modify this filter.
+-- @return Filter of the Pool.
 function Pool:getFilter()
    return self.__filter
 end
 
+--- Callback for when an Entity is added to the Pool.
+-- @param e Entity that was added.
 function Pool:onEntityAdded(e) -- luacheck: ignore
 end
 
+-- Callback for when an Entity is removed from the Pool.
+-- @param e Entity that was removed.
 function Pool:onEntityRemoved(e)  -- luacheck: ignore
 end
 

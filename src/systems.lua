@@ -1,4 +1,5 @@
--- Systems
+--- Systems
+-- Container for registered SystemClasses
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -6,20 +7,23 @@ local Type = require(PATH..".type")
 
 local Systems = {}
 
-function Systems.register(name, system)
+--- Registers a SystemClass.
+-- @param name Name to register under
+-- @param systemClass SystemClass to register
+function Systems.register(name, systemClass)
     if (type(name) ~= "string") then
         error("bad argument #1 to 'Systems.register' (string expected, got "..type(name)..")", 3)
     end
 
-    if (not Type.isBaseSystem(system)) then
-        error("bad argument #2 to 'Systems.register' (baseSystem expected, got "..type(system)..")", 3)
+    if (not Type.isSystemClass(systemClass)) then
+        error("bad argument #2 to 'Systems.register' (systemClass expected, got "..type(systemClass)..")", 3)
     end
 
     if (rawget(Systems, name)) then
         error("bad argument #2 to 'Systems.register' (System with name '"..name.."' is already registerd)", 3)
     end
 
-    Systems[name] = system
+    Systems[name] = systemClass
 end
 
 return setmetatable(Systems, {
