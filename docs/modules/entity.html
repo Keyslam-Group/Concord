@@ -38,13 +38,20 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/assemblage.html">assemblage</a></li>
+  <li><a href="../modules/assemblages.html">assemblages</a></li>
   <li><a href="../modules/component.html">component</a></li>
+  <li><a href="../modules/components.html">components</a></li>
   <li><strong>entity</strong></li>
   <li><a href="../modules/init.html">init</a></li>
-  <li><a href="../modules/instance.html">instance</a></li>
   <li><a href="../modules/list.html">list</a></li>
   <li><a href="../modules/pool.html">pool</a></li>
   <li><a href="../modules/system.html">system</a></li>
+  <li><a href="../modules/systems.html">systems</a></li>
+  <li><a href="../modules/type.html">type</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/world.html">world</a></li>
+  <li><a href="../modules/worlds.html">worlds</a></li>
 </ul>
 
 </div>
@@ -52,39 +59,62 @@
 <div id="content">
 
 <h1>Module <code>entity</code></h1>
-<p>Entity</p>
-<p></p>
+<p>Entity
+ Entities are the concrete objects that exist in your project.</p>
+<p>
+ An Entity have Components and are processed by Systems.
+ An Entity is contained by a maximum of 1 World.</p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Entity.new">Entity.new ()</a></td>
-	<td class="summary">Creates and initializes a new Entity.</td>
+	<td class="name" nowrap><a href="#Entity.new">Entity.new (world)</a></td>
+	<td class="summary">Creates a new Entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Entity:give">Entity:give (component, ...)</a></td>
-	<td class="summary">Gives an Entity a component with values.</td>
+	<td class="name" nowrap><a href="#Entity:give">Entity:give (componentClass, ...)</a></td>
+	<td class="summary">Gives an Entity a Component.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Entity:remove">Entity:remove (component)</a></td>
-	<td class="summary">Removes a component from an Entity.</td>
+	<td class="name" nowrap><a href="#Entity:ensure">Entity:ensure (componentClass, ...)</a></td>
+	<td class="summary">Ensures an Entity to have a Component.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Entity:apply">Entity:apply ()</a></td>
-	<td class="summary">Checks the Entity against the pools again.</td>
+	<td class="name" nowrap><a href="#Entity:remove">Entity:remove (componentClass)</a></td>
+	<td class="summary">Removes a Component from an Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:assemble">Entity:assemble (assemblage, ...)</a></td>
+	<td class="summary">Assembles an Entity.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Entity:destroy">Entity:destroy ()</a></td>
 	<td class="summary">Destroys the Entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Entity:get">Entity:get (component)</a></td>
+	<td class="name" nowrap><a href="#Entity:__dirty">Entity:__dirty ()</a></td>
+	<td class="summary">Internal: Tells the World it's in that this Entity is dirty.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:has">Entity:has (componentClass)</a></td>
+	<td class="summary">Returns true if the Entity has a Component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:get">Entity:get (componentClass)</a></td>
 	<td class="summary">Gets a Component from the Entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Entity:has">Entity:has (component)</a></td>
-	<td class="summary">Returns true if the Entity has the Component.</td>
+	<td class="name" nowrap><a href="#Entity:getComponents">Entity:getComponents ()</a></td>
+	<td class="summary">Returns a table of all Components the Entity has.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:inWorld">Entity:inWorld ()</a></td>
+	<td class="summary">Returns true if the Entity is in a World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:getWorld">Entity:getWorld ()</a></td>
+	<td class="summary">Returns the World the Entity is in.</td>
 	</tr>
 </table>
 
@@ -97,12 +127,18 @@
     <dl class="function">
     <dt>
     <a name = "Entity.new"></a>
-    <strong>Entity.new ()</strong>
+    <strong>Entity.new (world)</strong>
     </dt>
     <dd>
-    Creates and initializes a new Entity.
+    Creates a new Entity.  Optionally adds it to a World.
 
 
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">world</span>
+         Optional World to add the entity to
+        </li>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -116,19 +152,49 @@
 </dd>
     <dt>
     <a name = "Entity:give"></a>
-    <strong>Entity:give (component, ...)</strong>
+    <strong>Entity:give (componentClass, ...)</strong>
     </dt>
     <dd>
-    Gives an Entity a component with values.
+    Gives an Entity a Component.
+ If the Component already exists, it's overridden by this new Component
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">component</span>
-         The Component to add
+        <li><span class="parameter">componentClass</span>
+         ComponentClass to add an instance of
         </li>
         <li><span class="parameter">...</span>
-         The values passed to the Component
+         varargs passed to the Component's populate function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:ensure"></a>
+    <strong>Entity:ensure (componentClass, ...)</strong>
+    </dt>
+    <dd>
+    Ensures an Entity to have a Component.
+ If the Component already exists, no action is taken
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">componentClass</span>
+         ComponentClass to add an instance of
+        </li>
+        <li><span class="parameter">...</span>
+         varargs passed to the Component's populate function
         </li>
     </ul>
 
@@ -144,16 +210,16 @@
 </dd>
     <dt>
     <a name = "Entity:remove"></a>
-    <strong>Entity:remove (component)</strong>
+    <strong>Entity:remove (componentClass)</strong>
     </dt>
     <dd>
-    Removes a component from an Entity.
+    Removes a Component from an Entity.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">component</span>
-         The Component to remove
+        <li><span class="parameter">componentClass</span>
+         ComponentClass of the Component to remove
         </li>
     </ul>
 
@@ -168,19 +234,23 @@
 
 </dd>
     <dt>
-    <a name = "Entity:apply"></a>
-    <strong>Entity:apply ()</strong>
+    <a name = "Entity:assemble"></a>
+    <strong>Entity:assemble (assemblage, ...)</strong>
     </dt>
     <dd>
-    Checks the Entity against the pools again.
+    Assembles an Entity.
 
 
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">assemblage</span>
+         Assemblage to assemble with
+        </li>
+        <li><span class="parameter">...</span>
+         Varargs to pass to the Assemblage's assemble function.
+        </li>
+    </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-        self
-    </ol>
 
 
 
@@ -192,6 +262,7 @@
     </dt>
     <dd>
     Destroys the Entity.
+ Removes the Entity from it's World if it's in one.
 
 
 
@@ -206,24 +277,18 @@
 
 </dd>
     <dt>
-    <a name = "Entity:get"></a>
-    <strong>Entity:get (component)</strong>
+    <a name = "Entity:__dirty"></a>
+    <strong>Entity:__dirty ()</strong>
     </dt>
     <dd>
-    Gets a Component from the Entity.
+    Internal: Tells the World it's in that this Entity is dirty.
 
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">component</span>
-         The Component to get
-        </li>
-    </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        The Bag from the Component
+        self
     </ol>
 
 
@@ -232,23 +297,107 @@
 </dd>
     <dt>
     <a name = "Entity:has"></a>
-    <strong>Entity:has (component)</strong>
+    <strong>Entity:has (componentClass)</strong>
     </dt>
     <dd>
-    Returns true if the Entity has the Component.
+    Returns true if the Entity has a Component.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">component</span>
-         The Component to check against
+        <li><span class="parameter">componentClass</span>
+         ComponentClass of the Component to check
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        True if the entity has the Bag. False otherwise
+        True if the Entity has the Component, false otherwise
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:get"></a>
+    <strong>Entity:get (componentClass)</strong>
+    </dt>
+    <dd>
+    Gets a Component from the Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">componentClass</span>
+         ComponentClass of the Component to get
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Component
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:getComponents"></a>
+    <strong>Entity:getComponents ()</strong>
+    </dt>
+    <dd>
+    Returns a table of all Components the Entity has.
+ Warning: Do not modify this table.
+ Use Entity:give/ensure/remove instead
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table of all Components the Entity has
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:inWorld"></a>
+    <strong>Entity:inWorld ()</strong>
+    </dt>
+    <dd>
+    Returns true if the Entity is in a World.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if the Entity is in a World, false otherwise
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:getWorld"></a>
+    <strong>Entity:getWorld ()</strong>
+    </dt>
+    <dd>
+    Returns the World the Entity is in.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The World the Entity is in.
     </ol>
 
 
@@ -262,7 +411,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-09-25 18:42:43 </i>
+<i style="float:right;">Last updated 2020-01-04 00:43:06 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
