@@ -9,6 +9,25 @@ This readme will explain how to use Concord.
 Additionally all of Concord is documented using the LDoc format.
 Auto generated docs for Concord can be found in `docs` folder, or on the [Github page](https://tjakka5.github.io/Concord/).
 
+--- 
+
+## Table of Contents  
+[Installation](#installation)  
+[ECS](#ecs)  
+[API](#api) :
+- [Components](#components)  
+- [Entities](#entities)  
+- [Systems](#systems)
+- [Worlds](#worlds)
+- [Assemblages](#assemblages)  
+  
+[Quick Example](#quick-example)  
+[Contributors](#contributors)  
+[License](#licence)
+
+
+---
+
 ## Installation
 Download the repository and copy the 'src' folder in your project. Rename it to something that makes sense (Probably 'concord'), then require it in your project like so: 
 ```lua
@@ -31,6 +50,8 @@ local Systems     = Concord.systems
 local Worlds      = Concord.worlds
 local Assemblages = Concord.assemblages
 ```
+
+---
 
 ## ECS
 Concord is an Entity Component System (ECS for short) library.
@@ -104,12 +125,15 @@ Or what if the enemy shot bullets with a `health` Component? It would create bul
 
 And all that without writing a single extra line of code. Just reusing code that already existed and is guaranteed to be reuseable.
 
-## Documentation
+---
+
+## API
 
 ### General design
 
-#### Classes
 Concord does a few things that might not be immediately clear. This segment should help understanding.
+
+#### Classes
 
 When you define a Component or System you are actually defining a `ComponentClass` and `SystemClass` respectively. From these instances of them can be created. They also act as identifiers for Concord.
 
@@ -147,6 +171,26 @@ local componentName_class = Components.componentName
 
 All the above applies the same to all the other containers.
 
+#### Method chaining
+```lua
+-- All functions that do something ( eg. Don't return anything ) will return self
+-- This allowes you to chain methods
+
+entity
+:give(position, 100, 50)
+:give(velocity, 200, 0)
+:remove(position)
+:destroy()
+
+--
+
+world
+:addEntity(fooEntity)
+:addEntity(barEntity)
+:clear()
+:emit("test")
+```
+
 ### Components
 When defining a ComponentClass you usually pass in a `populate` function. This will fill the Component with values.
 
@@ -166,10 +210,10 @@ local pushableComponentClass = Concord.component()
 ```
 
 ```lua
--- Manually register the Component to the container if we want
+-- Manually register the ComponentClass to the container if we want
 Concord.components.register("positionComponent", positionComponentClass)
 
--- Otherwise return the Component so it can be required
+-- Otherwise return the ComponentClass so it can be required
 return positionComponentClass
 ```
 
@@ -283,10 +327,10 @@ local mySystemClass = Concord.system(
 ```
 
 ```lua
--- Manually register the Component to the container if we want
+-- Manually register the SystemClass to the container if we want
 Concord.system.register("mySystem", mySystemClass)
 
--- Otherwise return the Component so it can be required
+-- Otherwise return the SystemClass so it can be required
 return mySystemClass
 ```
 
@@ -350,15 +394,192 @@ local world = System:getWorld()
 
 ### Worlds
 
-TODO
+Worlds are the thing your System and Entities live in.
+With Worlds you can `:emit` a callback. All Systems with this callback will then be called.
+
+Worlds can have 1 instance of every SystemClass.
+Worlds can have any number of Entities.
+
+```lua
+-- Create World
+local myWorld = Concord.world()
+```
+
+```lua
+-- Manually register the World to the container if we want
+Concord.worlds.register("myWorld", myWorld)
+
+-- Otherwise return the World so it can be required
+return myWorld
+```
+
+```lua
+-- Add an Entity to the World
+myWorld:addEntity(myEntity)
+
+-- Remove an Entity from the World
+myWorld:removeEntity(myEntity)
+```
+
+```lua
+-- Add a System to the World
+myWorld:addSystem(mySystemClass)
+
+-- Add multiple Systems to the World
+myWorld:addSystems(moveSystemClass, renderSystemClass, controlSystemClass)
+```
+
+```lua
+-- Check if the World has a System
+local hasSystem = myWorld:hasSystem(mySystemClass)
+
+-- Get a System from the World
+local mySystem = myWorld:getSystem(mySystemClass)
+```
+
+```lua
+-- Emit an event
+
+-- This will call the 'update' function of any added Systems
+-- They will be called in the order they were added
+myWorld:emit("update", dt)
+
+-- You can emit any event with any parameters
+myWorld:emit("customCallback", 100, true, "Hello World")
+```
+
+```lua
+-- Remove all Entities from the World
+myWorld:clear()
+```
+
+```lua
+-- Override-able callbacks
+
+-- Called when an Entity is added to the World
+-- e is the Entity added
+function myWorld:onEntityAdded(e)
+    -- Do something
+end
+
+-- Called when an Entity is removed from the World
+-- e is the Entity removed
+function myWorld:onEntityRemoved(e)
+    -- Do something
+end
+```
 
 ### Assemblages
 
-TODO
+Assemblages are helpers to 'make' Entities something.
+An important distinction is that they _append_ Components.
 
-### Type
+```lua
+-- Make an Assemblage
+-- e is the Entity being assembled.
+-- cuteness and legs are variables passed in
+local animalAssemblage(function(e, cuteness, legs)
+    e
+    :give(cutenessComponentClass, cuteness)
+    :give(limbs, legs, 0) -- Variable amount of legs. 0 arm.
+end)
 
-TODO
+-- Make an Assemblage that used animalAssemblage
+-- cuteness is a variables passed in
+local catAssemblage(function(e, cuteness)
+    e
+    :assemble(animalAssemblage, cuteness * 2, 4) -- Cats are twice as cute, and have 4 legs.
+    :give(soundComponent, "meow.mp3")
+end)
+```
+
+```lua
+-- Use an Assemblage
+myEntity:assemble(catAssemblage, 100) -- 100 cuteness
+-- or
+catAssemblage:assemble(myEntity, 100) -- 100 cuteness
+```
+
+---
+
+## Quick Example
+```lua
+local Concord = require("concord")
+
+-- Defining ComponentClasses
+-- I use UpperCamelCase to indicate its a class
+local Position = Concord.component(function(c, x, y)
+    c.x = x or 0
+    c.y = y or 0
+end)
+
+local Velocity = Concord.component(function(c, x, y)
+    c.x = x or 0
+    c.y = y or 0
+end)
+
+local Drawable = Concord.component()
+
+
+-- Defining Systems
+local MoveSystem = Concord.system({Position, Velocity})
+
+function MoveSystem:update(dt)
+    for _, e in ipairs(self.pool) do
+        -- I use lowerCamelCase to indicate its an instance
+        local position = e[Position]
+        local velocity = e[Velocity]
+
+        position.x = position.x + velocity.x * dt
+        position.y = position.y + velocity.y * dt
+    end
+end
+
+
+local DrawSystem = Concord.System({Position, Drawable})
+
+function DrawSystem:draw()
+    for _, e in ipairs(self.pool) do
+        local position = e[Position]
+        
+        love.graphics.circle("fill", position.x, position.y, 5)
+    end
+end
+
+
+-- Create the World
+local world = World()
+
+-- Add the Systems
+world:addSystems(MoveSystem, DrawSystem)
+
+-- This Entity will be rendered on the screen, and move to the right at 100 pixels a second
+local entity_1 = Concord.entity(world)
+:give(Position, 100, 100)
+:give(Velocity, 100, 0)
+:give(Drawable)
+
+-- This Entity will be rendered on the screen, and stay at 50, 50
+local entity_2 = Concord.entity(world)
+:give(Position, 50, 50)
+:give(Drawable)
+
+-- This Entity does exist in the World, but since it doesn't match any System's filters it won't do anything
+local entity_2 = Concord.entity(world)
+:give(Position, 200, 200)
+
+
+-- Emit the events
+function love.update(dt)
+    world:emit(dt)
+end
+
+function love.draw()
+    world:draw()
+end
+```
+
+---
 
 ## Contributors
 - __Positive07__: Constant support and a good rubberduck
@@ -367,6 +588,8 @@ TODO
 - __Erasio__: I took inspiration from HooECS. He also introduced me to ECS
 - __Speak__: Lots of testing for new features of Concord
 - __Tesselode__: Brainstorming and helpful support
-  
+
+---
+
 ## Licence
 MIT Licensed - Copyright Justin van der Leij (Tjakka5)
