@@ -8,7 +8,7 @@ local Type = require(PATH..".type")
 local Worlds = {}
 
 --- Registers a World.
--- @param name Name to register under
+-- @tparam string name Name to register under
 -- @param world World to register
 function Worlds.register(name, world)
     if (type(name) ~= "string") then
@@ -28,14 +28,14 @@ function Worlds.register(name, world)
 end
 
 --- Returns true if the containter has the World with the name
--- @param name Name of the World to check
--- @return True if the containter has the World with the name, false otherwise
+-- @tparam string name Name of the World to check
+-- @treturn boolean
 function Worlds.has(name)
     return Worlds[name] and true or false
 end
 
 --- Returns the World with the name
--- @param name Name of the World to get
+-- @tparam string name Name of the World to get
 -- @return World with the name
 function Worlds.get(name)
     return Worlds[name]

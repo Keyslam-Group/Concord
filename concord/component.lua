@@ -1,6 +1,5 @@
---- Component
--- A Component is a pure data container.
--- A Component is contained by a single entity.
+--- A pure data container that is contained by a single entity.
+-- @classmod Component
 
 local Component = {}
 Component.__mt = {
@@ -8,8 +7,8 @@ Component.__mt = {
 }
 
 --- Creates a new ComponentClass.
--- @param populate Function that populates a Component with values
--- @return A new ComponentClass
+-- @tparam function populate Function that populates a Component with values
+-- @treturn Component A new ComponentClass
 function Component.new(populate)
    if (type(populate) ~= "function" and type(populate) ~= "nil") then
       error("bad argument #1 to 'Component.new' (function/nil expected, got "..type(populate)..")", 2)
@@ -29,7 +28,7 @@ function Component.new(populate)
    return componentClass
 end
 
---- Internal: Populates a Component with values
+-- Internal: Populates a Component with values
 function Component:__populate() -- luacheck: ignore
 end
 
@@ -39,7 +38,7 @@ end
 function Component:deserialize(data) -- luacheck: ignore
 end
 
---- Internal: Creates a new Component.
+-- Internal: Creates a new Component.
 -- @return A new Component
 function Component:__new()
    local component = setmetatable({
@@ -52,7 +51,7 @@ function Component:__new()
    return component
 end
 
---- Internal: Creates and populates a new Component.
+-- Internal: Creates and populates a new Component.
 -- @param ... Varargs passed to the populate function
 -- @return A new populated Component
 function Component:__initialize(...)
@@ -64,13 +63,13 @@ function Component:__initialize(...)
 end
 
 --- Returns true if the Component has a name.
--- @return True if the Component has a name, false otherwise
+-- @treturn boolean
 function Component:hasName()
    return self.__name and true or false
 end
 
 --- Returns the name of the Component.
--- @return Name of the Component
+-- @treturn string
 function Component:getName()
    return self.__name
 end

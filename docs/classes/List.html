@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Concord</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+<li><a href="#Metamethods">Metamethods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Assemblage.html">Assemblage</a></li>
+  <li><a href="../classes/Component.html">Component</a></li>
+  <li><a href="../classes/Entity.html">Entity</a></li>
+  <li><strong>List</strong></li>
+  <li><a href="../classes/Pool.html">Pool</a></li>
+  <li><a href="../classes/System.html">System</a></li>
+  <li><a href="../classes/World.html">World</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Assemblages.html">Assemblages</a></li>
+  <li><a href="../modules/Components.html">Components</a></li>
+  <li><a href="../modules/Concord.html">Concord</a></li>
+  <li><a href="../modules/Systems.html">Systems</a></li>
+  <li><a href="../modules/type.html">type</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/worlds.html">worlds</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>List</code></h1>
+<p>Data structure that allows for fast removal at the cost of containing order.</p>
+<p></p>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#List:new">List:new ()</a></td>
+	<td class="summary">Creates a new List.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#List:has">List:has (obj)</a></td>
+	<td class="summary">Returns true if the List has the object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#List:get">List:get (i)</a></td>
+	<td class="summary">Returns the object at an index.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#List:indexOf">List:indexOf (obj)</a></td>
+	<td class="summary">Returns the index of an object in the List.</td>
+	</tr>
+</table>
+<h2><a href="#Metamethods">Metamethods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#List:__add">List:__add (obj)</a></td>
+	<td class="summary">Adds an object to the List.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#List:__remove">List:__remove (obj)</a></td>
+	<td class="summary">Removes an object from the List.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#List:__clear">List:__clear ()</a></td>
+	<td class="summary">Clears the List completely.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "List:new"></a>
+    <strong>List:new ()</strong>
+    </dt>
+    <dd>
+    Creates a new List.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/List.html#">List</a></span>
+        A new List
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "List:has"></a>
+    <strong>List:has (obj)</strong>
+    </dt>
+    <dd>
+    Returns true if the List has the object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+         Object to check for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "List:get"></a>
+    <strong>List:get (i)</strong>
+    </dt>
+    <dd>
+    Returns the object at an index.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">i</span>
+            <span class="types"><span class="type">number</span></span>
+         Index to get from
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Object at the index
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "List:indexOf"></a>
+    <strong>List:indexOf (obj)</strong>
+    </dt>
+    <dd>
+    Returns the index of an object in the List.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+         Object to get index of
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        index of object in the List.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Metamethods"></a>Metamethods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "List:__add"></a>
+    <strong>List:__add (obj)</strong>
+    </dt>
+    <dd>
+    Adds an object to the List.
+ Object must be of reference type
+ Object may not be the string 'size'
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+         Object to add
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/List.html#">List</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "List:__remove"></a>
+    <strong>List:__remove (obj)</strong>
+    </dt>
+    <dd>
+    Removes an object from the List.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+         Object to remove
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/List.html#">List</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "List:__clear"></a>
+    <strong>List:__clear ()</strong>
+    </dt>
+    <dd>
+    Clears the List completely.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/List.html#">List</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2020-01-04 10:27:07 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

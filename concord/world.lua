@@ -1,8 +1,8 @@
---- World
--- A World is a collection of Systems and Entities
--- A world emits to let Systems iterate
--- A World contains any amount of Systems
--- A World contains any amount of Entities
+--- A collection of Systems and Entities.
+-- A world emits to let Systems iterate.
+-- A World contains any amount of Systems.
+-- A World contains any amount of Entities.
+-- @classmod World
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -19,7 +19,7 @@ World.__mt = {
 }
 
 --- Creates a new World.
--- @return The new World
+-- @treturn World The new World
 function World.new()
    local world = setmetatable({
       __entities = List(),
@@ -48,8 +48,8 @@ function World.new()
 end
 
 --- Adds an Entity to the World.
--- @param e Entity to add
--- @return self
+-- @tparam Entity e Entity to add
+-- @treturn World self
 function World:addEntity(e)
    if not Type.isEntity(e) then
       error("bad argument #1 to 'World:addEntity' (Entity expected, got "..type(e)..")", 2)
@@ -66,8 +66,8 @@ function World:addEntity(e)
 end
 
 --- Removes an Entity from the World.
--- @param e Entity to remove
--- @return self
+-- @tparam Entity e Entity to remove
+-- @treturn World self
 function World:removeEntity(e)
    if not Type.isEntity(e) then
       error("bad argument #1 to 'World:removeEntity' (Entity expected, got "..type(e)..")", 2)
@@ -78,7 +78,7 @@ function World:removeEntity(e)
    return self
 end
 
---- Internal: Marks an Entity as dirty.
+-- Internal: Marks an Entity as dirty.
 -- @param e Entity to mark as dirty
 function World:__dirtyEntity(e)
    if not self.__dirty:has(e) then
@@ -86,9 +86,9 @@ function World:__dirtyEntity(e)
    end
 end
 
---- Internal: Flushes all changes to Entities.
+-- Internal: Flushes all changes to Entities.
 -- This processes all entities. Adding and removing entities, as well as reevaluating dirty entities.
--- @return self
+-- @treturn World self
 function World:__flush()
    -- Early out
    if (self.__added.size == 0 and self.__removed.size == 0 and self.__dirty.size == 0) then
@@ -155,8 +155,8 @@ local blacklistedSystemFunctions = {
 -- Callbacks are registered automatically
 -- Entities added before are added to the System retroactively
 -- @see World:emit
--- @param systemClass SystemClass of System to add
--- @return self
+-- @tparam System systemClass SystemClass of System to add
+-- @treturn World self
 function World:addSystem(systemClass)
    if (not Type.isSystemClass(systemClass)) then
       error("bad argument #1 to 'World:addSystems' (SystemClass expected, got "..type(systemClass)..")", 2)
@@ -202,7 +202,7 @@ end
 -- @see World:addSystem
 -- @see World:emit
 -- @param ... SystemClasses of Systems to add
--- @return self
+-- @treturn World self
 function World:addSystems(...)
    for i = 1, select("#", ...) do
       local systemClass = select(i, ...)
@@ -214,8 +214,8 @@ function World:addSystems(...)
 end
 
 --- Returns if the World has a System.
--- @param systemClass SystemClass of System to check for
--- @return True if World has System, false otherwise
+-- @tparam System systemClass SystemClass of System to check for
+-- @treturn boolean
 function World:hasSystem(systemClass)
    if not Type.isSystemClass(systemClass) then
       error("bad argument #1 to 'World:getSystem' (systemClass expected, got "..type(systemClass)..")", 2)
@@ -225,8 +225,8 @@ function World:hasSystem(systemClass)
 end
 
 --- Gets a System from the World.
--- @param systemClass SystemClass of System to get
--- @return System to get
+-- @tparam System systemClass SystemClass of System to get
+-- @treturn System System to get
 function World:getSystem(systemClass)
    if not Type.isSystemClass(systemClass) then
       error("bad argument #1 to 'World:getSystem' (systemClass expected, got "..type(systemClass)..")", 2)
@@ -237,9 +237,9 @@ end
 
 --- Emits a callback in the World.
 -- Calls all functions with the functionName of added Systems
--- @param functionName Name of functions to call.
+-- @string functionName Name of functions to call.
 -- @param ... Parameters passed to System's functions
--- @return self
+-- @treturn World self
 function World:emit(functionName, ...)
    if not functionName or type(functionName) ~= "string" then
       error("bad argument #1 to 'World:emit' (String expected, got "..type(functionName)..")")
@@ -263,7 +263,7 @@ function World:emit(functionName, ...)
 end
 
 --- Removes all entities from the World
--- @return self
+-- @treturn World self
 function World:clear()
    for i = 1, self.__entities.size do
       self:removeEntity(self.__entities[i])
@@ -318,24 +318,24 @@ function World:deserialize(data, append)
 end
 
 --- Returns true if the World has a name.
--- @return True if the World has a name, false otherwise
+-- @treturn boolean
 function World:hasName()
    return self.__name and true or false
 end
 
 --- Returns the name of the World.
--- @return Name of the World
+-- @treturn string
 function World:getName()
    return self.__name
 end
 
 --- Callback for when an Entity is added to the World.
--- @param e The Entity that was added
+-- @tparam Entity e The Entity that was added
 function World:onEntityAdded(e) -- luacheck: ignore
 end
 
 --- Callback for when an Entity is removed from the World.
--- @param e The Entity that was removed
+-- @tparam Entity e The Entity that was removed
 function World:onEntityRemoved(e) -- luacheck: ignore
 end
 

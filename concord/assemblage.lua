@@ -1,6 +1,5 @@
---- Assemblage
--- An Assemblage is a function that 'makes' an entity something.
--- It does this by :give'ing or :ensure'ing Components, or by :assemble'ing the Entity.
+--- Gives an entity a set of components.
+-- @classmod Assemblage
 
 local Assemblage = {}
 Assemblage.__mt = {
@@ -8,8 +7,8 @@ Assemblage.__mt = {
 }
 
 --- Creates a new Assemblage.
--- @param assemble Function that assembles an Entity
--- @return A new Assemblage
+-- @tparam function assemble Function that assembles an Entity
+-- @treturn Assemblage A new assemblage
 function Assemblage.new(assemble)
    local assemblage = setmetatable({
       __assemble = assemble,
@@ -22,9 +21,9 @@ function Assemblage.new(assemble)
 end
 
 --- Assembles an Entity.
--- @param e Entity to assemble
--- @param ... Varargs to pass to the assemble function
--- @ return self
+-- @tparam Entity e Entity to assemble
+-- @param ... additional arguments to pass to the assemble function
+-- @treturn Assemblage self
 function Assemblage:assemble(e, ...)
    self.__assemble(e, ...)
 
@@ -32,13 +31,13 @@ function Assemblage:assemble(e, ...)
 end
 
 --- Returns true if the Assemblage has a name.
--- @return True if the Assemblage has a name, false otherwise
+-- @treturn boolean
 function Assemblage:hasName()
    return self.__name and true or false
 end
 
 --- Returns the name of the Assemblage.
--- @return Name of the Assemblage
+-- @treturn string
 function Assemblage:getName()
    return self.__name
 end

@@ -1,6 +1,6 @@
---- Pool
--- A Pool is used to iterate over Entities with a specific Components
+--- Used to iterate over Entities with a specific Components
 -- A Pool contain a any amount of Entities.
+-- @classmod Pool
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -12,9 +12,9 @@ Pool.__mt = {
 }
 
 --- Creates a new Pool
--- @param name Name for the Pool.
--- @param filter Table containing the required BaseComponents
--- @return The new Pool
+-- @string name Name for the Pool.
+-- @tparam table filter Table containing the required BaseComponents
+-- @treturn Pool The new Pool
 function Pool.new(name, filter)
    local pool = setmetatable(List(), Pool.__mt)
 
@@ -27,8 +27,8 @@ function Pool.new(name, filter)
 end
 
 --- Checks if an Entity is eligible for the Pool.
--- @param e Entity to check
--- @return True if the entity is eligible, false otherwise
+-- @tparam Entity e Entity to check
+-- @treturn boolean
 function Pool:__eligible(e)
    for _, component in ipairs(self.__filter) do
       if not e[component] then
@@ -39,9 +39,9 @@ function Pool:__eligible(e)
    return true
 end
 
---- Internal: Adds an Entity to the Pool.
+-- Internal: Adds an Entity to the Pool.
 -- @param e Entity to add
--- @return self
+-- @treturn Pool self
 function Pool:__add(e)
    List.__add(self, e)
    self:onEntityAdded(e)
@@ -49,9 +49,9 @@ function Pool:__add(e)
    return self
 end
 
---- Internal: Removed an Entity from the Pool.
+-- Internal: Removed an Entity from the Pool.
 -- @param e Entity to remove
--- @return self
+-- @treturn Pool self
 function Pool:__remove(e)
    List.__remove(self, e)
    self:onEntityRemoved(e)
@@ -60,7 +60,7 @@ function Pool:__remove(e)
 end
 
 --- Gets the name of the Pool
--- @return Name of the Pool.
+-- @treturn string
 function Pool:getName()
    return self.__name
 end
@@ -73,12 +73,12 @@ function Pool:getFilter()
 end
 
 --- Callback for when an Entity is added to the Pool.
--- @param e Entity that was added.
+-- @tparam Entity e Entity that was added.
 function Pool:onEntityAdded(e) -- luacheck: ignore
 end
 
 -- Callback for when an Entity is removed from the Pool.
--- @param e Entity that was removed.
+-- @tparam Entity e Entity that was removed.
 function Pool:onEntityRemoved(e)  -- luacheck: ignore
 end
 

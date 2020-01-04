@@ -1,5 +1,5 @@
---- Components
--- Container for registered ComponentClasss
+--- Container for registered ComponentClasses
+-- @module Components
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -8,8 +8,8 @@ local Type = require(PATH..".type")
 local Components = {}
 
 --- Registers a ComponentClass.
--- @param name Name to register under
--- @param componentClass ComponentClass to register
+-- @string name Name to register under
+-- @tparam Component componentClass ComponentClass to register
 function Components.register(name, componentClass)
     if (type(name) ~= "string") then
         error("bad argument #1 to 'Components.register' (string expected, got "..type(name)..")", 3)
@@ -27,16 +27,16 @@ function Components.register(name, componentClass)
     componentClass.__name = name
 end
 
---- Returns true if the containter has the ComponentClass with the name
--- @param name Name of the ComponentClass to check
--- @return True if the containter has the ComponentClass with the name, false otherwise
+--- Returns true if the containter has the ComponentClass with the specified name
+-- @string name Name of the ComponentClass to check
+-- @treturn boolean
 function Components.has(name)
     return Components[name] and true or false
 end
 
---- Returns the ComponentClass with the name
--- @param name Name of the ComponentClass to get
--- @return ComponentClass with the name
+--- Returns the ComponentClass with the specified name
+-- @string name Name of the ComponentClass to get
+-- @treturn Component
 function Components.get(name)
     return Components[name]
 end

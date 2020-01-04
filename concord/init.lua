@@ -1,4 +1,5 @@
---- init
+---
+-- @module Concord
 
 local PATH = (...):gsub('%.init$', '')
 

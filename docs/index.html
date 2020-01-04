@@ -31,20 +31,23 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><a href="modules/assemblage.html">assemblage</a></li>
-  <li><a href="modules/assemblages.html">assemblages</a></li>
-  <li><a href="modules/component.html">component</a></li>
-  <li><a href="modules/components.html">components</a></li>
-  <li><a href="modules/entity.html">entity</a></li>
-  <li><a href="modules/init.html">init</a></li>
-  <li><a href="modules/list.html">list</a></li>
-  <li><a href="modules/pool.html">pool</a></li>
-  <li><a href="modules/system.html">system</a></li>
-  <li><a href="modules/systems.html">systems</a></li>
+  <li><a href="modules/Assemblages.html">Assemblages</a></li>
+  <li><a href="modules/Components.html">Components</a></li>
+  <li><a href="modules/Concord.html">Concord</a></li>
+  <li><a href="modules/Systems.html">Systems</a></li>
   <li><a href="modules/type.html">type</a></li>
   <li><a href="modules/utils.html">utils</a></li>
-  <li><a href="modules/world.html">world</a></li>
   <li><a href="modules/worlds.html">worlds</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="classes/Assemblage.html">Assemblage</a></li>
+  <li><a href="classes/Component.html">Component</a></li>
+  <li><a href="classes/Entity.html">Entity</a></li>
+  <li><a href="classes/List.html">List</a></li>
+  <li><a href="classes/Pool.html">Pool</a></li>
+  <li><a href="classes/System.html">System</a></li>
+  <li><a href="classes/World.html">World</a></li>
 </ul>
 
 </div>
@@ -57,54 +60,20 @@
 <h2>Modules</h2>
 <table class="module_list">
 	<tr>
-		<td class="name"  nowrap><a href="modules/assemblage.html">assemblage</a></td>
-		<td class="summary">Assemblage
- An Assemblage is a function that 'makes' an entity something.</td>
+		<td class="name"  nowrap><a href="modules/Assemblages.html">Assemblages</a></td>
+		<td class="summary">A container for registered <a href="classes/Assemblage.html#">Assemblage</a>s</td>
 	</tr>
 	<tr>
-		<td class="name"  nowrap><a href="modules/assemblages.html">assemblages</a></td>
-		<td class="summary">Assemblages
- Container for registered Assemblages</td>
+		<td class="name"  nowrap><a href="modules/Components.html">Components</a></td>
+		<td class="summary">Container for registered ComponentClasses</td>
 	</tr>
 	<tr>
-		<td class="name"  nowrap><a href="modules/component.html">component</a></td>
-		<td class="summary">Component
- A Component is a pure data container.</td>
+		<td class="name"  nowrap><a href="modules/Concord.html">Concord</a></td>
+		<td class="summary"></td>
 	</tr>
 	<tr>
-		<td class="name"  nowrap><a href="modules/components.html">components</a></td>
-		<td class="summary">Components
- Container for registered ComponentClasss</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/entity.html">entity</a></td>
-		<td class="summary">Entity
- Entities are the concrete objects that exist in your project.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/init.html">init</a></td>
-		<td class="summary">init</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/list.html">list</a></td>
-		<td class="summary">List
- Data structure that allows for fast removal at the cost of containing order.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/pool.html">pool</a></td>
-		<td class="summary">Pool
- A Pool is used to iterate over Entities with a specific Components
- A Pool contain a any amount of Entities.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/system.html">system</a></td>
-		<td class="summary">System
- A System iterates over Entities.</td>
-	</tr>
-	<tr>
-		<td class="name"  nowrap><a href="modules/systems.html">systems</a></td>
-		<td class="summary">Systems
- Container for registered SystemClasses</td>
+		<td class="name"  nowrap><a href="modules/Systems.html">Systems</a></td>
+		<td class="summary">Container for registered SystemClasses</td>
 	</tr>
 	<tr>
 		<td class="name"  nowrap><a href="modules/type.html">type</a></td>
@@ -117,17 +86,41 @@
  Helper module for misc operations</td>
 	</tr>
 	<tr>
-		<td class="name"  nowrap><a href="modules/world.html">world</a></td>
-		<td class="summary">World
- A World is a collection of Systems and Entities
- A world emits to let Systems iterate
- A World contains any amount of Systems
- A World contains any amount of Entities</td>
-	</tr>
-	<tr>
 		<td class="name"  nowrap><a href="modules/worlds.html">worlds</a></td>
 		<td class="summary">Worlds
  Container for registered Worlds</td>
+	</tr>
+</table>
+<h2>Classes</h2>
+<table class="module_list">
+	<tr>
+		<td class="name"  nowrap><a href="classes/Assemblage.html">Assemblage</a></td>
+		<td class="summary">Gives an entity a set of components.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/Component.html">Component</a></td>
+		<td class="summary">A pure data container that is contained by a single entity.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/Entity.html">Entity</a></td>
+		<td class="summary">An object that exists in a world.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/List.html">List</a></td>
+		<td class="summary">Data structure that allows for fast removal at the cost of containing order.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/Pool.html">Pool</a></td>
+		<td class="summary">Used to iterate over Entities with a specific Components
+ A Pool contain a any amount of Entities.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/System.html">System</a></td>
+		<td class="summary">Iterates over Entities.</td>
+	</tr>
+	<tr>
+		<td class="name"  nowrap><a href="classes/World.html">World</a></td>
+		<td class="summary">A collection of Systems and Entities.</td>
 	</tr>
 </table>
 
@@ -135,7 +128,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-01-04 00:43:06 </i>
+<i style="float:right;">Last updated 2020-01-04 10:27:07 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

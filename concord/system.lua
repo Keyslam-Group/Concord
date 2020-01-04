@@ -1,7 +1,7 @@
---- System
--- A System iterates over Entities. From these Entities its get Components and modify them.
+--- Iterates over Entities. From these Entities its get Components and modify them.
 -- A System contains 1 or more Pools.
 -- A System is contained by 1 World.
+-- @classmod System
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -50,7 +50,7 @@ System.mt = {
 
 --- Creates a new SystemClass.
 -- @param ... Variable amounts of filters
--- @return A new SystemClass
+-- @treturn System A new SystemClass
 function System.new(...)
    local systemClass = setmetatable({
       __filter = {...},
@@ -70,7 +70,7 @@ function System.new(...)
    return systemClass
 end
 
---- Internal: Builds a Pool for the System.
+-- Internal: Builds a Pool for the System.
 -- @param baseFilter The 'raw' Filter
 -- @return A new Pool
 function System.__buildPool(baseFilter)
@@ -88,9 +88,9 @@ function System.__buildPool(baseFilter)
    return Pool(name, filter)
 end
 
---- Internal: Evaluates an Entity for all the System's Pools.
+-- Internal: Evaluates an Entity for all the System's Pools.
 -- @param e The Entity to check
--- @return self
+-- @treturn System self
 function System:__evaluate(e)
    for _, pool in ipairs(self.__pools) do
       local has  = pool:has(e)
@@ -106,9 +106,9 @@ function System:__evaluate(e)
    return self
 end
 
---- Internal: Removes an Entity from the System.
+-- Internal: Removes an Entity from the System.
 -- @param e The Entity to remove
--- @return self
+-- @treturn System self
 function System:__remove(e)
    for _, pool in ipairs(self.__pools) do
       if pool:has(e) then
@@ -119,8 +119,8 @@ function System:__remove(e)
    return self
 end
 
---- Internal: Clears all Entities from the System.
--- @return self
+-- Internal: Clears all Entities from the System.
+-- @treturn System self
 function System:__clear()
    for i = 1, #self.__pools do
       self.__pools[i]:__clear()
@@ -130,7 +130,7 @@ function System:__clear()
 end
 
 --- Enables the System.
--- @return self
+-- @treturn System self
 function System:enable()
    self:setEnabled(true)
 
@@ -138,7 +138,7 @@ function System:enable()
 end
 
 --- Disables the System.
--- @return self
+-- @treturn System self
 function System:disable()
    self:setEnabled(false)
 
@@ -146,7 +146,7 @@ function System:disable()
 end
 
 --- Toggles if the System is enabled.
--- @return self
+-- @treturn System self
 function System:toggleEnabled()
    self:setEnabled(not self.__enabled)
 
@@ -154,8 +154,8 @@ function System:toggleEnabled()
 end
 
 --- Sets if the System is enabled
--- @param enable Enable
--- @return self
+-- @tparam boolean enable
+-- @treturn System self
 function System:setEnabled(enable)
    if (not self.__enabled and enable) then
       self.__enabled = true
@@ -169,39 +169,42 @@ function System:setEnabled(enable)
 end
 
 --- Returns is the System is enabled
--- @return True if the System is enabled, false otherwise
+-- @treturn boolean
 function System:isEnabled()
    return self.__enabled
 end
 
 --- Returns the World the System is in.
--- @return The World the System is in
+-- @treturn World
 function System:getWorld()
    return self.__world
 end
 
 --- Returns true if the System has a name.
--- @return True if the System has a name, false otherwise
+-- @treturn boolean
 function System:hasName()
    return self.__name and true or false
 end
 
 --- Returns the name of the System.
--- @return Name of the System
+-- @treturn string
 function System:getName()
    return self.__name
 end
 
+--- Callbacks
+-- @section Callbacks
+
 --- Callback for system initialization.
--- @param world The World the System was added to
+-- @tparam World world The World the System was added to
 function System:init(world) -- luacheck: ignore
 end
 
--- Callback for when a System is enabled.
+--- Callback for when a System is enabled.
 function System:onEnabled() -- luacheck: ignore
 end
 
--- Callback for when a System is disabled.
+--- Callback for when a System is disabled.
 function System:onDisabled() -- luacheck: ignore
 end
 
