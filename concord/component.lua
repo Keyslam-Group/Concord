@@ -18,6 +18,7 @@ function Component.new(populate)
    local componentClass = setmetatable({
       __populate = populate,
 
+      __name             = nil,
       __isComponentClass = true,
    }, Component.__mt)
 
@@ -32,20 +33,42 @@ end
 function Component:__populate() -- luacheck: ignore
 end
 
+function Component:serialize() -- luacheck: ignore
+end
+
+function Component:deserialize(data) -- luacheck: ignore
+end
+
+--- Internal: Creates a new Component.
+-- @return A new Component
+function Component:__new()
+   local component = setmetatable({
+      __componentClass = self,
+
+      __isComponent      = true,
+      __isComponentClass = false,
+   }, self.__mt)
+
+   return component
+end
+
 --- Internal: Creates and populates a new Component.
 -- @param ... Varargs passed to the populate function
 -- @return A new populated Component
 function Component:__initialize(...)
-   local component = setmetatable({
-      __componentClass = self,
-
-      __isComponent     = true,
-      __isComponentClass = false,
-   }, self)
+   local component = self:__new()
 
    self.__populate(component, ...)
 
    return component
+end
+
+function Component:hasName()
+   return self.__name and true or false
+end
+
+function Component:getName()
+   return self.__name
 end
 
 return setmetatable(Component, {

@@ -5,7 +5,8 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Type = require(PATH..".type")
+local Components = require(PATH..".components")
+local Type       = require(PATH..".type")
 
 local Entity = {}
 Entity.__mt = {
@@ -171,6 +172,41 @@ end
 -- @return The World the Entity is in.
 function Entity:getWorld()
    return self.__world
+end
+
+function Entity:serialize()
+   local data = {}
+
+   for _, component in pairs(self.__components) do
+      if component.__name then
+         local componentData = component:serialize()
+         componentData.__name = component.__name
+
+         data[#data + 1] = componentData
+      end
+   end
+
+   return data
+end
+
+function Entity:deserialize(data)
+   for i = 1, #data do
+      local componentData = data[i]
+
+      if (not Components[componentData.__name]) then
+         error("bad argument #1 to 'Entity:deserialize' (ComponentClass "..type(componentData.__name).." wasn't yet loaded)") -- luacheck: ignore
+      end
+
+      local componentClass = Components[componentData.__name]
+
+      local component = componentClass:__new()
+      component:deserialize(componentData)
+
+      self[componentClass] = component
+      self.__components[componentClass] = component
+
+      self:__dirty()
+   end
 end
 
 return setmetatable(Entity, {

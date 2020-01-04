@@ -20,11 +20,21 @@ function Components.register(name, componentClass)
     end
 
     if (rawget(Components, name)) then
-        error("bad argument #2 to 'Components.register' (ComponentClass with name '"..name.."' was already registerd)", 3)
+        error("bad argument #2 to 'Components.register' (ComponentClass with name '"..name.."' was already registerd)", 3) -- luacheck: ignore
     end
 
     Components[name] = componentClass
+    componentClass.__name = name
 end
+
+function Components.has(name)
+    return Components[name] and true or false
+end
+
+function Components.get(name)
+    return Components[name]
+end
+
 
 return setmetatable(Components, {
     __index = function(_, name)

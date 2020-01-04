@@ -6,9 +6,10 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Type  = require(PATH..".type")
-local List  = require(PATH..".list")
-local Utils = require(PATH..".utils")
+local Entity = require(PATH..".entity")
+local Type   = require(PATH..".type")
+local List   = require(PATH..".list")
+local Utils  = require(PATH..".utils")
 
 local World = {
    ENABLE_OPTIMIZATION = true,
@@ -21,10 +22,10 @@ World.__mt = {
 -- @return The new World
 function World.new()
    local world = setmetatable({
-      entities = List(),
-      systems  = List(),
+      __entities = List(),
+      __systems  = List(),
 
-      events = {},
+      __events = {},
 
       __added   = List(), __backAdded   = List(),
       __removed = List(), __backRemoved = List(),
@@ -104,10 +105,10 @@ function World:__flush()
    for i = 1, self.__backAdded.size do
       e = self.__backAdded[i]
 
-      self.entities:__add(e)
+      self.__entities:__add(e)
 
-      for j = 1, self.systems.size do
-         self.systems[j]:__evaluate(e)
+      for j = 1, self.__systems.size do
+         self.__systems[j]:__evaluate(e)
       end
 
       self:onEntityAdded(e)
@@ -119,10 +120,10 @@ function World:__flush()
       e = self.__backRemoved[i]
 
       e.__world = nil
-      self.entities:__remove(e)
+      self.__entities:__remove(e)
 
-      for j = 1, self.systems.size do
-         self.systems[j]:__remove(e)
+      for j = 1, self.__systems.size do
+         self.__systems[j]:__remove(e)
       end
 
       self:onEntityRemoved(e)
@@ -133,8 +134,8 @@ function World:__flush()
    for i = 1, self.__backDirty.size do
       e = self.__backDirty[i]
 
-      for j = 1, self.systems.size do
-         self.systems[j]:__evaluate(e)
+      for j = 1, self.__systems.size do
+         self.__systems[j]:__evaluate(e)
       end
    end
    self.__backDirty:__clear()
@@ -168,18 +169,18 @@ function World:addSystem(systemClass)
    local system = systemClass(self)
 
    self.__systemLookup[systemClass] = system
-   self.systems:__add(system)
+   self.__systems:__add(system)
 
    for callbackName, callback in pairs(systemClass) do
       -- Skip callback if its blacklisted
       if (not blacklistedSystemFunctions[callbackName]) then
          -- Make container for all listeners of the callback if it does not exist yet
-         if (not self.events[callbackName]) then
-            self.events[callbackName] = {}
+         if (not self.__events[callbackName]) then
+            self.__events[callbackName] = {}
          end
 
          -- Add callback to listeners
-         local listeners = self.events[callbackName]
+         local listeners = self.__events[callbackName]
          listeners[#listeners + 1] = {
             system   = system,
             callback = callback,
@@ -188,8 +189,8 @@ function World:addSystem(systemClass)
    end
 
    -- Evaluate all existing entities
-   for j = 1, self.entities.size do
-      system:__evaluate(self.entities[j])
+   for j = 1, self.__entities.size do
+      system:__evaluate(self.__entities[j])
    end
 
    return self
@@ -243,7 +244,7 @@ function World:emit(functionName, ...)
       error("bad argument #1 to 'World:emit' (String expected, got "..type(functionName)..")")
    end
 
-	local listeners = self.events[functionName]
+	local listeners = self.__events[functionName]
 
    if listeners then
       for i = 1, #listeners do
@@ -263,15 +264,56 @@ end
 --- Removes all entities from the World
 -- @return self
 function World:clear()
-   for i = 1, self.entities.size do
-      self:removeEntity(self.entities[i])
+   for i = 1, self.__entities.size do
+      self:removeEntity(self.__entities[i])
    end
 
-   for i = 1, self.systems.size do
-      self.systems[i]:__clear()
+   for i = 1, self.__systems.size do
+      self.__systems[i]:__clear()
    end
 
    return self
+end
+
+function World:getEntities()
+   return self.__entities
+end
+
+function World:getSystems()
+   return self.__systems
+end
+
+function World:serialize()
+   self:__flush()
+
+   local data = {}
+
+   for i = 1, self.__entities.size do
+      local entity = self.__entities[i]
+
+      local entityData = entity:serialize()
+
+      data[i] = entityData
+   end
+
+   return data
+end
+
+function World:deserialize(data, append)
+   if (not append) then
+      self:clear()
+   end
+
+   for i = 1, #data do
+      local entityData = data[i]
+
+      local entity = Entity()
+      entity:deserialize(entityData)
+
+      self:addEntity(entity)
+   end
+
+   self:__flush()
 end
 
 --- Callback for when an Entity is added to the World.
