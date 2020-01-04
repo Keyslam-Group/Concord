@@ -440,7 +440,7 @@ local mySystem = myWorld:getSystem(mySystemClass)
 ```lua
 -- Emit an event
 
--- This will call the 'update' function of any added Systems
+-- This will call the 'update' function of all added Systems if they have one
 -- They will be called in the order they were added
 myWorld:emit("update", dt)
 
@@ -565,7 +565,7 @@ local entity_2 = Concord.entity(world)
 :give(Drawable)
 
 -- This Entity does exist in the World, but since it doesn't match any System's filters it won't do anything
-local entity_2 = Concord.entity(world)
+local entity_3 = Concord.entity(world)
 :give(Position, 200, 200)
 
 
