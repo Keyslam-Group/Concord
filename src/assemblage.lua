@@ -21,7 +21,6 @@ function Assemblage.new(assemble)
 end
 
 --- Assembles an Entity.
--- @see Entity:assemble
 -- @param e Entity to assemble
 -- @param ... Varargs to pass to the assemble function
 -- @ return self

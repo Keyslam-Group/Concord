@@ -77,7 +77,6 @@ function World:removeEntity(e)
 end
 
 --- Internal: Marks an Entity as dirty.
--- @see Entity:__dirty
 -- @param e Entity to mark as dirty
 function World:__dirtyEntity(e)
    if not self.__dirty:has(e) then
@@ -87,7 +86,6 @@ end
 
 --- Internal: Flushes all changes to Entities.
 -- This processes all entities. Adding and removing entities, as well as reevaluating dirty entities.
--- @see System:__evaluate
 -- @return self
 function World:__flush()
    -- Early out

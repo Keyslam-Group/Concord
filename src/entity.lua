@@ -98,7 +98,6 @@ function Entity:remove(componentClass)
 end
 
 --- Assembles an Entity.
--- @see Assemblage:assemble
 -- @param assemblage Assemblage to assemble with
 -- @param ... Varargs to pass to the Assemblage's assemble function.
 function Entity:assemble(assemblage, ...)

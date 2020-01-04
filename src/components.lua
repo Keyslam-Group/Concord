@@ -1,4 +1,4 @@
--- Components
+--- Components
 -- Container for registered ComponentClasss
 
 local PATH = (...):gsub('%.[^%.]+$', '')

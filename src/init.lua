@@ -85,7 +85,6 @@ end
 --- Loads ComponentClasses and puts them in the Components container.
 -- Accepts a table of paths to files: {"component_1", "component_2", "etc"}
 -- Accepts a path to a directory with ComponentClasses: "components"
---@see Components
 function Concord.loadComponents(pathOrFiles)
    load(pathOrFiles, Concord.components)
 end
@@ -93,7 +92,6 @@ end
 --- Loads SystemClasses and puts them in the Systems container.
 -- Accepts a table of paths to files: {"system_1", "system_2", "etc"}
 -- Accepts a path to a directory with SystemClasses: "systems"
---@see Systems
 function Concord.loadSystems(pathOrFiles)
    load(pathOrFiles, Concord.systems)
 end
@@ -101,7 +99,6 @@ end
 --- Loads Worlds and puts them in the Worlds container.
 -- Accepts a table of paths to files: {"world_1", "world_2", "etc"}
 -- Accepts a path to a directory with Worlds: "worlds"
---@see Worlds
 function Concord.loadWorlds(pathOrFiles)
    load(pathOrFiles, Concord.worlds)
 end
@@ -109,7 +106,6 @@ end
 --- Loads Assemblages and puts them in the Assemblages container.
 -- Accepts a table of paths to files: {"assemblage_1", "assemblage_2", "etc"}
 -- Accepts a path to a directory with Assemblages: "assemblages"
---@see Assemblages
 function Concord.loadAssemblages(pathOrFiles)
    load(pathOrFiles, Concord.assemblages)
 end
