@@ -24,6 +24,21 @@ function Worlds.register(name, world)
     end
 
     Worlds[name] = world
+    world.__name = name
+end
+
+--- Returns true if the containter has the World with the name
+-- @param name Name of the World to check
+-- @return True if the containter has the World with the name, false otherwise
+function Worlds.has(name)
+    return Worlds[name] and true or false
+end
+
+--- Returns the World with the name
+-- @param name Name of the World to get
+-- @return World with the name
+function Worlds.get(name)
+    return Worlds[name]
 end
 
 return setmetatable(Worlds, {

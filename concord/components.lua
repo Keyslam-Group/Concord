@@ -27,14 +27,19 @@ function Components.register(name, componentClass)
     componentClass.__name = name
 end
 
+--- Returns true if the containter has the ComponentClass with the name
+-- @param name Name of the ComponentClass to check
+-- @return True if the containter has the ComponentClass with the name, false otherwise
 function Components.has(name)
     return Components[name] and true or false
 end
 
+--- Returns the ComponentClass with the name
+-- @param name Name of the ComponentClass to get
+-- @return ComponentClass with the name
 function Components.get(name)
     return Components[name]
 end
-
 
 return setmetatable(Components, {
     __index = function(_, name)

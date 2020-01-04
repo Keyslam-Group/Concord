@@ -33,6 +33,7 @@ function World.new()
 
       __systemLookup = {},
 
+      __name    = nil,
       __isWorld = true,
    }, World.__mt)
 
@@ -314,6 +315,18 @@ function World:deserialize(data, append)
    end
 
    self:__flush()
+end
+
+--- Returns true if the World has a name.
+-- @return True if the World has a name, false otherwise
+function World:hasName()
+   return self.__name and true or false
+end
+
+--- Returns the name of the World.
+-- @return Name of the World
+function World:getName()
+   return self.__name
 end
 
 --- Callback for when an Entity is added to the World.

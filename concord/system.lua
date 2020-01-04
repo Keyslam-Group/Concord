@@ -53,8 +53,10 @@ System.mt = {
 -- @return A new SystemClass
 function System.new(...)
    local systemClass = setmetatable({
-      __isSystemClass = true,
       __filter = {...},
+
+      __name          = nil,
+      __isSystemClass = true,
    }, System.mt)
    systemClass.__index = systemClass
 
@@ -176,6 +178,18 @@ end
 -- @return The World the System is in
 function System:getWorld()
    return self.__world
+end
+
+--- Returns true if the System has a name.
+-- @return True if the System has a name, false otherwise
+function System:hasName()
+   return self.__name and true or false
+end
+
+--- Returns the name of the System.
+-- @return Name of the System
+function System:getName()
+   return self.__name
 end
 
 --- Callback for system initialization.

@@ -63,10 +63,14 @@ function Component:__initialize(...)
    return component
 end
 
+--- Returns true if the Component has a name.
+-- @return True if the Component has a name, false otherwise
 function Component:hasName()
    return self.__name and true or false
 end
 
+--- Returns the name of the Component.
+-- @return Name of the Component
 function Component:getName()
    return self.__name
 end

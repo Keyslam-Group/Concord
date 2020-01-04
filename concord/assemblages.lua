@@ -24,7 +24,23 @@ function Assemblages.register(name, assemblage)
     end
 
     Assemblages[name] = assemblage
+    assemblage.__name = name
 end
+
+--- Returns true if the containter has the Assemblage with the name
+-- @param name Name of the Assemblage to check
+-- @return True if the containter has the Assemblage with the name, false otherwise
+function Assemblages.has(name)
+    return Assemblages[name] and true or false
+end
+
+--- Returns the Assemblage with the name
+-- @param name Name of the Assemblage to get
+-- @return Assemblage with the name
+function Assemblages.get(name)
+    return Assemblages[name]
+end
+
 
 return setmetatable(Assemblages, {
     __index = function(_, name)

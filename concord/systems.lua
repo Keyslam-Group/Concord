@@ -24,6 +24,21 @@ function Systems.register(name, systemClass)
     end
 
     Systems[name] = systemClass
+    systemClass.__name = name
+end
+
+--- Returns true if the containter has the SystemClass with the name
+-- @param name Name of the SystemClass to check
+-- @return True if the containter has the SystemClass with the name, false otherwise
+function Systems.has(name)
+    return Systems[name] and true or false
+end
+
+--- Returns the SystemClass with the name
+-- @param name Name of the SystemClass to get
+-- @return SystemClass with the name
+function Systems.get(name)
+    return Systems[name]
 end
 
 return setmetatable(Systems, {
