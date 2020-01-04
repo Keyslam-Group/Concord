@@ -38,13 +38,20 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/assemblage.html">assemblage</a></li>
+  <li><a href="../modules/assemblages.html">assemblages</a></li>
   <li><a href="../modules/component.html">component</a></li>
+  <li><a href="../modules/components.html">components</a></li>
   <li><a href="../modules/entity.html">entity</a></li>
   <li><a href="../modules/init.html">init</a></li>
-  <li><a href="../modules/instance.html">instance</a></li>
   <li><strong>list</strong></li>
   <li><a href="../modules/pool.html">pool</a></li>
   <li><a href="../modules/system.html">system</a></li>
+  <li><a href="../modules/systems.html">systems</a></li>
+  <li><a href="../modules/type.html">type</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/world.html">world</a></li>
+  <li><a href="../modules/worlds.html">worlds</a></li>
 </ul>
 
 </div>
@@ -52,7 +59,8 @@
 <div id="content">
 
 <h1>Module <code>list</code></h1>
-<p>List</p>
+<p>List
+ Data structure that allows for fast removal at the cost of containing order.</p>
 <p></p>
 
 
@@ -63,24 +71,28 @@
 	<td class="summary">Creates a new List.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#List:clear">List:clear ()</a></td>
-	<td class="summary">Clears the List completely.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#List:add">List:add (obj)</a></td>
+	<td class="name" nowrap><a href="#List:__add">List:__add (obj)</a></td>
 	<td class="summary">Adds an object to the List.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#List:remove">List:remove (obj)</a></td>
+	<td class="name" nowrap><a href="#List:__remove">List:__remove (obj)</a></td>
 	<td class="summary">Removes an object from the List.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#List:get">List:get (index)</a></td>
-	<td class="summary">Gets an object by numerical index.</td>
+	<td class="name" nowrap><a href="#List:__clear">List:__clear ()</a></td>
+	<td class="summary">Clears the List completely.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#List:has">List:has (obj)</a></td>
-	<td class="summary">Gets if the List has the object.</td>
+	<td class="summary">Returns true if the List has the object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#List:get">List:get (i)</a></td>
+	<td class="summary">Returns the object at an index.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#List:indexOf">List:indexOf (obj)</a></td>
+	<td class="summary">Returns the index of an object in the List.</td>
 	</tr>
 </table>
 
@@ -103,7 +115,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        A new list
+        A new List
     </ol>
 
 
@@ -111,8 +123,60 @@
 
 </dd>
     <dt>
-    <a name = "List:clear"></a>
-    <strong>List:clear ()</strong>
+    <a name = "List:__add"></a>
+    <strong>List:__add (obj)</strong>
+    </dt>
+    <dd>
+    Adds an object to the List.
+ Object must be of reference type
+ Object may not be the string 'size'
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+         Object to add
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "List:__remove"></a>
+    <strong>List:__remove (obj)</strong>
+    </dt>
+    <dd>
+    Removes an object from the List.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+         Object to remove
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "List:__clear"></a>
+    <strong>List:__clear ()</strong>
     </dt>
     <dd>
     Clears the List completely.
@@ -130,49 +194,24 @@
 
 </dd>
     <dt>
-    <a name = "List:add"></a>
-    <strong>List:add (obj)</strong>
+    <a name = "List:has"></a>
+    <strong>List:has (obj)</strong>
     </dt>
     <dd>
-    Adds an object to the List.
+    Returns true if the List has the object.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">obj</span>
-         The object to add
+         Object to check for
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "List:remove"></a>
-    <strong>List:remove (obj)</strong>
-    </dt>
-    <dd>
-    Removes an object from the List.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">obj</span>
-         The object to remove
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        self
+        True if the List has the object, false otherwise
     </ol>
 
 
@@ -181,23 +220,23 @@
 </dd>
     <dt>
     <a name = "List:get"></a>
-    <strong>List:get (index)</strong>
+    <strong>List:get (i)</strong>
     </dt>
     <dd>
-    Gets an object by numerical index.
+    Returns the object at an index.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">index</span>
-         The index to look at
+        <li><span class="parameter">i</span>
+         Index to get from
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        The object at the index
+        Object at the index
     </ol>
 
 
@@ -205,21 +244,25 @@
 
 </dd>
     <dt>
-    <a name = "List:has"></a>
-    <strong>List:has (obj)</strong>
+    <a name = "List:indexOf"></a>
+    <strong>List:indexOf (obj)</strong>
     </dt>
     <dd>
-    Gets if the List has the object.
+    Returns the index of an object in the List.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">obj</span>
-         The object to search for
- true if the list has the object, false otherwise
+         Object to get index of
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+        index of object in the List.
+    </ol>
 
 
 
@@ -232,7 +275,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-09-25 18:42:43 </i>
+<i style="float:right;">Last updated 2020-01-04 00:43:06 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

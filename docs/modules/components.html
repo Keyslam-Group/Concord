@@ -40,8 +40,8 @@
 <ul class="nowrap">
   <li><a href="../modules/assemblage.html">assemblage</a></li>
   <li><a href="../modules/assemblages.html">assemblages</a></li>
-  <li><strong>component</strong></li>
-  <li><a href="../modules/components.html">components</a></li>
+  <li><a href="../modules/component.html">component</a></li>
+  <li><strong>components</strong></li>
   <li><a href="../modules/entity.html">entity</a></li>
   <li><a href="../modules/init.html">init</a></li>
   <li><a href="../modules/list.html">list</a></li>
@@ -58,26 +58,17 @@
 
 <div id="content">
 
-<h1>Module <code>component</code></h1>
-<p>Component
- A Component is a pure data container.</p>
-<p>
- A Component is contained by a single entity.</p>
+<h1>Module <code>components</code></h1>
+<p>Components
+ Container for registered ComponentClasss</p>
+<p></p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Component.new">Component.new (populate)</a></td>
-	<td class="summary">Creates a new ComponentClass.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Component:__populate">Component:__populate ()</a></td>
-	<td class="summary">Internal: Populates a Component with values</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Component:__initialize">Component:__initialize (...)</a></td>
-	<td class="summary">Internal: Creates and populates a new Component.</td>
+	<td class="name" nowrap><a href="#Components.register">Components.register (name, componentClass)</a></td>
+	<td class="summary">Registers a ComponentClass.</td>
 	</tr>
 </table>
 
@@ -89,64 +80,23 @@
 
     <dl class="function">
     <dt>
-    <a name = "Component.new"></a>
-    <strong>Component.new (populate)</strong>
+    <a name = "Components.register"></a>
+    <strong>Components.register (name, componentClass)</strong>
     </dt>
     <dd>
-    Creates a new ComponentClass.
+    Registers a ComponentClass.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">populate</span>
-         Function that populates a Component with values
+        <li><span class="parameter">name</span>
+         Name to register under
+        </li>
+        <li><span class="parameter">componentClass</span>
+         ComponentClass to register
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-        A new ComponentClass
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Component:__populate"></a>
-    <strong>Component:__populate ()</strong>
-    </dt>
-    <dd>
-    Internal: Populates a Component with values
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Component:__initialize"></a>
-    <strong>Component:__initialize (...)</strong>
-    </dt>
-    <dd>
-    Internal: Creates and populates a new Component.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">...</span>
-         Varargs passed to the populate function
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        A new populated Component
-    </ol>
 
 
 

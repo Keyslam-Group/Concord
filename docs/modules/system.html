@@ -38,13 +38,20 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
+  <li><a href="../modules/assemblage.html">assemblage</a></li>
+  <li><a href="../modules/assemblages.html">assemblages</a></li>
   <li><a href="../modules/component.html">component</a></li>
+  <li><a href="../modules/components.html">components</a></li>
   <li><a href="../modules/entity.html">entity</a></li>
   <li><a href="../modules/init.html">init</a></li>
-  <li><a href="../modules/instance.html">instance</a></li>
   <li><a href="../modules/list.html">list</a></li>
   <li><a href="../modules/pool.html">pool</a></li>
   <li><strong>system</strong></li>
+  <li><a href="../modules/systems.html">systems</a></li>
+  <li><a href="../modules/type.html">type</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/world.html">world</a></li>
+  <li><a href="../modules/worlds.html">worlds</a></li>
 </ul>
 
 </div>
@@ -52,63 +59,62 @@
 <div id="content">
 
 <h1>Module <code>system</code></h1>
-<p>System</p>
-<p></p>
+<p>System
+ A System iterates over Entities.</p>
+<p> From these Entities its get Components and modify them.
+ A System contains 1 or more Pools.
+ A System is contained by 1 World.</p>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#System.new">System.new (...)</a></td>
-	<td class="summary">Creates a new System prototype.</td>
+	<td class="summary">Creates a new SystemClass.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:__buildPool">System:__buildPool (baseFilter)</a></td>
-	<td class="summary">Builds a Pool for the System.</td>
+	<td class="name" nowrap><a href="#System.__buildPool">System.__buildPool (baseFilter)</a></td>
+	<td class="summary">Internal: Builds a Pool for the System.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:__check">System:__check (e)</a></td>
-	<td class="summary">Checks and applies an Entity to the System's pools.</td>
+	<td class="name" nowrap><a href="#System:__evaluate">System:__evaluate (e)</a></td>
+	<td class="summary">Internal: Evaluates an Entity for all the System's Pools.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#System:__remove">System:__remove (e)</a></td>
-	<td class="summary">Removed an Entity from the System.</td>
+	<td class="summary">Internal: Removes an Entity from the System.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:__tryAdd">System:__tryAdd (e)</a></td>
-	<td class="summary">Tries to add an Entity to the System.</td>
+	<td class="name" nowrap><a href="#System:clear">System:clear ()</a></td>
+	<td class="summary">Internal: Clears all Entities from the System.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:__tryRemove">System:__tryRemove (e)</a></td>
-	<td class="summary">Tries to remove an Entity from the System.</td>
+	<td class="name" nowrap><a href="#System:enable">System:enable ()</a></td>
+	<td class="summary">Enables the System.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:getInstance">System:getInstance ()</a></td>
-	<td class="summary">Returns the Instance the System is in.</td>
+	<td class="name" nowrap><a href="#System:disable">System:disable ()</a></td>
+	<td class="summary">Disables the System.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:__has">System:__has (e)</a></td>
-	<td class="summary">Returns if the System has the Entity.</td>
+	<td class="name" nowrap><a href="#System:toggleEnable">System:toggleEnable ()</a></td>
+	<td class="summary">Toggles if the System is enabled.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:init">System:init (...)</a></td>
-	<td class="summary">Default callback for system initialization.</td>
+	<td class="name" nowrap><a href="#System:setEnabled">System:setEnabled (enable)</a></td>
+	<td class="summary">Sets if the System is enabled</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:entityAdded">System:entityAdded (e)</a></td>
-	<td class="summary">Default callback for adding an Entity.</td>
+	<td class="name" nowrap><a href="#System:isEnabled">System:isEnabled ()</a></td>
+	<td class="summary">Returns is the System is enabled</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:entityAddedTo">System:entityAddedTo (e, pool)</a></td>
-	<td class="summary">Default callback for adding an Entity to a pool.</td>
+	<td class="name" nowrap><a href="#System:getWorld">System:getWorld ()</a></td>
+	<td class="summary">Returns the World the System is in.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#System:entityRemoved">System:entityRemoved (e)</a></td>
-	<td class="summary">Default callback for removing an Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#System:entityRemovedFrom">System:entityRemovedFrom (e, pool)</a></td>
-	<td class="summary">Default callback for removing an Entity from a pool.</td>
+	<td class="name" nowrap><a href="#System:init">System:init (world)</a></td>
+	<td class="summary">Callback for system initialization.</td>
 	</tr>
 </table>
 
@@ -124,7 +130,7 @@
     <strong>System.new (...)</strong>
     </dt>
     <dd>
-    Creates a new System prototype.
+    Creates a new SystemClass.
 
 
     <h3>Parameters:</h3>
@@ -137,7 +143,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        A new System prototype
+        A new SystemClass
     </ol>
 
 
@@ -145,11 +151,11 @@
 
 </dd>
     <dt>
-    <a name = "System:__buildPool"></a>
-    <strong>System:__buildPool (baseFilter)</strong>
+    <a name = "System.__buildPool"></a>
+    <strong>System.__buildPool (baseFilter)</strong>
     </dt>
     <dd>
-    Builds a Pool for the System.
+    Internal: Builds a Pool for the System.
 
 
     <h3>Parameters:</h3>
@@ -170,11 +176,11 @@
 
 </dd>
     <dt>
-    <a name = "System:__check"></a>
-    <strong>System:__check (e)</strong>
+    <a name = "System:__evaluate"></a>
+    <strong>System:__evaluate (e)</strong>
     </dt>
     <dd>
-    Checks and applies an Entity to the System's pools.
+    Internal: Evaluates an Entity for all the System's Pools.
 
 
     <h3>Parameters:</h3>
@@ -187,7 +193,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        True if the Entity was added, false if it was removed. Nil if nothing happend
+        self
     </ol>
 
 
@@ -199,7 +205,7 @@
     <strong>System:__remove (e)</strong>
     </dt>
     <dd>
-    Removed an Entity from the System.
+    Internal: Removes an Entity from the System.
 
 
     <h3>Parameters:</h3>
@@ -208,65 +214,11 @@
          The Entity to remove
         </li>
     </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "System:__tryAdd"></a>
-    <strong>System:__tryAdd (e)</strong>
-    </dt>
-    <dd>
-    Tries to add an Entity to the System.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">e</span>
-         The Entity to add
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "System:__tryRemove"></a>
-    <strong>System:__tryRemove (e)</strong>
-    </dt>
-    <dd>
-    Tries to remove an Entity from the System.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">e</span>
-         The Entity to remove
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "System:getInstance"></a>
-    <strong>System:getInstance ()</strong>
-    </dt>
-    <dd>
-    Returns the Instance the System is in.
-
-
 
     <h3>Returns:</h3>
     <ol>
 
-        The Instance
+        self
     </ol>
 
 
@@ -274,24 +226,138 @@
 
 </dd>
     <dt>
-    <a name = "System:__has"></a>
-    <strong>System:__has (e)</strong>
+    <a name = "System:clear"></a>
+    <strong>System:clear ()</strong>
     </dt>
     <dd>
-    Returns if the System has the Entity.
+    Internal: Clears all Entities from the System.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:enable"></a>
+    <strong>System:enable ()</strong>
+    </dt>
+    <dd>
+    Enables the System.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:disable"></a>
+    <strong>System:disable ()</strong>
+    </dt>
+    <dd>
+    Disables the System.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:toggleEnable"></a>
+    <strong>System:toggleEnable ()</strong>
+    </dt>
+    <dd>
+    Toggles if the System is enabled.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:setEnabled"></a>
+    <strong>System:setEnabled (enable)</strong>
+    </dt>
+    <dd>
+    Sets if the System is enabled
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">e</span>
-         The Entity to check for
+        <li><span class="parameter">enable</span>
+         Enable
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        True if the System has the Entity. False otherwise
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:isEnabled"></a>
+    <strong>System:isEnabled ()</strong>
+    </dt>
+    <dd>
+    Returns is the System is enabled
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if the System is enabled, false otherwise
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "System:getWorld"></a>
+    <strong>System:getWorld ()</strong>
+    </dt>
+    <dd>
+    Returns the World the System is in.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The World the System is in
     </ol>
 
 
@@ -300,102 +366,16 @@
 </dd>
     <dt>
     <a name = "System:init"></a>
-    <strong>System:init (...)</strong>
+    <strong>System:init (world)</strong>
     </dt>
     <dd>
-    Default callback for system initialization.
+    Callback for system initialization.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">...</span>
-         Varags
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "System:entityAdded"></a>
-    <strong>System:entityAdded (e)</strong>
-    </dt>
-    <dd>
-    Default callback for adding an Entity.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">e</span>
-         The Entity that was added
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "System:entityAddedTo"></a>
-    <strong>System:entityAddedTo (e, pool)</strong>
-    </dt>
-    <dd>
-    Default callback for adding an Entity to a pool.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">e</span>
-         The Entity that was added
-        </li>
-        <li><span class="parameter">pool</span>
-         The pool the Entity was added to
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "System:entityRemoved"></a>
-    <strong>System:entityRemoved (e)</strong>
-    </dt>
-    <dd>
-    Default callback for removing an Entity.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">e</span>
-         The Entity that was removed
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "System:entityRemovedFrom"></a>
-    <strong>System:entityRemovedFrom (e, pool)</strong>
-    </dt>
-    <dd>
-    Default callback for removing an Entity from a pool.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">e</span>
-         The Entity that was removed
-        </li>
-        <li><span class="parameter">pool</span>
-         The pool the Entity was removed from
+        <li><span class="parameter">world</span>
+         The World the System was added to
         </li>
     </ul>
 
@@ -411,7 +391,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2018-09-25 18:42:43 </i>
+<i style="float:right;">Last updated 2020-01-04 00:43:06 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
