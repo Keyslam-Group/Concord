@@ -141,7 +141,7 @@ For example. If you want to get a specific Component from an Entity, you'd do `C
 When ComponentClasses or SystemClasses are required it will be written clearly in the Documentation.
 
 #### Containers
-Since you'll be defining or creating lots of Components, Systems, Worlds and Assemblages Concord adds container tables for each of them so that they are easily accessible.
+Since you'll be defining or creating lots of Components, Systems, Worlds and Assemblages, Concord adds container tables for each of them so that they are easily accessible.
 
 These containers can be accessed through
 ```lua
@@ -303,7 +303,7 @@ myEntity:destroy()
 
 ### Systems
 
-Systems are definded as a SystemClass. Concord will automatically create an instance of a System when it is needed.
+Systems are defined as a SystemClass. Concord will automatically create an instance of a System when it is needed.
 
 Systems get access to Entities through `pools`. They are created using a filter.
 Systems can have multiple pools.
