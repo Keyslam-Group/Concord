@@ -1,5 +1,5 @@
---- List
--- Data structure that allows for fast removal at the cost of containing order.
+--- Data structure that allows for fast removal at the cost of containing order.
+-- @classmod List
 
 local List = {}
 List.__mt = {
@@ -7,7 +7,7 @@ List.__mt = {
 }
 
 --- Creates a new List.
--- @return A new List
+-- @treturn List A new List
 function List.new()
    return setmetatable({
       size = 0,
@@ -18,7 +18,7 @@ end
 -- Object must be of reference type
 -- Object may not be the string 'size'
 -- @param obj Object to add
--- @return self
+-- @treturn List self
 function List:__add(obj)
    local size = self.size + 1
 
@@ -31,7 +31,7 @@ end
 
 --- Removes an object from the List.
 -- @param obj Object to remove
--- @return self
+-- @treturn List self
 function List:__remove(obj)
    local index = self[obj]
    if not index then return end
@@ -55,7 +55,7 @@ function List:__remove(obj)
 end
 
 --- Clears the List completely.
--- @return self
+-- @treturn List self
 function List:__clear()
    for i = 1, self.size do
       local o = self[i]
@@ -71,13 +71,13 @@ end
 
 --- Returns true if the List has the object.
 -- @param obj Object to check for
--- @return True if the List has the object, false otherwise
+-- @treturn boolean
 function List:has(obj)
    return self[obj] and true or false
 end
 
 --- Returns the object at an index.
--- @param i Index to get from
+-- @number i Index to get from
 -- @return Object at the index
 function List:get(i)
    return self[i]
@@ -85,7 +85,7 @@ end
 
 --- Returns the index of an object in the List.
 -- @param obj Object to get index of
--- @return index of object in the List.
+-- @treturn number index of object in the List.
 function List:indexOf(obj)
    if (not self[obj]) then
       error("bad argument #1 to 'List:indexOf' (Object was not in List)", 2)

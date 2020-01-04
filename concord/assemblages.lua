@@ -1,5 +1,5 @@
---- Assemblages
--- Container for registered Assemblages
+--- A container for registered @{Assemblage}s
+-- @module Assemblages
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -8,8 +8,8 @@ local Type = require(PATH..".type")
 local Assemblages = {}
 
 --- Registers an Assemblage.
--- @param name Name to register under
--- @param assemblage Assemblage to register
+-- @string name Name to register under
+-- @tparam Assemblage assemblage Assemblage to register
 function Assemblages.register(name, assemblage)
     if (type(name) ~= "string") then
         error("bad argument #1 to 'Assemblages.register' (string expected, got "..type(name)..")", 3)
@@ -27,16 +27,16 @@ function Assemblages.register(name, assemblage)
     assemblage.__name = name
 end
 
---- Returns true if the containter has the Assemblage with the name
--- @param name Name of the Assemblage to check
--- @return True if the containter has the Assemblage with the name, false otherwise
+--- Returns true if the containter has an Assemblage with the specified name
+-- @string name Name of the Assemblage to check
+-- @treturn boolean
 function Assemblages.has(name)
     return Assemblages[name] and true or false
 end
 
---- Returns the Assemblage with the name
--- @param name Name of the Assemblage to get
--- @return Assemblage with the name
+--- Returns the Assemblage with the specified name
+-- @string name Name of the Assemblage to get
+-- @treturn Assemblage
 function Assemblages.get(name)
     return Assemblages[name]
 end

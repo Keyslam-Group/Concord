@@ -32,25 +32,28 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Methods">Methods</a></li>
 </ul>
 
 
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Assemblage.html">Assemblage</a></li>
+  <li><a href="../classes/Component.html">Component</a></li>
+  <li><a href="../classes/Entity.html">Entity</a></li>
+  <li><a href="../classes/List.html">List</a></li>
+  <li><a href="../classes/Pool.html">Pool</a></li>
+  <li><a href="../classes/System.html">System</a></li>
+  <li><strong>World</strong></li>
+</ul>
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><a href="../modules/assemblage.html">assemblage</a></li>
-  <li><a href="../modules/assemblages.html">assemblages</a></li>
-  <li><a href="../modules/component.html">component</a></li>
-  <li><a href="../modules/components.html">components</a></li>
-  <li><a href="../modules/entity.html">entity</a></li>
-  <li><a href="../modules/init.html">init</a></li>
-  <li><a href="../modules/list.html">list</a></li>
-  <li><a href="../modules/pool.html">pool</a></li>
-  <li><a href="../modules/system.html">system</a></li>
-  <li><a href="../modules/systems.html">systems</a></li>
+  <li><a href="../modules/Assemblages.html">Assemblages</a></li>
+  <li><a href="../modules/Components.html">Components</a></li>
+  <li><a href="../modules/Concord.html">Concord</a></li>
+  <li><a href="../modules/Systems.html">Systems</a></li>
   <li><a href="../modules/type.html">type</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
-  <li><strong>world</strong></li>
   <li><a href="../modules/worlds.html">worlds</a></li>
 </ul>
 
@@ -58,19 +61,19 @@
 
 <div id="content">
 
-<h1>Module <code>world</code></h1>
-<p>World
- A World is a collection of Systems and Entities
- A world emits to let Systems iterate
- A World contains any amount of Systems
- A World contains any amount of Entities</p>
-<p></p>
+<h1>Class <code>World</code></h1>
+<p>A collection of Systems and Entities.</p>
+<p>
+ A world emits to let Systems iterate.
+ A World contains any amount of Systems.
+ A World contains any amount of Entities.
+</p>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Methods">Methods</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#World.new">World.new ()</a></td>
+	<td class="name" nowrap><a href="#World:new">World:new ()</a></td>
 	<td class="summary">Creates a new World.</td>
 	</tr>
 	<tr>
@@ -80,14 +83,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#World:removeEntity">World:removeEntity (e)</a></td>
 	<td class="summary">Removes an Entity from the World.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#World:__dirtyEntity">World:__dirtyEntity (e)</a></td>
-	<td class="summary">Internal: Marks an Entity as dirty.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#World:__flush">World:__flush ()</a></td>
-	<td class="summary">Internal: Flushes all changes to Entities.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#World:addSystem">World:addSystem (systemClass)</a></td>
@@ -114,6 +109,14 @@
 	<td class="summary">Removes all entities from the World</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#World:hasName">World:hasName ()</a></td>
+	<td class="summary">Returns true if the World has a name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:getName">World:getName ()</a></td>
+	<td class="summary">Returns the name of the World.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#World:onEntityAdded">World:onEntityAdded (e)</a></td>
 	<td class="summary">Callback for when an Entity is added to the World.</td>
 	</tr>
@@ -127,12 +130,12 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
 
     <dl class="function">
     <dt>
-    <a name = "World.new"></a>
-    <strong>World.new ()</strong>
+    <a name = "World:new"></a>
+    <strong>World:new ()</strong>
     </dt>
     <dd>
     Creates a new World.
@@ -142,6 +145,7 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
         The new World
     </ol>
 
@@ -160,6 +164,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
          Entity to add
         </li>
     </ul>
@@ -167,6 +172,7 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
         self
     </ol>
 
@@ -185,6 +191,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
          Entity to remove
         </li>
     </ul>
@@ -192,46 +199,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "World:__dirtyEntity"></a>
-    <strong>World:__dirtyEntity (e)</strong>
-    </dt>
-    <dd>
-    Internal: Marks an Entity as dirty.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">e</span>
-         Entity to mark as dirty
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "World:__flush"></a>
-    <strong>World:__flush ()</strong>
-    </dt>
-    <dd>
-    Internal: Flushes all changes to Entities.
- This processes all entities. Adding and removing entities, as well as reevaluating dirty entities.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
         self
     </ol>
 
@@ -252,6 +220,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">systemClass</span>
+            <span class="types"><a class="type" href="../classes/System.html#">System</a></span>
          SystemClass of System to add
         </li>
     </ul>
@@ -259,13 +228,14 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
         self
     </ol>
 
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/world.html#World:emit">World:emit</a>
+         <a href="../classes/World.html#World:emit">World:emit</a>
     </ul>
 
 
@@ -289,14 +259,15 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
         self
     </ol>
 
 
     <h3>See also:</h3>
     <ul>
-         <li><a href="../modules/world.html#World:addSystem">World:addSystem</a></li>
-         <li><a href="../modules/world.html#World:emit">World:emit</a></li>
+         <li><a href="../classes/World.html#World:addSystem">World:addSystem</a></li>
+         <li><a href="../classes/World.html#World:emit">World:emit</a></li>
     </ul>
 
 
@@ -312,6 +283,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">systemClass</span>
+            <span class="types"><a class="type" href="../classes/System.html#">System</a></span>
          SystemClass of System to check for
         </li>
     </ul>
@@ -319,7 +291,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        True if World has System, false otherwise
+           <span class="types"><span class="type">boolean</span></span>
+
     </ol>
 
 
@@ -337,6 +310,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">systemClass</span>
+            <span class="types"><a class="type" href="../classes/System.html#">System</a></span>
          SystemClass of System to get
         </li>
     </ul>
@@ -344,6 +318,7 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/System.html#">System</a></span>
         System to get
     </ol>
 
@@ -363,6 +338,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">functionName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name of functions to call.
         </li>
         <li><span class="parameter">...</span>
@@ -373,6 +349,7 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
         self
     </ol>
 
@@ -392,7 +369,48 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
         self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:hasName"></a>
+    <strong>World:hasName ()</strong>
+    </dt>
+    <dd>
+    Returns true if the World has a name.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:getName"></a>
+    <strong>World:getName ()</strong>
+    </dt>
+    <dd>
+    Returns the name of the World.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
     </ol>
 
 
@@ -410,6 +428,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
          The Entity that was added
         </li>
     </ul>
@@ -430,6 +449,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
          The Entity that was removed
         </li>
     </ul>
@@ -446,7 +466,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-01-04 00:43:06 </i>
+<i style="float:right;">Last updated 2020-01-04 10:27:07 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

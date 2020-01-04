@@ -1,5 +1,5 @@
---- Systems
--- Container for registered SystemClasses
+--- Container for registered SystemClasses
+-- @module Systems
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
@@ -8,8 +8,8 @@ local Type = require(PATH..".type")
 local Systems = {}
 
 --- Registers a SystemClass.
--- @param name Name to register under
--- @param systemClass SystemClass to register
+-- @tparam string name Name to register under
+-- @tparam System systemClass SystemClass to register
 function Systems.register(name, systemClass)
     if (type(name) ~= "string") then
         error("bad argument #1 to 'Systems.register' (string expected, got "..type(name)..")", 3)
@@ -28,14 +28,14 @@ function Systems.register(name, systemClass)
 end
 
 --- Returns true if the containter has the SystemClass with the name
--- @param name Name of the SystemClass to check
--- @return True if the containter has the SystemClass with the name, false otherwise
+-- @tparam string name Name of the SystemClass to check
+-- @treturn boolean
 function Systems.has(name)
     return Systems[name] and true or false
 end
 
 --- Returns the SystemClass with the name
--- @param name Name of the SystemClass to get
+-- @tparam string name Name of the SystemClass to get
 -- @return SystemClass with the name
 function Systems.get(name)
     return Systems[name]

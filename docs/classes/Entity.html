@@ -32,25 +32,28 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Methods">Methods</a></li>
 </ul>
 
 
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Assemblage.html">Assemblage</a></li>
+  <li><a href="../classes/Component.html">Component</a></li>
+  <li><strong>Entity</strong></li>
+  <li><a href="../classes/List.html">List</a></li>
+  <li><a href="../classes/Pool.html">Pool</a></li>
+  <li><a href="../classes/System.html">System</a></li>
+  <li><a href="../classes/World.html">World</a></li>
+</ul>
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><a href="../modules/assemblage.html">assemblage</a></li>
-  <li><a href="../modules/assemblages.html">assemblages</a></li>
-  <li><a href="../modules/component.html">component</a></li>
-  <li><a href="../modules/components.html">components</a></li>
-  <li><strong>entity</strong></li>
-  <li><a href="../modules/init.html">init</a></li>
-  <li><a href="../modules/list.html">list</a></li>
-  <li><a href="../modules/pool.html">pool</a></li>
-  <li><a href="../modules/system.html">system</a></li>
-  <li><a href="../modules/systems.html">systems</a></li>
+  <li><a href="../modules/Assemblages.html">Assemblages</a></li>
+  <li><a href="../modules/Components.html">Components</a></li>
+  <li><a href="../modules/Concord.html">Concord</a></li>
+  <li><a href="../modules/Systems.html">Systems</a></li>
   <li><a href="../modules/type.html">type</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
-  <li><a href="../modules/world.html">world</a></li>
   <li><a href="../modules/worlds.html">worlds</a></li>
 </ul>
 
@@ -58,18 +61,17 @@
 
 <div id="content">
 
-<h1>Module <code>entity</code></h1>
-<p>Entity
- Entities are the concrete objects that exist in your project.</p>
-<p>
- An Entity have Components and are processed by Systems.
- An Entity is contained by a maximum of 1 World.</p>
+<h1>Class <code>Entity</code></h1>
+<p>An object that exists in a world.</p>
+<p> An entity
+ contains components which are processed by systems.
+</p>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Methods">Methods</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Entity.new">Entity.new (world)</a></td>
+	<td class="name" nowrap><a href="#Entity:new">Entity:new ([world])</a></td>
 	<td class="summary">Creates a new Entity.</td>
 	</tr>
 	<tr>
@@ -91,10 +93,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#Entity:destroy">Entity:destroy ()</a></td>
 	<td class="summary">Destroys the Entity.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Entity:__dirty">Entity:__dirty ()</a></td>
-	<td class="summary">Internal: Tells the World it's in that this Entity is dirty.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Entity:has">Entity:has (componentClass)</a></td>
@@ -122,12 +120,12 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
 
     <dl class="function">
     <dt>
-    <a name = "Entity.new"></a>
-    <strong>Entity.new (world)</strong>
+    <a name = "Entity:new"></a>
+    <strong>Entity:new ([world])</strong>
     </dt>
     <dd>
     Creates a new Entity.  Optionally adds it to a World.
@@ -136,13 +134,16 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">world</span>
-         Optional World to add the entity to
+            <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+         World to add the entity to
+         (<em>optional</em>)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
         A new Entity
     </ol>
 
@@ -162,16 +163,18 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
          ComponentClass to add an instance of
         </li>
         <li><span class="parameter">...</span>
-         varargs passed to the Component's populate function
+         additional arguments to pass to the Component's populate function
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
         self
     </ol>
 
@@ -191,16 +194,18 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
          ComponentClass to add an instance of
         </li>
         <li><span class="parameter">...</span>
-         varargs passed to the Component's populate function
+         additional arguments to pass to the Component's populate function
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
         self
     </ol>
 
@@ -219,6 +224,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
          ComponentClass of the Component to remove
         </li>
     </ul>
@@ -226,6 +232,7 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
         self
     </ol>
 
@@ -244,13 +251,20 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">assemblage</span>
+            <span class="types"><a class="type" href="../classes/Assemblage.html#">Assemblage</a></span>
          Assemblage to assemble with
         </li>
         <li><span class="parameter">...</span>
-         Varargs to pass to the Assemblage's assemble function.
+         additional arguments to pass to the Assemblage's assemble function.
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+        self
+    </ol>
 
 
 
@@ -262,26 +276,7 @@
     </dt>
     <dd>
     Destroys the Entity.
- Removes the Entity from it's World if it's in one.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-        self
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Entity:__dirty"></a>
-    <strong>Entity:__dirty ()</strong>
-    </dt>
-    <dd>
-    Internal: Tells the World it's in that this Entity is dirty.
+ Removes the Entity from its World if it's in one.
 
 
 
@@ -306,6 +301,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
          ComponentClass of the Component to check
         </li>
     </ul>
@@ -313,7 +309,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        True if the Entity has the Component, false otherwise
+           <span class="types"><span class="type">boolean</span></span>
+
     </ol>
 
 
@@ -331,6 +328,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
          ComponentClass of the Component to get
         </li>
     </ul>
@@ -338,7 +336,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        The Component
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
     </ol>
 
 
@@ -359,6 +358,7 @@
     <h3>Returns:</h3>
     <ol>
 
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
         Table of all Components the Entity has
     </ol>
 
@@ -378,7 +378,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        True if the Entity is in a World, false otherwise
+           <span class="types"><span class="type">boolean</span></span>
+
     </ol>
 
 
@@ -397,7 +398,8 @@
     <h3>Returns:</h3>
     <ol>
 
-        The World the Entity is in.
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+
     </ol>
 
 
@@ -411,7 +413,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-01-04 00:43:06 </i>
+<i style="float:right;">Last updated 2020-01-04 10:27:07 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
