@@ -25,7 +25,8 @@ function World.new()
       __entities = List(),
       __systems  = List(),
 
-      __events = {},
+      __events     = {},
+      __emitSDepth = 0,
 
       __added   = List(), __backAdded   = List(),
       __removed = List(), __backRemoved = List(),
@@ -245,6 +246,8 @@ function World:emit(functionName, ...)
       error("bad argument #1 to 'World:emit' (String expected, got "..type(functionName)..")")
    end
 
+   self.__emitSDepth = self.__emitSDepth + 1
+
 	local listeners = self.__events[functionName]
 
    if listeners then
@@ -252,12 +255,16 @@ function World:emit(functionName, ...)
          local listener = listeners[i]
 
          if (listener.system.__enabled) then
-            self:__flush()
+            if (self.__emitSDepth == 0) then
+               self:__flush()
+            end
 
             listener.callback(listener.system, ...)
          end
       end
    end
+
+   self.__emitSDepth = self.__emitSDepth - 1
 
    return self
 end
