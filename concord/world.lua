@@ -246,6 +246,8 @@ function World:emit(functionName, ...)
       error("bad argument #1 to 'World:emit' (String expected, got "..type(functionName)..")")
    end
 
+   local shouldFlush = self.__emitSDepth == 0
+
    self.__emitSDepth = self.__emitSDepth + 1
 
 	local listeners = self.__events[functionName]
@@ -255,7 +257,7 @@ function World:emit(functionName, ...)
          local listener = listeners[i]
 
          if (listener.system.__enabled) then
-            if (self.__emitSDepth == 0) then
+            if (shouldFlush) then
                self:__flush()
             end
 
