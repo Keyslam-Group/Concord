@@ -536,19 +536,19 @@ function MoveSystem:update(dt)
 end
 
 
-local DrawSystem = Concord.System({Position, Drawable})
+local DrawSystem = Concord.system({Position, Drawable})
 
 function DrawSystem:draw()
     for _, e in ipairs(self.pool) do
         local position = e[Position]
-        
+
         love.graphics.circle("fill", position.x, position.y, 5)
     end
 end
 
 
 -- Create the World
-local world = World()
+local world = Concord.world()
 
 -- Add the Systems
 world:addSystems(MoveSystem, DrawSystem)
@@ -571,11 +571,11 @@ local entity_3 = Concord.entity(world)
 
 -- Emit the events
 function love.update(dt)
-    world:emit(dt)
+    world:emit("update", dt)
 end
 
 function love.draw()
-    world:draw()
+    world:emit("draw")
 end
 ```
 
