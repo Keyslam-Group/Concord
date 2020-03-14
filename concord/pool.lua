@@ -72,7 +72,7 @@ function Pool:evaluate(e)
    local eligible = self:eligible(e)
 
    if not has and eligible then
-      self:add(e)
+      self:add(e, true) --Bypass the check cause we already checked
    elseif has and not eligible then
       self:remove(e)
    end
