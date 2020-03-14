@@ -33,84 +33,10 @@ local Concord = {
 }
 
 Concord.entity     = require(PATH..".entity")
-
 Concord.component  = require(PATH..".component")
 Concord.components = require(PATH..".components")
-
 Concord.system     = require(PATH..".system")
-
 Concord.world      = require(PATH..".world")
-
-local function load(pathOrFiles, namespace)
-   if (type(pathOrFiles) ~= "string" and type(pathOrFiles) ~= "table") then
-      error("bad argument #1 to 'load' (string/table of strings expected, got "..type(pathOrFiles)..")", 3)
-   end
-
-   if (type(pathOrFiles) == "string") then
-      local info = love.filesystem.getInfo(pathOrFiles) -- luacheck: ignore
-      if (info == nil or info.type ~= "directory") then
-         error("bad argument #1 to 'load' (path '"..pathOrFiles.."' not found)", 3)
-      end
-
-      local files = love.filesystem.getDirectoryItems(pathOrFiles)
-
-      for _, file in ipairs(files) do
-         local name = file:sub(1, #file - 4)
-         local path = pathOrFiles.."."..name
-
-         local value = require(path)
-         if namespace then namespace[name] = value end
-      end
-   elseif (type(pathOrFiles == "table")) then
-      for _, path in ipairs(pathOrFiles) do
-         if (type(path) ~= "string") then
-            error("bad argument #2 to 'load' (string/table of strings expected, got table containing "..type(path)..")", 3) -- luacheck: ignore
-         end
-
-         local name = path
-
-         local dotIndex, slashIndex = path:match("^.*()%."), path:match("^.*()%/")
-         if (dotIndex or slashIndex) then
-            name = path:sub((dotIndex or slashIndex) + 1)
-         end
-
-         local value = require(path)
-         if namespace then namespace[name] = value end
-      end
-   end
-
-   return namespace
-end
-
---- Loads ComponentClasses and puts them in the Components container.
--- Accepts a table of paths to files: {"component_1", "component_2", "etc"}
--- Accepts a path to a directory with ComponentClasses: "components"
-function Concord.loadComponents(pathOrFiles)
-   load(pathOrFiles, nil)
-   return Concord.components
-end
-
---- Loads SystemClasses and puts them in the Systems container.
--- Accepts a table of paths to files: {"system_1", "system_2", "etc"}
--- Accepts a path to a directory with SystemClasses: "systems"
-function Concord.loadSystems(pathOrFiles, world)
-   local systems = load(pathOrFiles, {})
-
-   if world then
-      for _, system in pairs(systems) do
-         world:addSystem(system)
-      end
-   end
-
-   return systems
-end
-
---- Loads Worlds and puts them in the Worlds container.
--- Accepts a table of paths to files: {"world_1", "world_2", "etc"}
--- Accepts a path to a directory with Worlds: "worlds"
-function Concord.loadWorlds(pathOrFiles)
-   return load(pathOrFiles, {})
-end
-
+Concord.utils      = require(PATH..".utils")
 
 return Concord
