@@ -10,6 +10,8 @@ function Utils.shallowCopy(orig, target)
    for key, value in pairs(orig) do
       target[key] = value
    end
+
+   return target
 end
 
 --- Requires files and puts them in a table.

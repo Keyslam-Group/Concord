@@ -4,6 +4,7 @@
 local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Components = require(PATH..".components")
+local Utils      = require(PATH..".utils")
 
 local Component = {}
 Component.__mt = {
@@ -47,9 +48,11 @@ function Component:__populate() -- luacheck: ignore
 end
 
 function Component:serialize() -- luacheck: ignore
+   return Utils.shallowCopy(self, {})
 end
 
 function Component:deserialize(data) -- luacheck: ignore
+   Utils.shallowCopy(data, self)
 end
 
 -- Internal: Creates a new Component.
