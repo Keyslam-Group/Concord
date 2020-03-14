@@ -34,18 +34,18 @@ function Entity.new(world)
    return e
 end
 
-local function give(e, componentClass, ...)
+local function give(e, name, componentClass, ...)
    local component = componentClass:__initialize(...)
 
-   e[componentClass] = component
-   e.__components[componentClass] = component
+   e[name] = component
+   e.__components[name] = component
 
    e:__dirty()
 end
 
-local function remove(e, componentClass)
-   e[componentClass] = nil
-   e.__components[componentClass] = nil
+local function remove(e, name, componentClass)
+   e[name] = nil
+   e.__components[name] = nil
 
    e:__dirty()
 end
@@ -55,12 +55,14 @@ end
 -- @tparam Component componentClass ComponentClass to add an instance of
 -- @param ... additional arguments to pass to the Component's populate function
 -- @treturn Entity self
-function Entity:give(componentClass, ...)
-   if not Type.isComponentClass(componentClass) then
-      error("bad argument #1 to 'Entity:give' (ComponentClass expected, got "..type(componentClass)..")", 2)
+function Entity:give(name, ...)
+   local ok, componentClass = Components.try(name)
+
+   if not ok then
+      error("bad argument #1 to 'Entity:get' ("..componentClass..")", 2)
    end
 
-   give(self, componentClass, ...)
+   give(self, name, componentClass, ...)
 
    return self
 end
@@ -70,16 +72,18 @@ end
 -- @tparam Component componentClass ComponentClass to add an instance of
 -- @param ... additional arguments to pass to the Component's populate function
 -- @treturn Entity self
-function Entity:ensure(componentClass, ...)
-   if not Type.isComponentClass(componentClass) then
-      error("bad argument #1 to 'Entity:ensure' (ComponentClass expected, got "..type(componentClass)..")", 2)
+function Entity:ensure(name, ...)
+   local ok, componentClass = Components.try(name)
+
+   if not ok then
+      error("bad argument #1 to 'Entity:get' ("..componentClass..")", 2)
    end
 
-   if self[componentClass] then
+   if self[name] then
       return self
    end
 
-   give(self, componentClass, ...)
+   give(self, name, componentClass, ...)
 
    return self
 end
@@ -87,26 +91,28 @@ end
 --- Removes a Component from an Entity.
 -- @tparam Component componentClass ComponentClass of the Component to remove
 -- @treturn Entity self
-function Entity:remove(componentClass)
-   if not Type.isComponentClass(componentClass) then
-      error("bad argument #1 to 'Entity:remove' (ComponentClass expected, got "..type(componentClass)..")")
+function Entity:remove(name)
+   local ok, componentClass = Components.try(name)
+
+   if not ok then
+      error("bad argument #1 to 'Entity:get' ("..componentClass..")", 2)
    end
 
-   remove(self, componentClass)
+   remove(self, name, componentClass)
 
    return self
 end
 
 --- Assembles an Entity.
--- @tparam Assemblage assemblage Assemblage to assemble with
--- @param ... additional arguments to pass to the Assemblage's assemble function.
+-- @tparam function assemblage Function that will assemble an entity
+-- @param ... additional arguments to pass to the assemblage function.
 -- @treturn Entity self
 function Entity:assemble(assemblage, ...)
-   if not Type.isAssemblage(assemblage) then
-      error("bad argument #1 to 'Entity:assemble' (Assemblage expected, got "..type(assemblage)..")")
+   if type(assemblage) ~= "function" then
+      error("bad argument #1 to 'Entity:assemble' (function expected, got "..type(assemblage)..")")
    end
 
-   assemblage:assemble(self, ...)
+   assemblage(self, ...)
 
    return self
 end
@@ -135,23 +141,27 @@ end
 --- Returns true if the Entity has a Component.
 -- @tparam Component componentClass ComponentClass of the Component to check
 -- @treturn boolean
-function Entity:has(componentClass)
-   if not Type.isComponentClass(componentClass) then
-      error("bad argument #1 to 'Entity:has' (ComponentClass expected, got "..type(componentClass)..")")
+function Entity:has(name)
+   local ok, componentClass = Components.try(name)
+
+   if not ok then
+      error("bad argument #1 to 'Entity:has' ("..componentClass..")", 2)
    end
 
-   return self[componentClass] ~= nil
+   return self[name] and true or false
 end
 
 --- Gets a Component from the Entity.
 -- @tparam Component componentClass ComponentClass of the Component to get
 -- @treturn table
-function Entity:get(componentClass)
-   if not Type.isComponentClass(componentClass) then
-      error("bad argument #1 to 'Entity:get' (ComponentClass expected, got "..type(componentClass)..")")
+function Entity:get(name)
+   local ok, componentClass = Components.try(name)
+
+   if not ok then
+      error("bad argument #1 to 'Entity:get' ("..componentClass..")", 2)
    end
 
-   return self[componentClass]
+   return self[name]
 end
 
 --- Returns a table of all Components the Entity has.
@@ -193,7 +203,7 @@ function Entity:deserialize(data)
    for i = 1, #data do
       local componentData = data[i]
 
-      if (not Components[componentData.__name]) then
+      if (not Components.has(componentData.__name)) then
          error("bad argument #1 to 'Entity:deserialize' (ComponentClass "..type(componentData.__name).." wasn't yet loaded)") -- luacheck: ignore
       end
 
@@ -202,8 +212,8 @@ function Entity:deserialize(data)
       local component = componentClass:__new()
       component:deserialize(componentData)
 
-      self[componentClass] = component
-      self.__components[componentClass] = component
+      self[componentData.__name] = component
+      self.__components[componentData.__name] = component
 
       self:__dirty()
    end

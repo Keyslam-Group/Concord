@@ -61,7 +61,7 @@ function World:addEntity(e)
    end
 
    e.__world = self
-   self.__added:__add(e)
+   self.__added:add(e)
 
    return self
 end
@@ -74,7 +74,7 @@ function World:removeEntity(e)
       error("bad argument #1 to 'World:removeEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
-   self.__removed:__add(e)
+   self.__removed:add(e)
 
    return self
 end
@@ -83,7 +83,7 @@ end
 -- @param e Entity to mark as dirty
 function World:__dirtyEntity(e)
    if not self.__dirty:has(e) then
-      self.__dirty:__add(e)
+      self.__dirty:add(e)
    end
 end
 
@@ -107,40 +107,46 @@ function World:__flush()
    for i = 1, self.__backAdded.size do
       e = self.__backAdded[i]
 
-      self.__entities:__add(e)
+      if e.__world == self then
+         self.__entities:add(e)
 
-      for j = 1, self.__systems.size do
-         self.__systems[j]:__evaluate(e)
+         for j = 1, self.__systems.size do
+            self.__systems[j]:__evaluate(e)
+         end
+
+         self:onEntityAdded(e)
       end
-
-      self:onEntityAdded(e)
    end
-   self.__backAdded:__clear()
+   self.__backAdded:clear()
 
    -- Process removed entities
    for i = 1, self.__backRemoved.size do
       e = self.__backRemoved[i]
 
-      e.__world = nil
-      self.__entities:__remove(e)
+      if e.__world == self then
+         e.__world = nil
+         self.__entities:remove(e)
 
-      for j = 1, self.__systems.size do
-         self.__systems[j]:__remove(e)
+         for j = 1, self.__systems.size do
+            self.__systems[j]:__remove(e)
+         end
+
+         self:onEntityRemoved(e)
       end
-
-      self:onEntityRemoved(e)
    end
-   self.__backRemoved:__clear()
+   self.__backRemoved:clear()
 
    -- Process dirty entities
    for i = 1, self.__backDirty.size do
       e = self.__backDirty[i]
 
-      for j = 1, self.__systems.size do
-         self.__systems[j]:__evaluate(e)
+      if e.__world == self then
+         for j = 1, self.__systems.size do
+            self.__systems[j]:__evaluate(e)
+         end
       end
    end
-   self.__backDirty:__clear()
+   self.__backDirty:clear()
 
    return self
 end
@@ -171,7 +177,7 @@ function World:addSystem(systemClass)
    local system = systemClass(self)
 
    self.__systemLookup[systemClass] = system
-   self.__systems:__add(system)
+   self.__systems:add(system)
 
    for callbackName, callback in pairs(systemClass) do
       -- Skip callback if its blacklisted
@@ -278,9 +284,13 @@ function World:clear()
       self:removeEntity(self.__entities[i])
    end
 
-   for i = 1, self.__systems.size do
-      self.__systems[i]:__clear()
+   for i = 1, self.__added.size do
+      local e = self.__added[i]
+      e.__world = nil
    end
+   self.__added:clear()
+
+   self:__flush()
 
    return self
 end

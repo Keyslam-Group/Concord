@@ -38,13 +38,8 @@ Concord.component  = require(PATH..".component")
 Concord.components = require(PATH..".components")
 
 Concord.system     = require(PATH..".system")
-Concord.systems    = require(PATH..".systems")
 
 Concord.world      = require(PATH..".world")
-Concord.worlds     = require(PATH..".worlds")
-
-Concord.assemblage  = require(PATH..".assemblage")
-Concord.assemblages = require(PATH..".assemblages")
 
 local function load(pathOrFiles, namespace)
    if (type(pathOrFiles) ~= "string" and type(pathOrFiles) ~= "table") then
@@ -63,7 +58,8 @@ local function load(pathOrFiles, namespace)
          local name = file:sub(1, #file - 4)
          local path = pathOrFiles.."."..name
 
-         namespace.register(name, require(path))
+         local value = require(path)
+         if namespace then namespace[name] = value end
       end
    elseif (type(pathOrFiles == "table")) then
       for _, path in ipairs(pathOrFiles) do
@@ -78,37 +74,43 @@ local function load(pathOrFiles, namespace)
             name = path:sub((dotIndex or slashIndex) + 1)
          end
 
-         namespace.register(name, require(path))
+         local value = require(path)
+         if namespace then namespace[name] = value end
       end
    end
+
+   return namespace
 end
 
 --- Loads ComponentClasses and puts them in the Components container.
 -- Accepts a table of paths to files: {"component_1", "component_2", "etc"}
 -- Accepts a path to a directory with ComponentClasses: "components"
 function Concord.loadComponents(pathOrFiles)
-   load(pathOrFiles, Concord.components)
+   load(pathOrFiles, nil)
+   return Concord.components
 end
 
 --- Loads SystemClasses and puts them in the Systems container.
 -- Accepts a table of paths to files: {"system_1", "system_2", "etc"}
 -- Accepts a path to a directory with SystemClasses: "systems"
-function Concord.loadSystems(pathOrFiles)
-   load(pathOrFiles, Concord.systems)
+function Concord.loadSystems(pathOrFiles, world)
+   local systems = load(pathOrFiles, {})
+
+   if world then
+      for _, system in pairs(systems) do
+         world:addSystem(system)
+      end
+   end
+
+   return systems
 end
 
 --- Loads Worlds and puts them in the Worlds container.
 -- Accepts a table of paths to files: {"world_1", "world_2", "etc"}
 -- Accepts a path to a directory with Worlds: "worlds"
 function Concord.loadWorlds(pathOrFiles)
-   load(pathOrFiles, Concord.worlds)
+   return load(pathOrFiles, {})
 end
 
---- Loads Assemblages and puts them in the Assemblages container.
--- Accepts a table of paths to files: {"assemblage_1", "assemblage_2", "etc"}
--- Accepts a path to a directory with Assemblages: "assemblages"
-function Concord.loadAssemblages(pathOrFiles)
-   load(pathOrFiles, Concord.assemblages)
-end
 
 return Concord

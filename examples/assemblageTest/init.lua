@@ -5,61 +5,59 @@ local Component  = Concord.component
 local System     = Concord.system
 local Assemblage = Concord.assemblage
 
-local Game = Concord.context()
-
-local Legs = Component(function(e, legCount)
+local Legs = Component("Legs", function(e, legCount)
    e.legCount = legCount or 0
 end)
 
-local Instinct = Component(function(e) -- luacheck: ignore
+local Instinct = Component("Instinct", function(e) -- luacheck: ignore
 end)
 
-local Cool = Component(function(e, coolness)
+local Cool = Component("Cool", function(e, coolness)
    e.coolness = coolness
 end)
 
-local Wings = Component(function(e)
+local Wings = Component("Wings", function(e)
    e.wingCount = 2
 end)
 
 
-local Animal = Assemblage(function(e, legCount)
+local Animal = function(e, legCount)
    e
-   :give(Legs, legCount)
-   :give(Instinct)
+   :give("Legs", legCount)
+   :give("Instinct")
 
    print("Animal")
-end)
+end
 
-local Lion = Assemblage(function(e, coolness)
+local Lion = function(e, coolness)
    e
    :assemble(Animal, 4)
    :give(Cool, coolness)
 
    print("Lion")
-end)
+end
 
-local Eagle = Assemblage(function(e)
+local Eagle = function(e)
    e
    :assemble(Animal, 2)
    :give(Wings)
 
    print("Eagle")
-end)
+end
 
-local Griffin = Assemblage(function(e, coolness)
+local Griffin = function(e, coolness)
    e
    :assemble(Animal, 4)
    :assemble(Lion, coolness * 2)
    :assemble(Eagle)
-end)
+end
 
 
 local myAnimal = Entity()
 :assemble(Griffin, 5)
 --:apply()
 
-print(myAnimal:has(Legs))
-print(myAnimal:has(Instinct))
-print(myAnimal:has(Cool))
-print(myAnimal:has(Wings))
+print(myAnimal:has("Legs"))
+print(myAnimal:has("Instinct"))
+print(myAnimal:has("Cool"))
+print(myAnimal:has("Wings"))

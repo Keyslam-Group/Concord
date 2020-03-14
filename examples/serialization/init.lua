@@ -11,11 +11,10 @@ local function display(t)
     end
 end
 
-local test_component_1 = Concord.component(function(e, x, y)
+local test_component_1 = Concord.component("test_component_1", function(e, x, y)
     e.x = x or 0
     e.y = y or 0
 end)
-Concord.components.register("test_component_1", test_component_1)
 
 function test_component_1:serialize()
     return {
@@ -29,10 +28,9 @@ function test_component_1:deserialize(data)
     self.y = data.y or 0
 end
 
-local test_component_2 = Concord.component(function(e, foo)
+local test_component_2 = Concord.component("test_component_2", function(e, foo)
     e.foo = foo
 end)
-Concord.components.register("test_component_2", test_component_2)
 
 function test_component_2:serialize()
     return {
@@ -50,8 +48,8 @@ local world_2 = Concord.world()
 
 -- Test Entity
 Concord.entity(world_1)
-:give(test_component_1, 100, 50)
-:give(test_component_2, "Hello World!")
+:give("test_component_1", 100, 50)
+:give("test_component_2", "Hello World!")
 
 -- Serialize world
 local data = world_1:serialize()
@@ -62,8 +60,8 @@ world_2:deserialize(data)
 -- Check result
 local test_entity_copy = world_2:getEntities()[1]
 
-local test_comp_1 = test_entity_copy[test_component_1]
-local test_comp_2 = test_entity_copy[test_component_2]
+local test_comp_1 = test_entity_copy["test_component_1"]
+local test_comp_2 = test_entity_copy["test_component_2"]
 
 print(test_comp_1.x, test_comp_1.y)
 print(test_comp_2.foo)

@@ -6,33 +6,33 @@ local System    = Concord.system
 
 local Game = Concord.world()
 
-local Position = Component(function(e, x, y)
+local Position = Component('Position', function(e, x, y)
    e.x = x
    e.y = y
 end)
 
-local Rectangle = Component(function(e, w, h)
+local Rectangle = Component('Rectangle', function(e, w, h)
    e.w = w
    e.h = h
 end)
 
-local Circle = Component(function(e, r)
+local Circle = Component('Circle', function(e, r)
    e.r = r
 end)
 
-local Color = Component(function(e, r, g, b, a)
+local Color = Component('Color', function(e, r, g, b, a)
    e.r = r
    e.g = g
    e.b = b
    e.a = a
 end)
 
-local RectangleRenderer = System({Position, Rectangle})
+local RectangleRenderer = System{pool = {'Position', 'Rectangle'}}
 function RectangleRenderer:draw()
    for _, e in ipairs(self.pool) do
-      local position  = e:get(Position)
-      local rectangle = e:get(Rectangle)
-      local color     = e:get(Color)
+      local position  = e:get('Position')
+      local rectangle = e:get('Rectangle')
+      local color     = e:get('Color')
 
       love.graphics.setColor(255, 255, 255)
       if color then
@@ -43,7 +43,7 @@ function RectangleRenderer:draw()
    end
 end
 
-local CircleRenderer = System({Position, Circle})
+local CircleRenderer = System{pool = {'Position', 'Circle'}}
 function CircleRenderer:flush()
    for _, e in ipairs(self.pool.removed) do
       print(tostring(e).. " was removed from my pool D:")
@@ -52,9 +52,9 @@ end
 
 function CircleRenderer:draw()
    for _, e in ipairs(self.pool) do
-      local position = e:get(Position)
-      local circle   = e:get(Circle)
-      local color    = e:get(Color)
+      local position = e:get('Position')
+      local circle   = e:get('Circle')
+      local color    = e:get('Color')
 
       love.graphics.setColor(255, 255, 255)
       if color then
@@ -65,7 +65,7 @@ function CircleRenderer:draw()
    end
 end
 
-local RandomRemover = System({})
+local RandomRemover = System{pool = {}}
 
 function RandomRemover:init()
    self.time = 0
@@ -93,11 +93,11 @@ Game:addSystem(CircleRenderer(),    "draw")
 
 for _ = 1, 100 do
    local e = Entity()
-   e:give(Position, love.math.random(0, 700), love.math.random(0, 700))
-   e:give(Rectangle, love.math.random(5, 20), love.math.random(5, 20))
+   e:give('Position', love.math.random(0, 700), love.math.random(0, 700))
+   e:give('Rectangle', love.math.random(5, 20), love.math.random(5, 20))
 
    if love.math.random(0, 1) == 0 then
-      e:give(Color, love.math.random(), love.math.random(), love.math.random(), 1)
+      e:give('Color', love.math.random(), love.math.random(), love.math.random(), 1)
    end
 
    Game:addEntity(e)
@@ -105,11 +105,11 @@ end
 
 for _ = 1, 100 do
    local e = Entity()
-   e:give(Position, love.math.random(0, 700), love.math.random(0, 700))
-   e:give(Circle, love.math.random(5, 20))
+   e:give('Position', love.math.random(0, 700), love.math.random(0, 700))
+   e:give('Circle', love.math.random(5, 20))
 
    if love.math.random(0, 1) == 0 then
-      e:give(Color, love.math.random(), love.math.random(), love.math.random(), 1)
+      e:give('Color', love.math.random(), love.math.random(), love.math.random(), 1)
    end
 
    Game:addEntity(e)

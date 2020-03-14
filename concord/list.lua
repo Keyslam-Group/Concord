@@ -19,7 +19,7 @@ end
 -- Object may not be the string 'size'
 -- @param obj Object to add
 -- @treturn List self
-function List:__add(obj)
+function List:add(obj)
    local size = self.size + 1
 
    self[size] = obj
@@ -32,7 +32,7 @@ end
 --- Removes an object from the List.
 -- @param obj Object to remove
 -- @treturn List self
-function List:__remove(obj)
+function List:remove(obj)
    local index = self[obj]
    if not index then return end
    local size  = self.size
@@ -56,7 +56,7 @@ end
 
 --- Clears the List completely.
 -- @treturn List self
-function List:__clear()
+function List:clear()
    for i = 1, self.size do
       local o = self[i]
 

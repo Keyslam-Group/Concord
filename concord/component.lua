@@ -1,6 +1,10 @@
 --- A pure data container that is contained by a single entity.
 -- @classmod Component
 
+local PATH = (...):gsub('%.[^%.]+$', '')
+
+local Components = require(PATH..".components")
+
 local Component = {}
 Component.__mt = {
    __index = Component,
@@ -9,7 +13,15 @@ Component.__mt = {
 --- Creates a new ComponentClass.
 -- @tparam function populate Function that populates a Component with values
 -- @treturn Component A new ComponentClass
-function Component.new(populate)
+function Component.new(name, populate)
+   if (type(name) ~= "string") then
+      error("bad argument #1 to 'Component.new' (string expected, got "..type(name)..")", 2)
+   end
+
+   if (rawget(Components, name)) then
+      error("bad argument #1 to 'Component.new' (ComponentClass with name '"..name.."' was already registerd)", 2) -- luacheck: ignore
+   end
+
    if (type(populate) ~= "function" and type(populate) ~= "nil") then
       error("bad argument #1 to 'Component.new' (function/nil expected, got "..type(populate)..")", 2)
    end
@@ -17,13 +29,15 @@ function Component.new(populate)
    local componentClass = setmetatable({
       __populate = populate,
 
-      __name             = nil,
+      __name             = name,
       __isComponentClass = true,
    }, Component.__mt)
 
    componentClass.__mt = {
       __index = componentClass
    }
+
+   Components[name] = componentClass
 
    return componentClass
 end
