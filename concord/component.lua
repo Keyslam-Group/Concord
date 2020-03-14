@@ -47,11 +47,18 @@ end
 function Component:__populate() -- luacheck: ignore
 end
 
-function Component:serialize() -- luacheck: ignore
-   return Utils.shallowCopy(self, {})
+function Component:serialize()
+   local data = Utils.shallowCopy(self, {})
+
+   --This values shouldn't be copied over
+   data.__componentClass = nil
+   data.__isComponent = nil
+   data.__isComponentClass = nil
+
+   return data
 end
 
-function Component:deserialize(data) -- luacheck: ignore
+function Component:deserialize(data)
    Utils.shallowCopy(data, self)
 end
 
