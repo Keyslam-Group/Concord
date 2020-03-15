@@ -204,7 +204,7 @@ function Entity:deserialize(data)
       local componentData = data[i]
 
       if (not Components.has(componentData.__name)) then
-         error("bad argument #1 to 'Entity:deserialize' (ComponentClass "..type(componentData.__name).." wasn't yet loaded)") -- luacheck: ignore
+         error("bad argument #1 to 'Entity:deserialize' (ComponentClass '"..tostring(componentData.__name).."' wasn't yet loaded)") -- luacheck: ignore
       end
 
       local componentClass = Components[componentData.__name]

@@ -51,11 +51,11 @@ local validateFilters = function (baseFilters)
 
    for name, componentsList in pairs(baseFilters) do
       if type(name) ~= 'string' then
-         error("Invalid name for filter (string key expected, got "..type(name)..")", 3)
+         error("invalid name for filter (string key expected, got "..type(name)..")", 3)
       end
 
       if type(componentsList) ~= 'table' then
-         error("Invalid component list for filter '"..name.."' (table expected, got "..type(componentsList)..")", 3)
+         error("invalid component list for filter '"..name.."' (table expected, got "..type(componentsList)..")", 3)
       end
 
       local filter = {}
@@ -63,7 +63,7 @@ local validateFilters = function (baseFilters)
          local ok, componentClass = Components.try(component)
 
          if not ok then
-            error("Invalid component for filter '"..name.."' at position #"..n.." ("..componentClass..")", 3)
+            error("invalid component for filter '"..name.."' at position #"..n.." ("..componentClass..")", 3)
          end
 
          filter[#filter + 1] = componentClass

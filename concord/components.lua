@@ -7,19 +7,6 @@ local Type = require(PATH..".type")
 
 local Components = {}
 
-local try = function (name)
-   if type(name) ~= "string" then
-      return false, "ComponentsClass name is expected to be a string, got "..type(name)..")"
-   end
-
-   local value = rawget(Components, name)
-   if not value then
-      return false, "ComponentClass '"..name.."' does not exist / was not registered"
-   end
-
-   return true, value
-end
-
 --- Returns true if the containter has the ComponentClass with the specified name
 -- @string name Name of the ComponentClass to check
 -- @treturn boolean
@@ -33,14 +20,23 @@ end
 -- @treturn boolean
 -- @treturn Component or error string
 function Components.try(name)
-   return try(name)
+   if type(name) ~= "string" then
+      return false, "ComponentsClass name is expected to be a string, got "..type(name)..")"
+   end
+
+   local value = rawget(Components, name)
+   if not value then
+      return false, "ComponentClass '"..name.."' does not exist / was not registered"
+   end
+
+   return true, value
 end
 
 --- Returns the ComponentClass with the specified name
 -- @string name Name of the ComponentClass to get
 -- @treturn Component
 function Components.get(name)
-   local ok, value = try(name)
+   local ok, value = Components.try(name)
 
    if not ok then error(value, 2) end
 
@@ -49,7 +45,7 @@ end
 
 return setmetatable(Components, {
    __index = function(_, name)
-      local ok, value = try(name)
+      local ok, value = Components.try(name)
 
       if not ok then error(value, 2) end
 
