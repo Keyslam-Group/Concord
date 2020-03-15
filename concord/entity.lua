@@ -190,9 +190,11 @@ function Entity:serialize()
    for _, component in pairs(self.__components) do
       if component.__name then
          local componentData = component:serialize()
-         componentData.__name = component.__name
 
-         data[#data + 1] = componentData
+         if componentData ~= nil then
+            componentData.__name = component.__name
+            data[#data + 1] = componentData
+         end
       end
    end
 
