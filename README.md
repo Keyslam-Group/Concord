@@ -99,8 +99,8 @@ drawSystem = System({pool = {position, texture}}) -- Define a System that takes 
 
 function drawSystem:draw() -- Give it a draw function
     for _, entity in ipairs(self.pool) do -- Iterate over all Entities that this System acts on
-        local position = entity[position] -- Get the position Component of this Entity
-        local texture = entity[texture] -- Get the texture Component of this Entity
+        local position = entity.position -- Get the position Component of this Entity
+        local texture = entity.texture -- Get the texture Component of this Entity
 
         -- Draw the Entity
         love.graphics.draw(texture.image, position.x, position.y)
@@ -128,13 +128,6 @@ And all that without writing a single extra line of code. Just reusing code that
 
 Concord does a few things that might not be immediately clear. This segment should help understanding.
 
-#### Classes
-
-When you define a Component or System you are actually defining a `ComponentClass` and `SystemClass` respectively. From these instances of them can be created. They also act as identifiers for Concord.
-
-For example. If you want to get a specific Component from an Entity, you'd do `Component = Entity:get(ComponentClass)`.
-When ComponentClasses or SystemClasses are required it will be written clearly in the Documentation.
-
 #### Requiring files
 
 Since you'll have lots of Components and Systems in your game Concord makes it a bit easier to load things in.
@@ -142,14 +135,14 @@ Since you'll have lots of Components and Systems in your game Concord makes it a
 ```lua
 -- Loads all files in the directory, and puts the return value in the table Systems. The key is their filename without any extension
 local Systems = {}
-Concord.loadNamespace("path.to.systems", Systems)
+Concord.utils.loadNamespace("path/to/systems", Systems)
 
 print(Systems.systemName)
 
--- Loads all files in the directory. Components automatically register to Concord, so loading them into a namespace isn't necessary.
-Concord.loadNamespace("path.to.components")
+-- Loads all files in the directory. Components automatically register into Concord.components, so loading them into a namespace isn't necessary.
+Concord.utils.loadNamespace("path/to/components")
 
-print(Systems.componentName)
+print(Concord.components.componentName)
 ```
 
 #### Method chaining
@@ -157,13 +150,13 @@ print(Systems.componentName)
 -- Most (if not all) methods will return self
 -- This allowes you to chain methods
 
-entity
-:give(position, 100, 50)
-:give(velocity, 200, 0)
-:remove(position)
+myEntity
+:give("position", 100, 50)
+:give("velocity", 200, 0)
+:remove("position")
 :destroy()
 
-world
+myWorld
 :addEntity(fooEntity)
 :addEntity(barEntity)
 :clear()
@@ -217,12 +210,6 @@ print(position.x, position.y) -- 100, 50
 ```lua
 -- Remove a Component
 myEntity:remove("position")
-```
-
-```lua
--- Check if the Entity has a Component
-local hasPosition = myEntity.position and true of false
-print(hasPosition) -- false
 ```
 
 ```lua
@@ -462,7 +449,9 @@ local Drawable = Concord.component()
 
 
 -- Defining Systems
-local MoveSystem = Concord.system(pool = {"position", "velocity"})
+local MoveSystem = Concord.system({
+    pool = {"position", "velocity"}
+})
 
 function MoveSystem:update(dt)
     for _, e in ipairs(self.pool) do
@@ -472,7 +461,9 @@ function MoveSystem:update(dt)
 end
 
 
-local DrawSystem = Concord.system(pool = {"position", "drawable"})
+local DrawSystem = Concord.system({
+    pool = {"position", "drawable"}
+})
 
 function DrawSystem:draw()
     for _, e in ipairs(self.pool) do
@@ -525,5 +516,5 @@ end
 
 ---
 
-## Licence
+## License
 MIT Licensed - Copyright Justin van der Leij (Tjakka5)
