@@ -9,7 +9,7 @@ local Concord = {
    _LICENCE     = [[
       MIT LICENSE
 
-      Copyright (c) 2018 Justin van der Leij / Tjakka5
+      Copyright (c) 2020 Justin van der Leij / Tjakka5
 
       Permission is hereby granted, free of charge, to any person obtaining a
       copy of this software and associated documentation files (the
