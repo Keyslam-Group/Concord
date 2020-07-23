@@ -148,7 +148,7 @@ These containers can be accessed through
 local Components  = require("path.to.concord").components
 local Systems     = require("path.to.concord").systems
 local Worlds      = require("path.to.concord").worlds
-local Assemblages = require("path.to.concord").aorlds
+local Assemblages = require("path.to.concord").assemblages
 ```
 
 Concord has helper functions to fill these containers. There are the following options depending on your needs / preference:
