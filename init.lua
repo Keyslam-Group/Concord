@@ -1,5 +1,3 @@
 local PATH = (...):gsub('%.init$', '')
 
-return {
-   
-}
+return require(PATH..".concord")

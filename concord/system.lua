@@ -5,8 +5,9 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Pool  = require(PATH..".pool")
-local Utils = require(PATH..".utils")
+local Pool       = require(PATH..".pool")
+local Utils      = require(PATH..".utils")
+local Components = require(PATH..".components")
 
 local System = {
    ENABLE_OPTIMIZATION = true,
@@ -25,21 +26,18 @@ System.mt = {
          __isSystemClass = false, -- Overwrite value from systemClass
       }, systemClass)
 
-      -- Optimization: We deep copy the World class into our instance of a world.
+      -- Optimization: We deep copy the System class into our instance of a system.
       -- This grants slightly faster access times at the cost of memory.
       -- Since there (generally) won't be many instances of worlds this is a worthwhile tradeoff
       if (System.ENABLE_OPTIMIZATION) then
          Utils.shallowCopy(systemClass, system)
       end
 
-      for _, filter in pairs(systemClass.__filter) do
-         local pool = system.__buildPool(filter)
-         if not system[pool.__name] then
-            system[pool.__name]                 = pool
-            system.__pools[#system.__pools + 1] = pool
-         else
-            error("Pool with name '"..pool.name.."' already exists.")
-         end
+      for name, filter in pairs(systemClass.__filter) do
+         local pool = Pool(name, filter)
+
+         system[name] = pool
+         system.__pools[#system.__pools + 1] = pool
       end
 
       system:init(world)
@@ -48,12 +46,41 @@ System.mt = {
    end,
 }
 
+local validateFilters = function (baseFilters)
+   local filters = {}
+
+   for name, componentsList in pairs(baseFilters) do
+      if type(name) ~= 'string' then
+         error("invalid name for filter (string key expected, got "..type(name)..")", 3)
+      end
+
+      if type(componentsList) ~= 'table' then
+         error("invalid component list for filter '"..name.."' (table expected, got "..type(componentsList)..")", 3)
+      end
+
+      local filter = {}
+      for n, component in ipairs(componentsList) do
+         local ok, componentClass = Components.try(component)
+
+         if not ok then
+            error("invalid component for filter '"..name.."' at position #"..n.." ("..componentClass..")", 3)
+         end
+
+         filter[#filter + 1] = componentClass
+      end
+
+      filters[name] = filter
+   end
+
+   return filters
+end
+
 --- Creates a new SystemClass.
--- @param ... Variable amounts of filters
+-- @param table filters A table containing filters (name = {components...})
 -- @treturn System A new SystemClass
-function System.new(...)
+function System.new(filters)
    local systemClass = setmetatable({
-      __filter = {...},
+      __filter = validateFilters(filters),
 
       __name          = nil,
       __isSystemClass = true,
@@ -70,37 +97,12 @@ function System.new(...)
    return systemClass
 end
 
--- Internal: Builds a Pool for the System.
--- @param baseFilter The 'raw' Filter
--- @return A new Pool
-function System.__buildPool(baseFilter)
-   local name   = "pool"
-   local filter = {}
-
-   for _, value in ipairs(baseFilter) do
-      if type(value) == "table" then
-         filter[#filter + 1] = value
-      elseif type(value) == "string" then
-         name = value
-      end
-   end
-
-   return Pool(name, filter)
-end
-
 -- Internal: Evaluates an Entity for all the System's Pools.
 -- @param e The Entity to check
 -- @treturn System self
 function System:__evaluate(e)
    for _, pool in ipairs(self.__pools) do
-      local has  = pool:has(e)
-      local eligible = pool:__eligible(e)
-
-      if not has and eligible then
-         pool:__add(e)
-      elseif has and not eligible then
-         pool:__remove(e)
-      end
+      pool:evaluate(e)
    end
 
    return self
@@ -112,7 +114,7 @@ end
 function System:__remove(e)
    for _, pool in ipairs(self.__pools) do
       if pool:has(e) then
-         pool:__remove(e)
+         pool:remove(e)
       end
    end
 
@@ -123,32 +125,8 @@ end
 -- @treturn System self
 function System:__clear()
    for i = 1, #self.__pools do
-      self.__pools[i]:__clear()
+      self.__pools[i]:clear()
    end
-
-   return self
-end
-
---- Enables the System.
--- @treturn System self
-function System:enable()
-   self:setEnabled(true)
-
-   return self
-end
-
---- Disables the System.
--- @treturn System self
-function System:disable()
-   self:setEnabled(false)
-
-   return self
-end
-
---- Toggles if the System is enabled.
--- @treturn System self
-function System:toggleEnabled()
-   self:setEnabled(not self.__enabled)
 
    return self
 end

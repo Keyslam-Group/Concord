@@ -29,32 +29,53 @@ end
 --- Checks if an Entity is eligible for the Pool.
 -- @tparam Entity e Entity to check
 -- @treturn boolean
-function Pool:__eligible(e)
-   for _, component in ipairs(self.__filter) do
-      if not e[component] then
-         return false
-      end
+function Pool:eligible(e)
+   for i=#self.__filter, 1, -1 do
+      local component = self.__filter[i].__name
+
+      if not e[component] then return false end
    end
 
    return true
 end
 
--- Internal: Adds an Entity to the Pool.
+-- Adds an Entity to the Pool, if it can be eligible.
 -- @param e Entity to add
 -- @treturn Pool self
-function Pool:__add(e)
-   List.__add(self, e)
+-- @treturn boolean Whether the entity was added or not
+function Pool:add(e, bypass)
+   if not bypass and not self:eligible(e) then
+      return self, false
+   end
+
+   List.add(self, e)
    self:onEntityAdded(e)
+
+   return self, true
+end
+
+-- Remove an Entity from the Pool.
+-- @param e Entity to remove
+-- @treturn Pool self
+function Pool:remove(e)
+   List.remove(self, e)
+   self:onEntityRemoved(e)
 
    return self
 end
 
--- Internal: Removed an Entity from the Pool.
--- @param e Entity to remove
+--- Evaluate whether an Entity should be added or removed from the Pool.
+-- @param e Entity to add or remove
 -- @treturn Pool self
-function Pool:__remove(e)
-   List.__remove(self, e)
-   self:onEntityRemoved(e)
+function Pool:evaluate(e)
+   local has  = self:has(e)
+   local eligible = self:eligible(e)
+
+   if not has and eligible then
+      self:add(e, true) --Bypass the check cause we already checked
+   elseif has and not eligible then
+      self:remove(e)
+   end
 
    return self
 end

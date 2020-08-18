@@ -61,7 +61,7 @@ function World:addEntity(e)
    end
 
    e.__world = self
-   self.__added:__add(e)
+   self.__added:add(e)
 
    return self
 end
@@ -74,7 +74,7 @@ function World:removeEntity(e)
       error("bad argument #1 to 'World:removeEntity' (Entity expected, got "..type(e)..")", 2)
    end
 
-   self.__removed:__add(e)
+   self.__removed:add(e)
 
    return self
 end
@@ -83,7 +83,7 @@ end
 -- @param e Entity to mark as dirty
 function World:__dirtyEntity(e)
    if not self.__dirty:has(e) then
-      self.__dirty:__add(e)
+      self.__dirty:add(e)
    end
 end
 
@@ -107,40 +107,46 @@ function World:__flush()
    for i = 1, self.__backAdded.size do
       e = self.__backAdded[i]
 
-      self.__entities:__add(e)
+      if e.__world == self then
+         self.__entities:add(e)
 
-      for j = 1, self.__systems.size do
-         self.__systems[j]:__evaluate(e)
+         for j = 1, self.__systems.size do
+            self.__systems[j]:__evaluate(e)
+         end
+
+         self:onEntityAdded(e)
       end
-
-      self:onEntityAdded(e)
    end
-   self.__backAdded:__clear()
+   self.__backAdded:clear()
 
    -- Process removed entities
    for i = 1, self.__backRemoved.size do
       e = self.__backRemoved[i]
 
-      e.__world = nil
-      self.__entities:__remove(e)
+      if e.__world == self then
+         e.__world = nil
+         self.__entities:remove(e)
 
-      for j = 1, self.__systems.size do
-         self.__systems[j]:__remove(e)
+         for j = 1, self.__systems.size do
+            self.__systems[j]:__remove(e)
+         end
+
+         self:onEntityRemoved(e)
       end
-
-      self:onEntityRemoved(e)
    end
-   self.__backRemoved:__clear()
+   self.__backRemoved:clear()
 
    -- Process dirty entities
    for i = 1, self.__backDirty.size do
       e = self.__backDirty[i]
 
-      for j = 1, self.__systems.size do
-         self.__systems[j]:__evaluate(e)
+      if e.__world == self then
+         for j = 1, self.__systems.size do
+            self.__systems[j]:__evaluate(e)
+         end
       end
    end
-   self.__backDirty:__clear()
+   self.__backDirty:clear()
 
    return self
 end
@@ -152,37 +158,31 @@ local blacklistedSystemFunctions = {
    "onDisabled",
 }
 
---- Adds a System to the World.
--- Callbacks are registered automatically
--- Entities added before are added to the System retroactively
--- @see World:emit
--- @tparam System systemClass SystemClass of System to add
--- @treturn World self
-function World:addSystem(systemClass)
+local tryAddSystem = function (world, systemClass)
    if (not Type.isSystemClass(systemClass)) then
-      error("bad argument #1 to 'World:addSystems' (SystemClass expected, got "..type(systemClass)..")", 2)
+      return false, "SystemClass expected, got "..type(systemClass)
    end
 
-   if (self.__systemLookup[systemClass]) then
-      error("bad argument #1 to 'World:addSystems' (SystemClass was already added to World)", 2)
+   if (world.__systemLookup[systemClass]) then
+      return false, "SystemClass was already added to World"
    end
 
    -- Create instance of system
-   local system = systemClass(self)
+   local system = systemClass(world)
 
-   self.__systemLookup[systemClass] = system
-   self.__systems:__add(system)
+   world.__systemLookup[systemClass] = system
+   world.__systems:add(system)
 
    for callbackName, callback in pairs(systemClass) do
       -- Skip callback if its blacklisted
       if (not blacklistedSystemFunctions[callbackName]) then
          -- Make container for all listeners of the callback if it does not exist yet
-         if (not self.__events[callbackName]) then
-            self.__events[callbackName] = {}
+         if (not world.__events[callbackName]) then
+            world.__events[callbackName] = {}
          end
 
          -- Add callback to listeners
-         local listeners = self.__events[callbackName]
+         local listeners = world.__events[callbackName]
          listeners[#listeners + 1] = {
             system   = system,
             callback = callback,
@@ -191,8 +191,24 @@ function World:addSystem(systemClass)
    end
 
    -- Evaluate all existing entities
-   for j = 1, self.__entities.size do
-      system:__evaluate(self.__entities[j])
+   for j = 1, world.__entities.size do
+      system:__evaluate(world.__entities[j])
+   end
+
+   return true
+end
+
+--- Adds a System to the World.
+-- Callbacks are registered automatically
+-- Entities added before are added to the System retroactively
+-- @see World:emit
+-- @tparam System systemClass SystemClass of System to add
+-- @treturn World self
+function World:addSystem(systemClass)
+   local ok, err = tryAddSystem(self, systemClass)
+
+   if not ok then
+      error("bad argument #1 to 'World:addSystem' ("..err..")", 2)
    end
 
    return self
@@ -208,7 +224,10 @@ function World:addSystems(...)
    for i = 1, select("#", ...) do
       local systemClass = select(i, ...)
 
-      self:addSystem(systemClass)
+      local ok, err = tryAddSystem(self, systemClass)
+      if not ok then
+         error("bad argument #"..i.." to 'World:addSystems' ("..err..")", 2)
+      end
    end
 
    return self
@@ -278,9 +297,13 @@ function World:clear()
       self:removeEntity(self.__entities[i])
    end
 
-   for i = 1, self.__systems.size do
-      self.__systems[i]:__clear()
+   for i = 1, self.__added.size do
+      local e = self.__added[i]
+      e.__world = nil
    end
+   self.__added:clear()
+
+   self:__flush()
 
    return self
 end

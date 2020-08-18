@@ -45,11 +45,4 @@ function Type.isWorld(t)
    return type(t) == "table" and t.__isWorld or false
 end
 
---- Returns if object is an Assemblage.
--- @param t Object to check
--- @treturn boolean
-function Type.isAssemblage(t)
-   return type(t) == "table" and t.__isAssemblage or false
-end
-
 return Type
