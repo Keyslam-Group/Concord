@@ -445,7 +445,7 @@ Concord.component("velocity", function(c, x, y)
     c.y = y or 0
 end)
 
-local Drawable = Concord.component()
+local Drawable = Concord.component("drawable")
 
 
 -- Defining Systems
