@@ -94,6 +94,20 @@ function List:indexOf(obj)
    return self[obj]
 end
 
+--- Sorts the List in place, using the order function.
+-- The order function is passed to table.sort internally so documentation on table.sort can be used as reference.
+-- @param order Function that takes two Entities (a and b) and returns true if a should go before than b.
+-- @treturn List self
+function List:sort(order)
+   table.sort(self, order)
+
+   for key, obj in ipairs(self) do
+      self[obj] = key
+   end
+
+   return self
+end
+
 return setmetatable(List, {
    __call = function()
       return List.new()
