@@ -51,7 +51,7 @@ local Components  = Concord.components
 ## ECS
 Concord is an Entity Component System (ECS for short) library.
 This is a coding paradigm where _composition_ is used over _inheritance_.
-Because of this it is easier to write more modular code. It often allowes you to combine any form of behaviour for the objects in your game (Entities).
+Because of this it is easier to write more modular code. It often allows you to combine any form of behaviour for the objects in your game (Entities).
 
 As the name might suggest, ECS consists of 3 core things: Entities, Components, and Systems. A proper understanding of these is required to use Concord effectively.
 We'll start with the simplest one.
