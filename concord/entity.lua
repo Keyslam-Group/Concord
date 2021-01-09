@@ -6,6 +6,7 @@ local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Components = require(PATH..".components")
 local Type       = require(PATH..".type")
+local Utils      = require(PATH..".utils")
 
 local Entity = {}
 Entity.__mt = {
@@ -22,7 +23,6 @@ function Entity.new(world)
 
    local e = setmetatable({
       __world      = nil,
-      __components = {},
 
       __isEntity = true,
    }, Entity.__mt)
@@ -38,14 +38,12 @@ local function give(e, name, componentClass, ...)
    local component = componentClass:__initialize(...)
 
    e[name] = component
-   e.__components[name] = component
 
    e:__dirty()
 end
 
-local function remove(e, name, componentClass)
+local function remove(e, name)
    e[name] = nil
-   e.__components[name] = nil
 
    e:__dirty()
 end
@@ -76,7 +74,7 @@ function Entity:ensure(name, ...)
    local ok, componentClass = Components.try(name)
 
    if not ok then
-      error("bad argument #1 to 'Entity:get' ("..componentClass..")", 2)
+      error("bad argument #1 to 'Entity:ensure' ("..componentClass..")", 2)
    end
 
    if self[name] then
@@ -95,10 +93,10 @@ function Entity:remove(name)
    local ok, componentClass = Components.try(name)
 
    if not ok then
-      error("bad argument #1 to 'Entity:get' ("..componentClass..")", 2)
+      error("bad argument #1 to 'Entity:remove' ("..componentClass..")", 2)
    end
 
-   remove(self, name, componentClass)
+   remove(self, name)
 
    return self
 end
@@ -169,7 +167,11 @@ end
 -- Use Entity:give/ensure/remove instead
 -- @treturn table Table of all Components the Entity has
 function Entity:getComponents()
-   return self.__components
+   local components = Utils.shallowCopy(self)
+   components.__world = nil
+   components.__isEntity = nil
+
+   return components
 end
 
 --- Returns true if the Entity is in a World.
@@ -187,8 +189,8 @@ end
 function Entity:serialize()
    local data = {}
 
-   for _, component in pairs(self.__components) do
-      if component.__name then
+   for name, component in pairs(self) do
+      if name ~= "__world" and name ~= "__isEntity" and component.__name == name then
          local componentData = component:serialize()
 
          if componentData ~= nil then
@@ -215,7 +217,6 @@ function Entity:deserialize(data)
       component:deserialize(componentData)
 
       self[componentData.__name] = component
-      self.__components[componentData.__name] = component
 
       self:__dirty()
    end
