@@ -4,7 +4,7 @@
 local PATH = (...):gsub('%.init$', '')
 
 local Concord = {
-   _VERSION     = "2.0 Beta",
+   _VERSION     = "3.0",
    _DESCRIPTION = "A feature-complete ECS library",
    _LICENCE     = [[
       MIT LICENSE
