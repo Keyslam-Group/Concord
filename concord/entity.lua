@@ -35,17 +35,28 @@ function Entity.new(world)
 end
 
 local function give(e, name, componentClass, ...)
-   local component = componentClass:__initialize(...)
+   local component = componentClass:__initialize(e, ...)
+   local hadComponent = not not e[name]
+
+   if hadComponent then
+      e[name]:removed()
+   end
 
    e[name] = component
 
-   e:__dirty()
+   if not hadComponent then
+      e:__dirty()
+   end
 end
 
 local function remove(e, name)
-   e[name] = nil
+   if e[name] then
+      e[name]:removed()
 
-   e:__dirty()
+      e[name] = nil
+
+      e:__dirty()
+   end
 end
 
 --- Gives an Entity a Component.
