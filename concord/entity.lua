@@ -25,6 +25,7 @@ function Entity.new(world)
       __world      = nil,
 
       __isEntity = true,
+      __serializable = true,
    }, Entity.__mt)
 
    if (world) then
@@ -201,7 +202,10 @@ function Entity:serialize()
    local data = {}
 
    for name, component in pairs(self) do
-      if name ~= "__world" and name ~= "__isEntity" and component.__name == name then
+     if name ~= "__world" and
+        name ~= "__isEntity" and
+        name ~= "__serializable" and
+        component.__name == name then
          local componentData = component:serialize()
 
          if componentData ~= nil then
@@ -231,6 +235,20 @@ function Entity:deserialize(data)
 
       self:__dirty()
    end
+end
+
+--- Set serializable value
+-- The serializable value determines whether this entity gets serialized
+-- when the world is serialized.
+-- @tparam value boolean
+-- @treturn Entity self
+function Entity:setSerializable(value)
+  self.__serializable = value
+  return self
+end
+
+function Entity:getSerializable()
+  return self.__serializable
 end
 
 return setmetatable(Entity, {
