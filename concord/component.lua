@@ -47,31 +47,39 @@ function Component.new(name, populate)
    return componentClass
 end
 
--- Internal: Populates a Component with values
+-- Internal: Populates a Component with values.
 function Component:__populate() -- luacheck: ignore
 end
 
+-- Callback: When the Component gets removed or replaced in an Entity.
+function Component:removed() -- luacheck: ignore
+end
+
+-- Callback: When the Component gets serialized as part of an Entity.
 function Component:serialize()
    local data = Utils.shallowCopy(self, {})
 
    --This values shouldn't be copied over
-   data.__componentClass = nil
-   data.__isComponent = nil
+   data.__componentClass   = nil
+   data.__entity           = nil
+   data.__isComponent      = nil
    data.__isComponentClass = nil
 
    return data
 end
 
+-- Callback: When the Component gets deserialized from serialized data.
 function Component:deserialize(data)
    Utils.shallowCopy(data, self)
 end
 
 -- Internal: Creates a new Component.
 -- @return A new Component
-function Component:__new()
+function Component:__new(entity)
    local component = setmetatable({
       __componentClass = self,
 
+      __entity           = entity,
       __isComponent      = true,
       __isComponentClass = false,
    }, self.__mt)
@@ -82,8 +90,8 @@ end
 -- Internal: Creates and populates a new Component.
 -- @param ... Varargs passed to the populate function
 -- @return A new populated Component
-function Component:__initialize(...)
-   local component = self:__new()
+function Component:__initialize(entity, ...)
+   local component = self:__new(entity)
 
    self.__populate(component, ...)
 
