@@ -33,7 +33,7 @@ System.mt = {
          Utils.shallowCopy(systemClass, system)
       end
 
-      for name, filter in pairs(systemClass.__filter) do
+      for name, filter in pairs(systemClass.__filters) do
          local pool = Pool(name, filter)
 
          system[name] = pool
@@ -46,10 +46,10 @@ System.mt = {
    end,
 }
 
-local validateFilters = function (baseFilters)
+local validateFilters = function (definition)
    local filters = {}
 
-   for name, componentsList in pairs(baseFilters) do
+   for name, componentsList in pairs(definition) do
       if type(name) ~= 'string' then
          error("invalid name for filter (string key expected, got "..type(name)..")", 3)
       end
@@ -58,18 +58,19 @@ local validateFilters = function (baseFilters)
          error("invalid component list for filter '"..name.."' (table expected, got "..type(componentsList)..")", 3)
       end
 
-      local filter = {}
+      filters[name] = { require = {}, reject = {} }
+
       for n, component in ipairs(componentsList) do
-         local ok, componentClass = Components.try(component)
+         local ok, componentClass, rejected = Components.try(component, true)
 
          if not ok then
             error("invalid component for filter '"..name.."' at position #"..n.." ("..componentClass..")", 3)
+         elseif rejected then
+            table.insert(filters[name].reject, rejected)
+         else
+            table.insert(filters[name].require, component)
          end
-
-         filter[#filter + 1] = componentClass
       end
-
-      filters[name] = filter
    end
 
    return filters
@@ -78,9 +79,11 @@ end
 --- Creates a new SystemClass.
 -- @param table filters A table containing filters (name = {components...})
 -- @treturn System A new SystemClass
-function System.new(filters)
+function System.new(definition)
+   local filters = validateFilters(definition)
+
    local systemClass = setmetatable({
-      __filter = validateFilters(filters),
+      __filters = filters,
 
       __name          = nil,
       __isSystemClass = true,
