@@ -16,7 +16,7 @@ end
 
 --- Adds an object to the List.
 -- Object must be of reference type
--- Object may not be the string 'size'
+-- Object may not be the string 'size', 'onAdded' or 'onRemoved'
 -- @param obj Object to add
 -- @treturn List self
 function List:add(obj)
@@ -26,6 +26,7 @@ function List:add(obj)
    self[obj]  = size
    self.size  = size
 
+   if self.onAdded then self:onAdded(obj) end
    return self
 end
 
@@ -51,6 +52,7 @@ function List:remove(obj)
    self[obj] = nil
    self.size = size - 1
 
+   if self.onRemoved then self:onRemoved(obj) end
    return self
 end
 
@@ -106,6 +108,16 @@ function List:sort(order)
    end
 
    return self
+end
+
+--- Callback for when an item is added to the List.
+-- @param obj Object that was added
+function List:onAdded (obj) --luacheck: ignore
+end
+
+--- Callback for when an item is removed to the List.
+-- @param obj Object that was removed
+function List:onRemoved (obj) --luacheck: ignore
 end
 
 return setmetatable(List, {
