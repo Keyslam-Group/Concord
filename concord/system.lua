@@ -50,7 +50,7 @@ System.mt = {
 function System.new(definition)
    for name, def in pairs(definition) do
       if type(name) ~= 'string' then
-         error("invalid name for filter (string key expected, got "..type(name)..")", 2)
+         Utils.error(2, "invalid name for filter (string key expected, got %s)", type(name))
       end
 
       Filter.validate(name, def)

@@ -3,6 +3,10 @@
 
 local Utils = {}
 
+function Utils.error(level, str, ...)
+    error(string.format(str, ...), level + 1)
+end
+
 --- Does a shallow copy of a table and appends it to a target table.
 -- @param orig Table to copy
 -- @param target Table to append to
@@ -22,13 +26,13 @@ end
 -- @treturn table The namespace table
 function Utils.loadNamespace(pathOrFiles, namespace)
    if type(pathOrFiles) ~= "string" and type(pathOrFiles) ~= "table" then
-       error("bad argument #1 to 'loadNamespace' (string/table of strings expected, got "..type(pathOrFiles)..")", 2)
+       Utils.error(2, "bad argument #1 to 'loadNamespace' (string/table of strings expected, got %s)", type(pathOrFiles))
    end
 
    if type(pathOrFiles) == "string" then
        local info = love.filesystem.getInfo(pathOrFiles) -- luacheck: ignore
        if info == nil or info.type ~= "directory" then
-            error("bad argument #1 to 'loadNamespace' (path '"..pathOrFiles.."' not found)", 2)
+            Utils.error(2, "bad argument #1 to 'loadNamespace' (path '%s' not found)", pathOrFiles)
        end
 
        local files = love.filesystem.getDirectoryItems(pathOrFiles)
@@ -43,7 +47,7 @@ function Utils.loadNamespace(pathOrFiles, namespace)
    elseif type(pathOrFiles) == "table" then
        for _, path in ipairs(pathOrFiles) do
             if type(path) ~= "string" then
-                error("bad argument #2 to 'loadNamespace' (string/table of strings expected, got table containing "..type(path)..")", 2) -- luacheck: ignore
+                Utils.error(2, "bad argument #2 to 'loadNamespace' (string/table of strings expected, got table containing %s)", type(path)) -- luacheck: ignore
             end
 
             local name = path
