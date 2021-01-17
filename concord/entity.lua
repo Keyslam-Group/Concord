@@ -8,7 +8,13 @@ local Components = require(PATH..".components")
 local Type       = require(PATH..".type")
 local Utils      = require(PATH..".utils")
 
-local Entity = {}
+-- Initialize built-in Components (as soon as possible)
+local Builtins   = require(PATH..".builtins")
+
+local Entity = {
+   SERIALIZE_BY_DEFAULT = true,
+}
+
 Entity.__mt = {
    __index = Entity,
 }
@@ -29,6 +35,10 @@ function Entity.new(world)
 
    if (world) then
       world:addEntity(e)
+   end
+
+   if Entity.SERIALIZE_BY_DEFAULT then
+      e:give("serializable")
    end
 
    return e
