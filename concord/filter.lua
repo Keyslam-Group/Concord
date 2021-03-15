@@ -19,20 +19,25 @@ Filter.__mt = {
 -- @string name Name for the Filter.
 -- @tparam table definition Table containing the Filter Definition
 -- @tparam onComponent Optional function, called when a component is valid.
-function Filter.validate (name, def, onComponent)
+function Filter.validate (errorLevel, name, def, onComponent)
+   local filter = "World:query filter"
+   if name then
+      filter = ("filter '%s'"):format(name)
+   end
+
    if type(def) ~= 'table' then
-      Utils.error(3, "invalid component list for filter '%s' (table expected, got %s)", name, type(def))
+      Utils.error(3 + errorLevel, "invalid component list for %s (table expected, got %s)", filter, type(def))
    end
 
    if not onComponent and def.constructor and not Type.isCallable(def.constructor) then
-      Utils.error(3, "invalid pool constructor for filter '%s' (callable expected, got %s)", name, type(def.constructor))
+      Utils.error(3 + errorLevel, "invalid pool constructor for %s (callable expected, got %s)", filter, type(def.constructor))
    end
 
    for n, component in ipairs(def) do
       local ok, err, reject = Components.try(component, true)
 
       if not ok then
-         Utils.error(3, "invalid component for filter '%s' at position #%d (%s)", name, n, err)
+         Utils.error(3 + errorLevel, "invalid component for %s at position #%d (%s)", filter, n, err)
       end
 
       if onComponent then
@@ -49,17 +54,30 @@ end
 -- @treturn table required
 -- @treturn table rejected
 function Filter.parse (name, def)
-   local required, rejected = {}, {}
+   local filter = {}
 
-   Filter.validate(name, def, function (component, reject)
+   Filter.validate(1, name, def, function (component, reject)
       if reject then
-         table.insert(rejected, reject)
+         table.insert(filter, reject)
+         table.insert(filter, false)
       else
-         table.insert(required, component)
+         table.insert(filter, component)
+         table.insert(filter, true)
       end
    end)
 
-   return required, rejected
+   return filter
+end
+
+function Filter.match (e, filter)
+   for i=#filter, 2, -2 do
+      local match = filter[i - 0]
+      local name  = filter[i - 1]
+
+      if (not e[name]) == match then return false end
+   end
+
+   return true
 end
 
 local REQUIRED_METHODS = {"add", "remove", "has", "clear"}
@@ -95,14 +113,12 @@ function Filter.new (name, def)
       pool = List()
    end
 
-   local required, rejected = Filter.parse(name, def)
+   local filter = Filter.parse(name, def)
 
    local filter = setmetatable({
       pool = pool,
 
-      __required = required,
-      __rejected = rejected,
-
+      __filter = filter,
       __name   = name,
    
       __isFilter = true,
@@ -115,17 +131,7 @@ end
 -- @tparam Entity e Entity to check
 -- @treturn boolean
 function Filter:eligible(e)
-   for i=#self.__required, 1, -1 do
-      local name = self.__required[i]
-      if not e[name] then return false end
-   end
-
-   for i=#self.__rejected, 1, -1 do
-      local name = self.__rejected[i]
-      if e[name] then return false end
-   end
-
-   return true
+   return Filter.match(e, self.__filter)
 end
 
 function Filter:evaluate (e)
