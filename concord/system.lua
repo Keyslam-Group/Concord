@@ -48,6 +48,8 @@ System.mt = {
 -- @param table filters A table containing filters (name = {components...})
 -- @treturn System A new SystemClass
 function System.new(definition)
+   definition = definition or {}
+
    for name, def in pairs(definition) do
       if type(name) ~= 'string' then
          Utils.error(2, "invalid name for filter (string key expected, got %s)", type(name))
