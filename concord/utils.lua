@@ -21,13 +21,13 @@ end
 -- @param namespace A table that will hold the required files
 -- @treturn table The namespace table
 function Utils.loadNamespace(pathOrFiles, namespace)
-   if (type(pathOrFiles) ~= "string" and type(pathOrFiles) ~= "table") then
+   if type(pathOrFiles) ~= "string" and type(pathOrFiles) ~= "table" then
        error("bad argument #1 to 'loadNamespace' (string/table of strings expected, got "..type(pathOrFiles)..")", 2)
    end
 
-   if (type(pathOrFiles) == "string") then
+   if type(pathOrFiles) == "string" then
        local info = love.filesystem.getInfo(pathOrFiles) -- luacheck: ignore
-       if (info == nil or info.type ~= "directory") then
+       if info == nil or info.type ~= "directory" then
             error("bad argument #1 to 'loadNamespace' (path '"..pathOrFiles.."' not found)", 2)
        end
 
@@ -40,16 +40,16 @@ function Utils.loadNamespace(pathOrFiles, namespace)
             local value = require(path)
             if namespace then namespace[name] = value end
        end
-   elseif (type(pathOrFiles == "table")) then
+   elseif type(pathOrFiles) == "table" then
        for _, path in ipairs(pathOrFiles) do
-            if (type(path) ~= "string") then
+            if type(path) ~= "string" then
                 error("bad argument #2 to 'loadNamespace' (string/table of strings expected, got table containing "..type(path)..")", 2) -- luacheck: ignore
             end
 
             local name = path
 
             local dotIndex, slashIndex = path:match("^.*()%."), path:match("^.*()%/")
-            if (dotIndex or slashIndex) then
+            if dotIndex or slashIndex then
                 name = path:sub((dotIndex or slashIndex) + 1)
             end
 
