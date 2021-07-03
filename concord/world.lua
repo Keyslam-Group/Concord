@@ -6,12 +6,12 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
-local Filter = require(PATH..".filter")
-local Entity = require(PATH..".entity")
+local Filter     = require(PATH..".filter")
+local Entity     = require(PATH..".entity")
 local Components = require(PATH..".components")
-local Type   = require(PATH..".type")
-local List   = require(PATH..".list")
-local Utils  = require(PATH..".utils")
+local Type       = require(PATH..".type")
+local List       = require(PATH..".list")
+local Utils      = require(PATH..".utils")
 
 local World = {
    ENABLE_OPTIMIZATION = true,
