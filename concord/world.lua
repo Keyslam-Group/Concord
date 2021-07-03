@@ -8,6 +8,7 @@ local PATH = (...):gsub('%.[^%.]+$', '')
 
 local Filter = require(PATH..".filter")
 local Entity = require(PATH..".entity")
+local Components = require(PATH..".components")
 local Type   = require(PATH..".type")
 local List   = require(PATH..".list")
 local Utils  = require(PATH..".utils")
@@ -396,7 +397,7 @@ function World:deserialize(data, startClean, ignoreGenerator)
       local entity = Entity(self)
 
       if data[i].key then
-         local component = Components.key:__new()
+         local component = Components.key:__new(entity)
          entity.key = component:deserialize(data[i].key)
 
          entity:__dirty()
@@ -406,7 +407,7 @@ function World:deserialize(data, startClean, ignoreGenerator)
    end
 
    for i = 1, #data do
-      entity[i]:deserialize(data[i])
+      entities[i]:deserialize(data[i])
    end
 
    self:__flush()
