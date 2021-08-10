@@ -38,11 +38,13 @@ function Utils.loadNamespace(pathOrFiles, namespace)
        local files = love.filesystem.getDirectoryItems(pathOrFiles)
 
        for _, file in ipairs(files) do
-            local name = file:sub(1, #file - 4)
-            local path = pathOrFiles.."."..name
+            if string.match(file, '%.lua$') ~= nil then
+                local name = file:sub(1, #file - 4)
+                local path = pathOrFiles.."."..name
 
-            local value = require(path)
-            if namespace then namespace[name] = value end
+                local value = require(path)
+                if namespace then namespace[name] = value end
+            end
        end
    elseif type(pathOrFiles) == "table" then
        for _, path in ipairs(pathOrFiles) do
