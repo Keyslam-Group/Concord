@@ -189,7 +189,7 @@ end
 -- Use Entity:give/ensure/remove instead
 -- @treturn table Table of all Components the Entity has
 function Entity:getComponents()
-   local components = Utils.shallowCopy(self)
+   local components = Utils.shallowCopy(self, {})
    components.__world = nil
    components.__isEntity = nil
 
