@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Concord</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Component.html">Component</a></li>
+  <li><strong>Entity</strong></li>
+  <li><a href="../classes/List.html">List</a></li>
+  <li><a href="../classes/Pool.html">Pool</a></li>
+  <li><a href="../classes/System.html">System</a></li>
+  <li><a href="../classes/World.html">World</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Components.html">Components</a></li>
+  <li><a href="../modules/Concord.html">Concord</a></li>
+  <li><a href="../modules/type.html">type</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Entity</code></h1>
+<p>An object that exists in a world.</p>
+<p> An entity
+ contains components which are processed by systems.</p>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Entity:new">Entity:new ([world])</a></td>
+	<td class="summary">Creates a new Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:give">Entity:give (componentClass, ...)</a></td>
+	<td class="summary">Gives an Entity a Component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:ensure">Entity:ensure (componentClass, ...)</a></td>
+	<td class="summary">Ensures an Entity to have a Component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:remove">Entity:remove (componentClass)</a></td>
+	<td class="summary">Removes a Component from an Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:assemble">Entity:assemble (assemblage, ...)</a></td>
+	<td class="summary">Assembles an Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:destroy">Entity:destroy ()</a></td>
+	<td class="summary">Destroys the Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:has">Entity:has (componentClass)</a></td>
+	<td class="summary">Returns true if the Entity has a Component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:get">Entity:get (componentClass)</a></td>
+	<td class="summary">Gets a Component from the Entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:getComponents">Entity:getComponents ()</a></td>
+	<td class="summary">Returns a table of all Components the Entity has.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:inWorld">Entity:inWorld ()</a></td>
+	<td class="summary">Returns true if the Entity is in a World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:getWorld">Entity:getWorld ()</a></td>
+	<td class="summary">Returns the World the Entity is in.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Entity:new"></a>
+    <strong>Entity:new ([world])</strong>
+    </dt>
+    <dd>
+    Creates a new Entity.  Optionally adds it to a World.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">world</span>
+            <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+         World to add the entity to
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+        A new Entity
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:give"></a>
+    <strong>Entity:give (componentClass, ...)</strong>
+    </dt>
+    <dd>
+    Gives an Entity a Component.
+ If the Component already exists, it's overridden by this new Component
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
+         ComponentClass to add an instance of
+        </li>
+        <li><span class="parameter">...</span>
+         additional arguments to pass to the Component's populate function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:ensure"></a>
+    <strong>Entity:ensure (componentClass, ...)</strong>
+    </dt>
+    <dd>
+    Ensures an Entity to have a Component.
+ If the Component already exists, no action is taken
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
+         ComponentClass to add an instance of
+        </li>
+        <li><span class="parameter">...</span>
+         additional arguments to pass to the Component's populate function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:remove"></a>
+    <strong>Entity:remove (componentClass)</strong>
+    </dt>
+    <dd>
+    Removes a Component from an Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
+         ComponentClass of the Component to remove
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:assemble"></a>
+    <strong>Entity:assemble (assemblage, ...)</strong>
+    </dt>
+    <dd>
+    Assembles an Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">assemblage</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that will assemble an entity
+        </li>
+        <li><span class="parameter">...</span>
+         additional arguments to pass to the assemblage function.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:destroy"></a>
+    <strong>Entity:destroy ()</strong>
+    </dt>
+    <dd>
+    Destroys the Entity.
+ Removes the Entity from its World if it's in one.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:has"></a>
+    <strong>Entity:has (componentClass)</strong>
+    </dt>
+    <dd>
+    Returns true if the Entity has a Component.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
+         ComponentClass of the Component to check
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:get"></a>
+    <strong>Entity:get (componentClass)</strong>
+    </dt>
+    <dd>
+    Gets a Component from the Entity.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">componentClass</span>
+            <span class="types"><a class="type" href="../classes/Component.html#">Component</a></span>
+         ComponentClass of the Component to get
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:getComponents"></a>
+    <strong>Entity:getComponents ()</strong>
+    </dt>
+    <dd>
+    Returns a table of all Components the Entity has.
+ Warning: Do not modify this table.
+ Use Entity:give/ensure/remove instead
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        Table of all Components the Entity has
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:inWorld"></a>
+    <strong>Entity:inWorld ()</strong>
+    </dt>
+    <dd>
+    Returns true if the Entity is in a World.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:getWorld"></a>
+    <strong>Entity:getWorld ()</strong>
+    </dt>
+    <dd>
+    Returns the World the Entity is in.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2021-11-02 16:22:32 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

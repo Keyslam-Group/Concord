@@ -1,0 +1,468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Concord</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Component.html">Component</a></li>
+  <li><a href="../classes/Entity.html">Entity</a></li>
+  <li><a href="../classes/List.html">List</a></li>
+  <li><a href="../classes/Pool.html">Pool</a></li>
+  <li><a href="../classes/System.html">System</a></li>
+  <li><strong>World</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Components.html">Components</a></li>
+  <li><a href="../modules/Concord.html">Concord</a></li>
+  <li><a href="../modules/type.html">type</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>World</code></h1>
+<p>A collection of Systems and Entities.</p>
+<p>
+ A world emits to let Systems iterate.
+ A World contains any amount of Systems.
+ A World contains any amount of Entities.</p>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#World:new">World:new ()</a></td>
+	<td class="summary">Creates a new World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:addEntity">World:addEntity (e)</a></td>
+	<td class="summary">Adds an Entity to the World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:removeEntity">World:removeEntity (e)</a></td>
+	<td class="summary">Removes an Entity from the World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:addSystem">World:addSystem (systemClass)</a></td>
+	<td class="summary">Adds a System to the World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:addSystems">World:addSystems (...)</a></td>
+	<td class="summary">Adds multiple Systems to the World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:hasSystem">World:hasSystem (systemClass)</a></td>
+	<td class="summary">Returns if the World has a System.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:getSystem">World:getSystem (systemClass)</a></td>
+	<td class="summary">Gets a System from the World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:emit">World:emit (functionName, ...)</a></td>
+	<td class="summary">Emits a callback in the World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:clear">World:clear ()</a></td>
+	<td class="summary">Removes all entities from the World</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:hasName">World:hasName ()</a></td>
+	<td class="summary">Returns true if the World has a name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:getName">World:getName ()</a></td>
+	<td class="summary">Returns the name of the World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:onEntityAdded">World:onEntityAdded (e)</a></td>
+	<td class="summary">Callback for when an Entity is added to the World.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#World:onEntityRemoved">World:onEntityRemoved (e)</a></td>
+	<td class="summary">Callback for when an Entity is removed from the World.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "World:new"></a>
+    <strong>World:new ()</strong>
+    </dt>
+    <dd>
+    Creates a new World.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+        The new World
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:addEntity"></a>
+    <strong>World:addEntity (e)</strong>
+    </dt>
+    <dd>
+    Adds an Entity to the World.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+         Entity to add
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:removeEntity"></a>
+    <strong>World:removeEntity (e)</strong>
+    </dt>
+    <dd>
+    Removes an Entity from the World.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+         Entity to remove
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:addSystem"></a>
+    <strong>World:addSystem (systemClass)</strong>
+    </dt>
+    <dd>
+    Adds a System to the World.
+ Callbacks are registered automatically
+ Entities added before are added to the System retroactively
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">systemClass</span>
+            <span class="types"><a class="type" href="../classes/System.html#">System</a></span>
+         SystemClass of System to add
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+        self
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../classes/World.html#World:emit">World:emit</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "World:addSystems"></a>
+    <strong>World:addSystems (...)</strong>
+    </dt>
+    <dd>
+    Adds multiple Systems to the World.
+ Callbacks are registered automatically
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         SystemClasses of Systems to add
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+        self
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../classes/World.html#World:addSystem">World:addSystem</a></li>
+         <li><a href="../classes/World.html#World:emit">World:emit</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "World:hasSystem"></a>
+    <strong>World:hasSystem (systemClass)</strong>
+    </dt>
+    <dd>
+    Returns if the World has a System.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">systemClass</span>
+            <span class="types"><a class="type" href="../classes/System.html#">System</a></span>
+         SystemClass of System to check for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:getSystem"></a>
+    <strong>World:getSystem (systemClass)</strong>
+    </dt>
+    <dd>
+    Gets a System from the World.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">systemClass</span>
+            <span class="types"><a class="type" href="../classes/System.html#">System</a></span>
+         SystemClass of System to get
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/System.html#">System</a></span>
+        System to get
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:emit"></a>
+    <strong>World:emit (functionName, ...)</strong>
+    </dt>
+    <dd>
+    Emits a callback in the World.
+ Calls all functions with the functionName of added Systems
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">functionName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of functions to call.
+        </li>
+        <li><span class="parameter">...</span>
+         Parameters passed to System's functions
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:clear"></a>
+    <strong>World:clear ()</strong>
+    </dt>
+    <dd>
+    Removes all entities from the World
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/World.html#">World</a></span>
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:hasName"></a>
+    <strong>World:hasName ()</strong>
+    </dt>
+    <dd>
+    Returns true if the World has a name.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:getName"></a>
+    <strong>World:getName ()</strong>
+    </dt>
+    <dd>
+    Returns the name of the World.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:onEntityAdded"></a>
+    <strong>World:onEntityAdded (e)</strong>
+    </dt>
+    <dd>
+    Callback for when an Entity is added to the World.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+         The Entity that was added
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "World:onEntityRemoved"></a>
+    <strong>World:onEntityRemoved (e)</strong>
+    </dt>
+    <dd>
+    Callback for when an Entity is removed from the World.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+         The Entity that was removed
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2021-11-02 16:22:32 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
