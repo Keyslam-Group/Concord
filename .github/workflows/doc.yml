@@ -19,8 +19,14 @@ jobs:
     - name: Setup dependencies
       run: luarocks install --only-deps https://raw.githubusercontent.com/lunarmodules/LDoc/master/ldoc-scm-3.rockspec
 
-    - name: Checkout & build docs
-      run: git clone https://github.com/lunarmodules/LDoc.git ldoc && lua ldoc/ldoc.lua .
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Checkout LDoc & build docs
+      run: git clone https://github.com/lunarmodules/LDoc.git ldoc
+    
+    - name: Build docs
+      run: lua ldoc/ldoc.lua .
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
