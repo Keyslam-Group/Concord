@@ -6,7 +6,7 @@ jobs:
   build:
     name: Build docs
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Setup Lua
       uses: leafo/gh-actions-lua@v8
@@ -20,7 +20,7 @@ jobs:
       run: luarocks install --only-deps https://raw.githubusercontent.com/lunarmodules/LDoc/master/ldoc-scm-3.rockspec
 
     - name: Checkout & build docs
-      run: git clone --branch=build_docs https://github.com/lunarmodules/LDoc.git ldoc && cd ldoc && chmod +x build_versioned_docs.sh && ./build_versioned_docs.sh
+      run: git clone https://github.com/lunarmodules/LDoc.git ldoc && cd ldoc && chmod +x build_versioned_docs.sh && ./build_versioned_docs.sh
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
