@@ -26,7 +26,7 @@ jobs:
       run: luarocks show ldoc
 
     - name: Build docs
-      run: lua ldoc.lua .
+      run: ldoc .
 
 
       # - name: Deploy
