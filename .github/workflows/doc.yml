@@ -1,0 +1,38 @@
+name: Build Docs
+
+on: 
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build docs
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+    
+    - name: Setup Lua
+      uses: leafo/gh-actions-lua@v8
+      with:
+        luaVersion: 5.4
+
+    - name: Install Luarocks
+      uses: leafo/gh-actions-luarocks@v4
+
+    - name: Install LDoc
+      run: luarocks install ldoc
+    
+    - name: Show
+      run: luarocks show ldoc
+
+    - name: Build docs
+      run: ldoc .
+
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages
+        folder: docs
