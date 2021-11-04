@@ -318,7 +318,11 @@ function World:emit(functionName, ...)
 
    self.__emitSDepth = self.__emitSDepth + 1
 
-	local listeners = self.__events[functionName]
+   local listeners = self.__events[functionName]
+
+   if Type.isCallable(self.beforeEmit) then
+      self:beforeEmit(functionName, listeners, ...)
+   end
 
    if listeners then
       for i = 1, #listeners do
@@ -332,6 +336,10 @@ function World:emit(functionName, ...)
             listener.callback(listener.system, ...)
          end
       end
+   end
+
+   if Type.isCallable(self.afterEmit) then
+      self:afterEmit(functionName, listeners, ...)
    end
 
    self.__emitSDepth = self.__emitSDepth - 1
