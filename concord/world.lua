@@ -324,8 +324,9 @@ function World:emit(functionName, ...)
 
    if not self.__ignoreEmits and Type.isCallable(self.beforeEmit) then
       self.__ignoreEmits = true
-      self:beforeEmit(functionName, listeners, ...)
+      local preventDefaults = self:beforeEmit(functionName, listeners, ...)
       self.__ignoreEmits = false
+      if preventDefaults then return end
    end
 
    if listeners then
