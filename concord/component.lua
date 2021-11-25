@@ -95,6 +95,7 @@ end
 function Component:__initialize(entity, ...)
    local component = self:__new(entity)
 
+   ---@diagnostic disable-next-line: redundant-parameter
    self.__populate(component, ...)
 
    return component
