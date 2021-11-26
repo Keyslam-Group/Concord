@@ -36,6 +36,8 @@ function World.new()
       __events     = {},
       __emitSDepth = 0,
 
+      __resources = {},
+
       __hash = {
          state = -2^53,
          generator = defaultGenerator,
@@ -472,6 +474,22 @@ end
 --- Callback for when an Entity is removed from the World.
 -- @tparam Entity e The Entity that was removed
 function World:onEntityRemoved(e) -- luacheck: ignore
+end
+
+--- Sets a named resource in the world
+-- @string name Name of the resource
+-- @tparam Any resource Resource to set
+-- @treturn World self
+function World:setResource(name, resource)
+  self.__resources[name] = resource
+  return self
+end
+
+--- Gets a named resource from the world
+-- @string name Name of the resource
+-- @treturn Any resource
+function World:getResource(name)
+  return self.__resources[name]
 end
 
 return setmetatable(World, {
