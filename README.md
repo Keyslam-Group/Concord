@@ -7,7 +7,7 @@ With Concord it is possibile to easily write fast and clean code.
 This readme will explain how to use Concord.
 
 Additionally all of Concord is documented using the LDoc format.
-Auto generated docs for Concord can be found in `docs` folder, or on the [Github page](https://tjakka5.github.io/Concord/).
+Auto generated docs for Concord can be found in `docs` folder, or on the [GitHub page](https://keyslam.github.io/Concord/).
 
 --- 
 
