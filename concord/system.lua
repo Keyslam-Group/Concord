@@ -47,6 +47,7 @@ System.mt = {
 }
 
 local validateFilters = function (definition)
+   if not definition then return {} end
    local filters = {}
 
    for name, componentsList in pairs(definition) do
