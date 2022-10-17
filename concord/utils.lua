@@ -34,11 +34,18 @@ function Utils.loadNamespace(pathOrFiles, namespace)
        local files = love.filesystem.getDirectoryItems(pathOrFiles)
 
        for _, file in ipairs(files) do
-            local name = file:sub(1, #file - 4)
-            local path = pathOrFiles.."."..name
+            local isFile = love.filesystem.getInfo(pathOrFiles .. "/" .. file).type == "file"
 
-            local value = require(path)
-            if namespace then namespace[name] = value end
+            if isFile then
+                 local name = file:sub(1, #file - 4)
+                 local path = pathOrFiles.."."..name
+
+                 local value = require(path)
+                 if namespace then namespace[name] = value end
+            else
+                 local value = require(pathOrFiles.."."..file)
+				 if namespace then namespace[file] = value end
+            end
        end
    elseif (type(pathOrFiles == "table")) then
        for _, path in ipairs(pathOrFiles) do
