@@ -266,10 +266,10 @@ Systems can have multiple pools.
 
 ```lua
 -- Create a System
-local mySystemClass = Concord.system(pool = {"position"}) -- Pool named 'pool' will contain all Entities with a position Component
+local mySystemClass = Concord.system({pool = {"position"}}) -- Pool named 'pool' will contain all Entities with a position Component
 
 -- Create a System with multiple pools
-local mySystemClass = Concord.system(
+local mySystemClass = Concord.system({
     pool = { -- This pool will be named 'pool'
         "position",
         "velocity",
@@ -278,7 +278,7 @@ local mySystemClass = Concord.system(
         "health",
         "damageable",
     }
-)
+})
 ```
 
 ```lua
