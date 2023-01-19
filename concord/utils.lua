@@ -31,6 +31,10 @@ function Utils.loadNamespace(pathOrFiles, namespace)
             error("bad argument #1 to 'loadNamespace' (path '"..pathOrFiles.."' not found)", 2)
        end
 
+       -- normalizes the path to use dots instead of slashes
+       -- this is more friendly to require
+       local friendlyPath = pathOrFiles:gsub("%/", ".")
+
        local files = love.filesystem.getDirectoryItems(pathOrFiles)
 
        for _, file in ipairs(files) do
@@ -38,12 +42,12 @@ function Utils.loadNamespace(pathOrFiles, namespace)
 
             if isFile then
                  local name = file:sub(1, #file - 4)
-                 local path = pathOrFiles.."."..name
+                 local path = friendlyPath.."."..name
 
                  local value = require(path)
                  if namespace then namespace[name] = value end
             else
-                 local value = require(pathOrFiles.."."..file)
+                 local value = require(friendlyPath.."."..file)
 				 if namespace then namespace[file] = value end
             end
        end
