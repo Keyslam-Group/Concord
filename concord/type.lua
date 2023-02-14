@@ -3,6 +3,15 @@
 
 local Type = {}
 
+function Type.isCallable(t)
+   if type(t) == "function" then return true end
+
+   local meta = getmetatable(t)
+   if meta and type(meta.__call) == "function" then return true end
+
+   return false
+end
+
 --- Returns if object is an Entity.
 -- @param t Object to check
 -- @treturn boolean
@@ -43,6 +52,13 @@ end
 -- @treturn boolean
 function Type.isWorld(t)
    return type(t) == "table" and t.__isWorld or false
+end
+
+--- Returns if object is a Filter.
+-- @param t Object to check
+-- @treturn boolean
+function Type.isFilter(t)
+   return type(t) == "table" and t.__isFilter or false
 end
 
 return Type
