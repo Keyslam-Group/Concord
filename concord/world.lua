@@ -6,6 +6,7 @@
 
 local PATH = (...):gsub('%.[^%.]+$', '')
 
+local Filter = require(PATH..".filter")
 local Entity = require(PATH..".entity")
 local Type   = require(PATH..".type")
 local List   = require(PATH..".list")
@@ -69,6 +70,27 @@ end
 -- @treturn Entity e the new Entity
 function World:newEntity()
    return Entity(self)
+end
+
+function World:query(def, onMatch)
+   local filter = Filter.parse(nil, def)
+
+   local list = nil
+   if not Type.isCallable(onMatch) then
+      list = type(onMatch) == "table" and onMatch or {}
+   end
+
+   for _, e in ipairs(self.__entities) do
+      if Filter.match(e, filter) then
+         if list then
+            table.insert(list, e)
+         else
+            onMatch(e)
+         end
+      end
+   end
+
+   return list
 end
 
 --- Removes an Entity from the World.
