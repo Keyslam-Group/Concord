@@ -53,7 +53,7 @@ function System.new(definition)
          Utils.error(2, "invalid name for filter (string key expected, got %s)", type(name))
       end
 
-      Filter.validate(name, def)
+      Filter.validate(0, name, def)
    end
 
    local systemClass = setmetatable({
