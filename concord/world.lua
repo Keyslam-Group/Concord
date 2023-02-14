@@ -52,6 +52,8 @@ function World.new()
       __systemLookup = {},
 
       __isWorld = true,
+
+      __ignoreEmits = false
    }, World.__mt)
 
    -- Optimization: We deep copy the World class into our instance of a world.
@@ -320,7 +322,14 @@ function World:emit(functionName, ...)
 
    self.__emitSDepth = self.__emitSDepth + 1
 
-	local listeners = self.__events[functionName]
+   local listeners = self.__events[functionName]
+
+   if not self.__ignoreEmits and Type.isCallable(self.beforeEmit) then
+      self.__ignoreEmits = true
+      local preventDefaults = self:beforeEmit(functionName, listeners, ...)
+      self.__ignoreEmits = false
+      if preventDefaults then return end
+   end
 
    if listeners then
       for i = 1, #listeners do
@@ -334,6 +343,12 @@ function World:emit(functionName, ...)
             listener.callback(listener.system, ...)
          end
       end
+   end
+
+   if not self.__ignoreEmits and Type.isCallable(self.afterEmit) then
+      self.__ignoreEmits = true
+      self:afterEmit(functionName, listeners, ...)
+      self.__ignoreEmits = false
    end
 
    self.__emitSDepth = self.__emitSDepth - 1
