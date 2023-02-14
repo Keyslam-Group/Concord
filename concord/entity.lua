@@ -9,7 +9,8 @@ local Type       = require(PATH..".type")
 local Utils      = require(PATH..".utils")
 
 -- Initialize built-in Components (as soon as possible)
-local Builtins   = require(PATH..".builtins")
+local Builtins   = require(PATH..".builtins.init") --luacheck: ignore
+-- Builtins is unused but the require already registers the Components
 
 local Entity = {
    SERIALIZE_BY_DEFAULT = true,
@@ -49,7 +50,7 @@ local function give(e, name, componentClass, ...)
    local hadComponent = not not e[name]
 
    if hadComponent then
-      e[name]:removed()
+      e[name]:removed(true)
    end
 
    e[name] = component
@@ -61,7 +62,7 @@ end
 
 local function remove(e, name)
    if e[name] then
-      e[name]:removed()
+      e[name]:removed(false)
 
       e[name] = nil
 
@@ -207,11 +208,16 @@ function Entity:getWorld()
    return self.__world
 end
 
-function Entity:serialize()
+function Entity:serialize(ignoreKey)
    local data = {}
 
    for name, component in pairs(self) do
-      if name ~= "__world" and name ~= "__isEntity" and component.__name == name then
+      -- The key component needs to be treated separately.
+      if name == "key" and component.__name == "key" then
+         if not ignoreKey then
+            data.key = component.value
+         end
+      elseif (name ~= "__world") and (name ~= "__isEntity") and (component.__name == name) then
          local componentData = component:serialize()
 
          if componentData ~= nil then
@@ -234,7 +240,7 @@ function Entity:deserialize(data)
 
       local componentClass = Components[componentData.__name]
 
-      local component = componentClass:__new()
+      local component = componentClass:__new(self)
       component:deserialize(componentData)
 
       self[componentData.__name] = component

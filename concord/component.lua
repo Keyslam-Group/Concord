@@ -74,6 +74,7 @@ function Component:deserialize(data)
 end
 
 -- Internal: Creates a new Component.
+-- @param entity The Entity that will receive this Component.
 -- @return A new Component
 function Component:__new(entity)
    local component = setmetatable({
@@ -88,6 +89,7 @@ function Component:__new(entity)
 end
 
 -- Internal: Creates and populates a new Component.
+-- @param entity The Entity that will receive this Component.
 -- @param ... Varargs passed to the populate function
 -- @return A new populated Component
 function Component:__initialize(entity, ...)
