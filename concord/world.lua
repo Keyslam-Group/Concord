@@ -65,6 +65,12 @@ function World:addEntity(e)
    return self
 end
 
+--- Creates a new Entity and adds it to the World.
+-- @treturn Entity e the new Entity
+function World:newEntity()
+   return Entity(self)
+end
+
 --- Removes an Entity from the World.
 -- @tparam Entity e Entity to remove
 -- @treturn World self
