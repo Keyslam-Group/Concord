@@ -45,7 +45,7 @@ function Entity.new(world)
    return e
 end
 
-local function give(e, name, componentClass, ...)
+local function createComponent(e, name, componentClass, ...)
    local component = componentClass:__initialize(e, ...)
    local hadComponent = not not e[name]
 
@@ -60,7 +60,57 @@ local function give(e, name, componentClass, ...)
    end
 end
 
-local function remove(e, name)
+local function deserializeComponent(e, name, componentData)
+   local componentClass = Components[name]
+   local hadComponent = not not e[name]
+
+   if hadComponent then
+      e[name]:removed(true)
+   end
+
+   local component = componentClass:__new(e)
+   component:deserialize(componentData)
+
+   e[name] = component
+
+   if not hadComponent then
+      e:__dirty()
+   end
+end
+
+local function giveComponent(e, ensure, name, ...)
+   local component
+   if Type.isComponent(name) then
+      component = name
+      name = component:getName()
+   end
+
+   if ensure and e[name] then
+      return e
+   end
+
+   local ok, componentClass = Components.try(name)
+
+   if not ok then
+      Utils.error(3, "bad argument #1 to 'Entity:%s' (%s)", ensure and 'ensure' or 'give', componentClass)
+   end
+
+   if component then
+      local data = component:deserialize()
+      if data == nil then
+         Utils.error(3, "bad argument #1 to 'Entity:$s' (Component '%s' couldn't be deserialized)", ensure and 'ensure' or 'give', name)
+      end
+
+      deserializeComponent(e, name, data)
+   else 
+      createComponent(e, name, componentClass, ...)
+   end
+
+   return e
+end
+
+
+local function removeComponent(e, name)
    if e[name] then
       e[name]:removed(false)
 
@@ -76,15 +126,7 @@ end
 -- @param ... additional arguments to pass to the Component's populate function
 -- @treturn Entity self
 function Entity:give(name, ...)
-   local ok, componentClass = Components.try(name)
-
-   if not ok then
-      Utils.error(2, "bad argument #1 to 'Entity:get' (%s)", componentClass)
-   end
-
-   give(self, name, componentClass, ...)
-
-   return self
+   return giveComponent(self, false, name, ...)
 end
 
 --- Ensures an Entity to have a Component.
@@ -93,19 +135,7 @@ end
 -- @param ... additional arguments to pass to the Component's populate function
 -- @treturn Entity self
 function Entity:ensure(name, ...)
-   local ok, componentClass = Components.try(name)
-
-   if not ok then
-      Utils.error(2, "bad argument #1 to 'Entity:ensure' (%s)", componentClass)
-   end
-
-   if self[name] then
-      return self
-   end
-
-   give(self, name, componentClass, ...)
-
-   return self
+   return giveComponent(self, true, name, ...)
 end
 
 --- Removes a Component from an Entity.
@@ -118,7 +148,7 @@ function Entity:remove(name)
       Utils.error(2, "bad argument #1 to 'Entity:remove' (%s)", componentClass)
    end
 
-   remove(self, name)
+   removeComponent(self, name)
 
    return self
 end
@@ -239,14 +269,7 @@ function Entity:deserialize(data)
          Utils.error(2, "bad argument #1 to 'Entity:deserialize' (ComponentClass '%s' wasn't yet loaded)", tostring(componentData.__name)) -- luacheck: ignore
       end
 
-      local componentClass = Components[componentData.__name]
-
-      local component = componentClass:__new(self)
-      component:deserialize(componentData)
-
-      self[componentData.__name] = component
-
-      self:__dirty()
+      deserializeComponent(self, componentData.__name, componentData)
    end
 end
 
