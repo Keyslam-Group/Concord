@@ -19,6 +19,12 @@ World.__mt = {
    __index = World,
 }
 
+local defaultGenerator = function (state)
+   local current = state
+   state = state +1
+   return string.format("%d", current), state
+end
+
 --- Creates a new World.
 -- @treturn World The new World
 function World.new()
@@ -28,6 +34,13 @@ function World.new()
 
       __events     = {},
       __emitSDepth = 0,
+
+      __hash = {
+         state = -2^53,
+         generator = defaultGenerator,
+         keys = {},
+         entities = {}
+      },
 
       __added   = List(), __backAdded   = List(),
       __removed = List(), __backRemoved = List(),
@@ -99,6 +112,14 @@ end
 function World:removeEntity(e)
    if not Type.isEntity(e) then
       Utils.error(2, "bad argument #1 to 'World:removeEntity' (Entity expected, got %s)", type(e))
+   end
+
+   if e.__world ~= self then
+      error("trying to remove an Entity from a World it doesn't belong to", 2)
+   end
+
+   if e:has("key") then
+      e:remove("key")
    end
 
    self.__removed:add(e)
@@ -343,16 +364,16 @@ function World:getSystems()
    return self.__systems
 end
 
-function World:serialize()
+function World:serialize(ignoreKeys)
    self:__flush()
 
-   local data = {}
+   local data = { generator = self.__hash.state }
 
    for i = 1, self.__entities.size do
       local entity = self.__entities[i]
 
       if entity.serializable then
-         local entityData = entity:serialize()
+         local entityData = entity:serialize(ignoreKeys)
          table.insert(data, entityData)
       end
    end
@@ -360,21 +381,85 @@ function World:serialize()
    return data
 end
 
-function World:deserialize(data, append)
-   if (not append) then
+function World:deserialize(data, startClean, ignoreGenerator)
+   if startClean then
       self:clear()
    end
 
+   if (not ignoreGenerator) then
+      self.__hash.state = data.generator
+   end
+
+   local entities = {}
+
    for i = 1, #data do
-      local entityData = data[i]
+      local entity = Entity(self)
 
-      local entity = Entity()
-      entity:deserialize(entityData)
+      if data[i].key then
+         local component = Components.key:__new()
+         entity.key = component:deserialize(data[i].key)
 
-      self:addEntity(entity)
+         entity:__dirty()
+      end
+
+      entities[i] = entity
+   end
+
+   for i = 1, #data do
+      entity[i]:deserialize(data[i])
    end
 
    self:__flush()
+
+   return self
+end
+
+function World:setKeyGenerator(generator, initialState)
+   if not Type.isCallable(generator) then
+      Utils.error(2, "bad argument #1 to 'World:setKeyGenerator' (function expected, got %s)", type(generator))
+   end
+
+   self.__hash.generator = generator
+   self.__hash.state = initialState
+
+   return self
+end
+
+function World:__clearKey(e)
+   local key = self.__hash.keys[e]
+
+   if key then
+      self.__hash.keys[e] = nil
+      self.__hash.entities[key] = nil
+   end
+
+   return self
+end
+
+function World:__assignKey(e, key)
+   local hash = self.__hash
+
+   if not key then
+      key = hash.keys[e]
+      if key then return key end
+
+      key, hash.state = hash.generator(hash.state)
+   end
+
+   if hash.entities[key] and hash.entities[key] ~= e then
+      Utils.error(4, "Trying to assign a key that is already taken (key: '%s').", key)
+   elseif hash.keys[e] and hash.keys[e] ~= key then
+      Utils.error(4, "Trying to assign more than one key to an Entity. (old: '%s', new: '%s')", hash.keys[e], key)
+   end
+
+   hash.keys[e] = key
+   hash.entities[key] = e
+
+   return key
+end
+
+function World:getEntityByKey(key)
+   return self.__hash.entities[key]
 end
 
 --- Callback for when an Entity is added to the World.
