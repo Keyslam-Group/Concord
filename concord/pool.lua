@@ -30,10 +30,14 @@ end
 -- @tparam Entity e Entity to check
 -- @treturn boolean
 function Pool:eligible(e)
-   for i=#self.__filter, 1, -1 do
-      local component = self.__filter[i].__name
+   for i=#self.__filter.require, 1, -1 do
+      local name = self.__filter.require[i]
+      if not e[name] then return false end
+   end
 
-      if not e[component] then return false end
+   for i=#self.__filter.reject, 1, -1 do
+      local name = self.__filter.reject[i]
+      if e[name] then return false end
    end
 
    return true
