@@ -22,6 +22,10 @@ function Key:deserialize (data)
   self.value = getKey(self, data)
 end
 
+function Key.__mt:__call()
+  return self.value
+end
+
 function Key:removed (replaced)
   if not replaced then
     local entity = self.__entity

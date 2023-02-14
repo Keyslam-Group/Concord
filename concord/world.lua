@@ -476,6 +476,7 @@ end
 
 return setmetatable(World, {
    __call = function(_, ...)
+      ---@diagnostic disable-next-line: redundant-parameter
       return World.new(...)
    end,
 })
