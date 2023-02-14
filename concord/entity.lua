@@ -248,7 +248,8 @@ function Entity:serialize(ignoreKey)
          if not ignoreKey then
             data.key = component.value
          end
-      elseif (name ~= "__world") and (name ~= "__isEntity") and (component.__name == name) then
+      --We only care about components that were properly given to the entity
+      elseif Type.isComponent(component) and (component.__name == name) then
          local componentData = component:serialize()
 
          if componentData ~= nil then
