@@ -85,7 +85,6 @@ function System.new(definition)
    local systemClass = setmetatable({
       __filters = filters,
 
-      __name          = nil,
       __isSystemClass = true,
    }, System.mt)
    systemClass.__index = systemClass
@@ -159,18 +158,6 @@ end
 -- @treturn World
 function System:getWorld()
    return self.__world
-end
-
---- Returns true if the System has a name.
--- @treturn boolean
-function System:hasName()
-   return self.__name and true or false
-end
-
---- Returns the name of the System.
--- @treturn string
-function System:getName()
-   return self.__name
 end
 
 --- Callbacks
