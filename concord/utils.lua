@@ -40,15 +40,12 @@ function Utils.loadNamespace(pathOrFiles, namespace)
        for _, file in ipairs(files) do
             local isFile = love.filesystem.getInfo(pathOrFiles .. "/" .. file).type == "file"
 
-            if isFile then
+            if isFile and string.match(file, '%.lua$') ~= nil then
                  local name = file:sub(1, #file - 4)
                  local path = pathOrFiles.."."..name
 
                  local value = require(path)
                  if namespace then namespace[name] = value end
-            else
-                 local value = require(pathOrFiles.."."..file)
-				 if namespace then namespace[file] = value end
             end
        end
    elseif type(pathOrFiles) == "table" then
