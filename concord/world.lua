@@ -323,9 +323,10 @@ function World:serialize()
    for i = 1, self.__entities.size do
       local entity = self.__entities[i]
 
-      local entityData = entity:serialize()
-
-      data[i] = entityData
+      if entity.serializable then
+         local entityData = entity:serialize()
+         table.insert(data, entityData)
+      end
    end
 
    return data
