@@ -398,7 +398,8 @@ function World:deserialize(data, startClean, ignoreGenerator)
 
       if data[i].key then
          local component = Components.key:__new(entity)
-         entity.key = component:deserialize(data[i].key)
+         component:deserialize(data[i].key)
+         entity.key = component
 
          entity:__dirty()
       end

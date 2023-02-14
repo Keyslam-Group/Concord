@@ -19,7 +19,7 @@ local Key = Component("key", function (self, key)
 end)
 
 function Key:deserialize (data)
-  self.value = getKey(self, data.value)
+  self.value = getKey(self, data)
 end
 
 function Key:removed (replaced)
@@ -28,7 +28,7 @@ function Key:removed (replaced)
 
     if entity:inWorld() then
       local world = entity:getWorld()
-  
+
       return world:__clearKey(entity)
     end
   end
