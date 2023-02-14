@@ -18,7 +18,7 @@ Entity.__mt = {
 -- @treturn Entity A new Entity
 function Entity.new(world)
    if (world ~= nil and not Type.isWorld(world)) then
-      error("bad argument #1 to 'Entity.new' (world/nil expected, got "..type(world)..")", 2)
+      Utils.error(2, "bad argument #1 to 'Entity.new' (world/nil expected, got %s)", type(world))
    end
 
    local e = setmetatable({
@@ -68,7 +68,7 @@ function Entity:give(name, ...)
    local ok, componentClass = Components.try(name)
 
    if not ok then
-      error("bad argument #1 to 'Entity:get' ("..componentClass..")", 2)
+      Utils.error(2, "bad argument #1 to 'Entity:get' (%s)", componentClass)
    end
 
    give(self, name, componentClass, ...)
@@ -85,7 +85,7 @@ function Entity:ensure(name, ...)
    local ok, componentClass = Components.try(name)
 
    if not ok then
-      error("bad argument #1 to 'Entity:ensure' ("..componentClass..")", 2)
+      Utils.error(2, "bad argument #1 to 'Entity:ensure' (%s)", componentClass)
    end
 
    if self[name] then
@@ -104,7 +104,7 @@ function Entity:remove(name)
    local ok, componentClass = Components.try(name)
 
    if not ok then
-      error("bad argument #1 to 'Entity:remove' ("..componentClass..")", 2)
+      Utils.error(2, "bad argument #1 to 'Entity:remove' (%s)", componentClass)
    end
 
    remove(self, name)
@@ -118,7 +118,7 @@ end
 -- @treturn Entity self
 function Entity:assemble(assemblage, ...)
    if type(assemblage) ~= "function" then
-      error("bad argument #1 to 'Entity:assemble' (function expected, got "..type(assemblage)..")")
+      Utils.error(2, "bad argument #1 to 'Entity:assemble' (function expected, got %s)", type(assemblage))
    end
 
    assemblage(self, ...)
@@ -154,7 +154,7 @@ function Entity:has(name)
    local ok, componentClass = Components.try(name)
 
    if not ok then
-      error("bad argument #1 to 'Entity:has' ("..componentClass..")", 2)
+      Utils.error(2, "bad argument #1 to 'Entity:has' (%s)", componentClass)
    end
 
    return self[name] and true or false
@@ -167,7 +167,7 @@ function Entity:get(name)
    local ok, componentClass = Components.try(name)
 
    if not ok then
-      error("bad argument #1 to 'Entity:get' ("..componentClass..")", 2)
+      Utils.error(2, "bad argument #1 to 'Entity:get' (%s)", componentClass)
    end
 
    return self[name]
@@ -219,7 +219,7 @@ function Entity:deserialize(data)
       local componentData = data[i]
 
       if (not Components.has(componentData.__name)) then
-         error("bad argument #1 to 'Entity:deserialize' (ComponentClass '"..tostring(componentData.__name).."' wasn't yet loaded)") -- luacheck: ignore
+         Utils.error(2, "bad argument #1 to 'Entity:deserialize' (ComponentClass '%s' wasn't yet loaded)", tostring(componentData.__name)) -- luacheck: ignore
       end
 
       local componentClass = Components[componentData.__name]

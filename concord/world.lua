@@ -52,7 +52,7 @@ end
 -- @treturn World self
 function World:addEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'World:addEntity' (Entity expected, got "..type(e)..")", 2)
+      Utils.error(2, "bad argument #1 to 'World:addEntity' (Entity expected, got %s)", type(e))
    end
 
    if e.__world then
@@ -70,7 +70,7 @@ end
 -- @treturn World self
 function World:removeEntity(e)
    if not Type.isEntity(e) then
-      error("bad argument #1 to 'World:removeEntity' (Entity expected, got "..type(e)..")", 2)
+      Utils.error(2, "bad argument #1 to 'World:removeEntity' (Entity expected, got %s)", type(e))
    end
 
    self.__removed:add(e)
@@ -207,7 +207,7 @@ function World:addSystem(systemClass)
    local ok, err = tryAddSystem(self, systemClass)
 
    if not ok then
-      error("bad argument #1 to 'World:addSystem' ("..err..")", 2)
+      Utils.error(2, "bad argument #1 to 'World:addSystem' (%s)", err)
    end
 
    return self
@@ -225,7 +225,7 @@ function World:addSystems(...)
 
       local ok, err = tryAddSystem(self, systemClass)
       if not ok then
-         error("bad argument #"..i.." to 'World:addSystems' ("..err..")", 2)
+         Utils.error(2, "bad argument #%d to 'World:addSystems' (%s)", i, err)
       end
    end
 
@@ -237,7 +237,7 @@ end
 -- @treturn boolean
 function World:hasSystem(systemClass)
    if not Type.isSystemClass(systemClass) then
-      error("bad argument #1 to 'World:getSystem' (systemClass expected, got "..type(systemClass)..")", 2)
+      Utils.error(2, "bad argument #1 to 'World:hasSystem' (SystemClass expected, got %s)", type(systemClass))
    end
 
    return self.__systemLookup[systemClass] and true or false
@@ -248,7 +248,7 @@ end
 -- @treturn System System to get
 function World:getSystem(systemClass)
    if not Type.isSystemClass(systemClass) then
-      error("bad argument #1 to 'World:getSystem' (systemClass expected, got "..type(systemClass)..")", 2)
+      Utils.error(2, "bad argument #1 to 'World:getSystem' (SystemClass expected, got %s)", type(systemClass))
    end
 
    return self.__systemLookup[systemClass]
@@ -261,7 +261,7 @@ end
 -- @treturn World self
 function World:emit(functionName, ...)
    if not functionName or type(functionName) ~= "string" then
-      error("bad argument #1 to 'World:emit' (String expected, got "..type(functionName)..")")
+      Utils.error(2, "bad argument #1 to 'World:emit' (String expected, got %s)", type(functionName))
    end
 
    local shouldFlush = self.__emitSDepth == 0
