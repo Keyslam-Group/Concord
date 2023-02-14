@@ -6,6 +6,7 @@ local PATH = (...):gsub('%.[^%.]+$', '')
 
 local List       = require(PATH..".list")
 local Type       = require(PATH..".type")
+local Utils      = require(PATH..".utils")
 local Components = require(PATH..".components")
 
 
@@ -20,18 +21,18 @@ Filter.__mt = {
 -- @tparam onComponent Optional function, called when a component is valid.
 function Filter.validate (name, def, onComponent)
    if type(def) ~= 'table' then
-      error("invalid component list for filter '"..name.."' (table expected, got "..type(def)..")", 3)
+      Utils.error(3, "invalid component list for filter '%s' (table expected, got %s)", name, type(def))
    end
 
    if not onComponent and def.constructor and not Type.isCallable(def.constructor) then
-      error("invalid pool constructor (callable expected, got "..type(def.constructor)..")", 3)
+      Utils.error(3, "invalid pool constructor for filter '%s' (callable expected, got %s)", name, type(def.constructor))
    end
 
    for n, component in ipairs(def) do
       local ok, err, reject = Components.try(component, true)
 
       if not ok then
-         error("invalid component for filter '"..name.."' at position #"..n.." ("..err..")", 3)
+         Utils.error(3, "invalid component for filter '%s' at position #%d (%s)", name, n, err)
       end
 
       if onComponent then
@@ -61,14 +62,38 @@ function Filter.parse (name, def)
    return required, rejected
 end
 
+local REQUIRED_METHODS = {"add", "remove", "has", "clear"}
+local VALID_POOL_TYPES = {table=true, userdata=true, lightuserdata=true, cdata=true}
+
+function Filter.isValidPool (name, pool)
+   local poolType = type(pool)
+   --Check that pool is not nil
+   if not VALID_POOL_TYPES[poolType] then
+      Utils.error(3, "invalid value returned by pool '%s' constructor (table expected, got %s).", name, type(pool))
+   end
+
+   --Check if methods are callables
+   for _, method in ipairs(REQUIRED_METHODS) do
+      if not Type.isCallable(pool[method]) then
+         Utils.error(3, "invalid :%s method on pool '%s' (callable expected, got %s).", method, name, type(pool[method]))
+      end
+   end
+end
+
 --- Creates a new Filter
 -- @string name Name for the Filter.
 -- @tparam table definition Table containing the Filter Definition
 -- @treturn Filter The new Filter
 -- @treturn Pool The associated Pool
 function Filter.new (name, def)
-   local constructor = def.constructor or List
-   local pool = constructor(def)
+   local pool
+
+   if def.constructor then
+      pool = def.constructor(def)
+      Filter.isValidPool(name, pool)
+   else
+      pool = List()
+   end
 
    local required, rejected = Filter.parse(name, def)
 

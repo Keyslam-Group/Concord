@@ -16,19 +16,19 @@ Component.__mt = {
 -- @treturn Component A new ComponentClass
 function Component.new(name, populate)
    if (type(name) ~= "string") then
-      error("bad argument #1 to 'Component.new' (string expected, got "..type(name)..")", 2)
+      Utils.error(2, "bad argument #1 to 'Component.new' (string expected, got %s)", type(name))
    end
 
    if (string.match(name, Components.__REJECT_MATCH) ~= "") then
-      error("bad argument #1 to 'Component.new' (Component names can't start with '"..Components.__REJECT_PREFIX.."', got "..name..")", 2)
+      Utils.error(2, "bad argument #1 to 'Component.new' (Component names can't start with '%s', got %s)", Components.__REJECT_PREFIX, name)
    end
 
    if (rawget(Components, name)) then
-      error("bad argument #1 to 'Component.new' (ComponentClass with name '"..name.."' was already registerd)", 2) -- luacheck: ignore
+      Utils.error(2, "bad argument #1 to 'Component.new' (ComponentClass with name '%s' was already registerd)", name) -- luacheck: ignore
    end
 
    if (type(populate) ~= "function" and type(populate) ~= "nil") then
-      error("bad argument #1 to 'Component.new' (function/nil expected, got "..type(populate)..")", 2)
+      Utils.error(2, "bad argument #1 to 'Component.new' (function/nil expected, got %s)", type(populate))
    end
 
    local componentClass = setmetatable({
