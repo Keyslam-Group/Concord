@@ -19,6 +19,10 @@ function Component.new(name, populate)
       error("bad argument #1 to 'Component.new' (string expected, got "..type(name)..")", 2)
    end
 
+   if (string.match(name, Components.__REJECT_MATCH) ~= "") then
+      error("bad argument #1 to 'Component.new' (Component names can't start with '"..Components.__REJECT_PREFIX.."', got "..name..")", 2)
+   end
+
    if (rawget(Components, name)) then
       error("bad argument #1 to 'Component.new' (ComponentClass with name '"..name.."' was already registerd)", 2) -- luacheck: ignore
    end
