@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Concord</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Component.html">Component</a></li>
+  <li><a href="../classes/Entity.html">Entity</a></li>
+  <li><strong>Filter</strong></li>
+  <li><a href="../classes/List.html">List</a></li>
+  <li><a href="../classes/System.html">System</a></li>
+  <li><a href="../classes/World.html">World</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Components.html">Components</a></li>
+  <li><a href="../modules/Concord.html">Concord</a></li>
+  <li><a href="../modules/type.html">type</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Filter</code></h1>
+<p>Used to filter Entities with specific Components
+ A Filter has an associated Pool that can contain any amount of Entities.</p>
+<p></p>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Filter:validate">Filter:validate (name, definition, Optional)</a></td>
+	<td class="summary">Validates a Filter Definition to make sure every component is valid.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Filter:parse">Filter:parse (name, definition)</a></td>
+	<td class="summary">Parses the Filter Defintion into two tables
+ required: An array of all the required component names.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Filter:new">Filter:new (name, definition)</a></td>
+	<td class="summary">Creates a new Filter</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Filter:eligible">Filter:eligible (e)</a></td>
+	<td class="summary">Checks if an Entity fulfills the Filter requirements.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Filter:getName">Filter:getName ()</a></td>
+	<td class="summary">Gets the name of the Filter</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Filter:validate"></a>
+    <strong>Filter:validate (name, definition, Optional)</strong>
+    </dt>
+    <dd>
+    Validates a Filter Definition to make sure every component is valid.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name for the Filter.
+        </li>
+        <li><span class="parameter">definition</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Table containing the Filter Definition
+        </li>
+        <li><span class="parameter">Optional</span>
+            <span class="types"><span class="type">onComponent</span></span>
+         function, called when a component is valid.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Filter:parse"></a>
+    <strong>Filter:parse (name, definition)</strong>
+    </dt>
+    <dd>
+    Parses the Filter Defintion into two tables
+ required: An array of all the required component names.
+ rejected: An array of all the components that will be rejected.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name for the Filter.
+        </li>
+        <li><span class="parameter">definition</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Table containing the Filter Definition
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        required</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        rejected</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Filter:new"></a>
+    <strong>Filter:new (name, definition)</strong>
+    </dt>
+    <dd>
+    Creates a new Filter
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name for the Filter.
+        </li>
+        <li><span class="parameter">definition</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Table containing the Filter Definition
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="../classes/Filter.html#">Filter</a></span>
+        The new Filter</li>
+        <li>
+           <span class="types"><span class="type">Pool</span></span>
+        The associated Pool</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Filter:eligible"></a>
+    <strong>Filter:eligible (e)</strong>
+    </dt>
+    <dd>
+    Checks if an Entity fulfills the Filter requirements.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">e</span>
+            <span class="types"><a class="type" href="../classes/Entity.html#">Entity</a></span>
+         Entity to check
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Filter:getName"></a>
+    <strong>Filter:getName ()</strong>
+    </dt>
+    <dd>
+    Gets the name of the Filter
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2023-02-15 01:21:04 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
