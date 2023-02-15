@@ -44,7 +44,7 @@ function Utils.loadNamespace(pathOrFiles, namespace)
                  local name = file:sub(1, #file - 4)
                  local path = pathOrFiles.."."..name
 
-                 local value = require(path)
+                 local value = require(path:gsub("%/", "."))
                  if namespace then namespace[name] = value end
             end
        end
@@ -61,7 +61,7 @@ function Utils.loadNamespace(pathOrFiles, namespace)
                 name = path:sub((dotIndex or slashIndex) + 1)
             end
 
-            local value = require(path)
+            local value = require(path:gsub("%/", "."))
             if namespace then namespace[name] = value end
        end
    end
