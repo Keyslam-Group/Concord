@@ -294,14 +294,14 @@ end
 -- Defining a function
 function mySystemClass:update(dt)
     -- Iterate over all entities in the Pool
-    for _, e in ipairs(self.pool) 
+    for _, e in ipairs(self.pool) do
         -- Do something with the Components
         e.position.x = e.position.x + e.velocity.x * dt
         e.position.y = e.position.y + e.velocity.y * dt
     end
 
     -- Iterate over all entities in the second Pool
-    for _, e in ipairs(self.secondPool) 
+    for _, e in ipairs(self.secondPool) do
         -- Do something
     end
 end
