@@ -133,16 +133,16 @@ Concord does a few things that might not be immediately clear. This segment shou
 Since you'll have lots of Components and Systems in your game Concord makes it a bit easier to load things in.
 
 ```lua
+-- Loads all files in the directory. Components automatically register into Concord.components, so loading them into a namespace isn't necessary.
+Concord.utils.loadNamespace("path/to/components")
+
+print(Concord.components.componentName)
+
 -- Loads all files in the directory, and puts the return value in the table Systems. The key is their filename without any extension
 local Systems = {}
 Concord.utils.loadNamespace("path/to/systems", Systems)
 
 print(Systems.systemName)
-
--- Loads all files in the directory. Components automatically register into Concord.components, so loading them into a namespace isn't necessary.
-Concord.utils.loadNamespace("path/to/components")
-
-print(Concord.components.componentName)
 ```
 
 #### Method chaining
