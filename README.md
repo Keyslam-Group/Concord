@@ -146,8 +146,8 @@ print(Systems.systemName)
 
 -- Registers the loaded systems. Either with a for loop for automatic registering, or manually (you can choose the order)
 -- Create World first, also see:
-[Worlds](#worlds)
 ```
+[Worlds](#worlds)
 ```lua
 local myWorld = Concord.world()
 
