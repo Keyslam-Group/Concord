@@ -145,8 +145,6 @@ Concord.utils.loadNamespace("path/to/systems", Systems)
 print(Systems.systemName)
 
 -- Registers the loaded systems. Either with a for loop for automatic registering, or manually (you can choose the order)
-
-
 --for loop
 for _, system in pairs(Systems) do
   world:addSystem(system)
