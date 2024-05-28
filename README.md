@@ -152,7 +152,7 @@ print(Systems.systemName)
 local myWorld = Concord.world()
 
 --for loop
-for _, system in pairs(Systems) do
+for _, system in ipairs(Systems) do
   world:addSystem(system)
 end
 
