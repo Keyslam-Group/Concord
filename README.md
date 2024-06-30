@@ -170,7 +170,7 @@ When defining a ComponentClass you need to pass in a name and usually a `populat
 -- Create the position class with a populate function
 -- The component variable is the actual Component given to an Entity
 -- The x and y variables are values we pass in when we create the Component 
-Concord.component("position" function(component, x, y)
+Concord.component("position", function(component, x, y)
     component.x = x or 0
     component.y = y or 0
 end)
