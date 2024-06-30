@@ -142,7 +142,12 @@ print(Concord.components.componentName)
 local Systems = {}
 Concord.utils.loadNamespace("path/to/systems", Systems)
 
-print(Systems.systemName)
+myWorld:addSystems(
+  Systems.healthSystem
+  Systems.damageSystem,
+  Systems.moveSystem,
+ -- etc
+)
 ```
 
 #### Method chaining
