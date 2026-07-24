@@ -320,10 +320,10 @@ end
 -- Systems are enabled by default
 
 -- Enable a System
-mySystem:setEnable(true)
+mySystem:setEnabled(true)
 
 -- Disable a System
-mySystem:setEnable(false)
+mySystem:setEnabled(false)
 
 -- Get enabled state
 local isEnabled = mySystem:isEnabled()
